@@ -1,4 +1,8 @@
 #include "../../../include/dsp/buffers/StereoCircularBuffer.h"
+#if SLIB_DEBUG
+#include <stdexcept>
+#include <string>
+#endif
 
 using namespace siderialib;
 
@@ -15,15 +19,27 @@ void StereoCircularBuffer::incrementCircularSampleIdx() {
 
 void StereoCircularBuffer::initialize(int numSamples) {
 	buf = (sfloat*)malloc(sizeof(sfloat) * 2 * numSamples);
+	circularSampleIdx = 0;
+	this->numSamples = numSamples;
+
+	if (buf) {
+		for (int i = 0; i < numSamples * 2; i++) {
+			buf[i] = 0.f;
+		}
+	}
+
 }
 
 sfloat StereoCircularBuffer::read(int channel, int sample) {
 
 #if SLIB_DEBUG
-	assert(sample < numSamples);
-	assert(channel < 2);
-	assert(sample >= 0);
-	assert(channel >= 0);
+	if (sample >= numSamples || sample < 0) {
+		throw new std::domain_error("Samples should range from 0 to " + std::to_string(numSamples) + ", instead given: " + std::to_string(sample));
+	}
+
+	if (channel >= numSamples || channel < 0) {
+		throw new std::domain_error("Channels should range from 0 to " + std::to_string(numChannels()) + ", instead given: " + std::to_string(channel));
+	}
 #endif
 
 
@@ -33,38 +49,40 @@ sfloat StereoCircularBuffer::read(int channel, int sample) {
 void StereoCircularBuffer::write(sfloat val, int channel, int sample) {
 
 #if SLIB_DEBUG
-	assert(sample < numSamples);
-	assert(channel < 2);
-	assert(sample >= 0);
-	assert(channel >= 0);
+	if (sample >= numSamples || sample < 0) {
+		throw new std::domain_error("Samples should range from 0 to " + std::to_string(numSamples) + ", instead given: " + std::to_string(sample));
+	}
+
+	if (channel >= numSamples || channel < 0) {
+		throw new std::domain_error("Channels should range from 0 to " + std::to_string(numChannels()) + ", instead given: " + std::to_string(channel));
+	}
 #endif
 
 	buf[flattenIndex(channel, sample)] = val;
 }
 
-void StereoCircularBuffer::readCircular(svec2 &in) {
-	in.x = buf[flattenIndex(0, circularSampleIdx)];
-	in.y = buf[flattenIndex(1, circularSampleIdx)];
+sfloat StereoCircularBuffer::readCircular(int channel) {
+	return buf[flattenIndex(channel, circularSampleIdx)];
 }
 
 
-void StereoCircularBuffer::readCircular(svec2& in, int numSampsAgo) {
+sfloat StereoCircularBuffer::readCircular(int channel, int numSampsAgo) {
+
 	int finalIdx = circularSampleIdx - numSampsAgo;
 
 	while (finalIdx < 0) {
 		finalIdx += numSamples;
 	}
 
-	in.x = buf[flattenIndex(0, finalIdx)];
-	in.y = buf[flattenIndex(1, finalIdx)];
+	return buf[flattenIndex(channel, finalIdx)];
 
 }
 
-void StereoCircularBuffer::writeCircular(svec2& in) {
+void StereoCircularBuffer::writeCircular(sfloat L, sfloat R) {
 	incrementCircularSampleIdx();
 
-	buf[flattenIndex(0, circularSampleIdx)] = in.x;
-	buf[flattenIndex(1, circularSampleIdx)] = in.y;
+	buf[flattenIndex(0, circularSampleIdx)] = L;
+	buf[flattenIndex(1, circularSampleIdx)] = R;
 
 }
 

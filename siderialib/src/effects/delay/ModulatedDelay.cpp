@@ -2,15 +2,15 @@
 
 using namespace siderialib;
 
-void ModulatedDelay::tick(svec2& in, svec2& out) {
-	svec2 delayed;
-	this->buf.readCircular(delayed, this->delaySamps);
+void ModulatedDelay::tick(sfloat L, sfloat R) {
+	sfloat delayedL = this->buf.readCircular(0, this->delaySamps);
+	sfloat delayedR = this->buf.readCircular(0, this->delaySamps);
 
-	svec2 feedback = in + delayed * feedback;
-	this->buf.writeCircular(feedback);
+	
+	this->buf.writeCircular(L + delayedL * feedback, R + delayedR * feedback);
 
-	out.x = in.x * (mix - 1.f) + delayed.x * mix;
-	out.y = in.y * (mix - 1.f) + delayed.y * mix;
+	_lastOutL = L * (mix - 1.f) + delayedL * mix;
+	_lastOutR = R * (mix - 1.f) + delayedR * mix;
 }
 
 void ModulatedDelay::tick(Buffer& buf) {
@@ -18,21 +18,26 @@ void ModulatedDelay::tick(Buffer& buf) {
 }
 
 void ModulatedDelay::tick(Buffer& in, Buffer& out) {
-	svec2 inVec;
-	svec2 outVec;
 
 	for (int i = 0; i < in.size(); i++) {
-		inVec.x = in.read(0, i);
-		inVec.y = in.read(1, i);
+		this->tick(in.read(0, i), in.read(1, i));
 
-		this->tick(inVec, outVec);
-
-		out.write(outVec.x, 0, i);
-		out.write(outVec.y, 1, i);
+		out.write(_lastOutL, 0, i);
+		out.write(_lastOutR, 1, i);
 	}
 }
 
 void ModulatedDelay::initialize(float sampleRate, int maxDelaySamps) {
 	this->buf.initialize(maxDelaySamps);
 	this->sampleRate = sampleRate;
+	_lastOutL = 0.f;
+	_lastOutR = 0.f;
+}
+
+sfloat ModulatedDelay::lastOutL() {
+	return _lastOutL;
+}
+
+sfloat ModulatedDelay::lastOutR() {
+	return _lastOutR;
 }

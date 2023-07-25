@@ -8,8 +8,10 @@
 void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out);
 
 int main(int argc, char *argv[]) {
+
 	if (argc != 3) {
 		std::cout << "Use:\n./spkr <input/file> <output/file>" << std::endl;
+		return 0;
 	}
 
 	char* filename = argv[1];
@@ -18,15 +20,22 @@ int main(int argc, char *argv[]) {
 	AudioFile<double> file;
 	file.load(filename);
 
-	std::vector<std::vector<double>> out;
 	std::vector<std::vector<double>> in = file.samples;
-	apply(in, out);
 
-	AudioFile<double> output;
-	output.setAudioBufferSize(2, out.at(0).size());
-	output.setAudioBuffer(out);
-	output.setSampleRate(44100);
-	output.save(outfile);
+	std::vector<std::vector<double>> out = std::vector < std::vector<double >>(2, std::vector<double > (in.at(0).size()));
+
+
+
+	try {
+		apply(in, out);
+	}
+	catch (std::exception e) {
+		printf("Exception: %s\n", e.what());
+	}
+
+	file.setAudioBuffer(out);
+	file.save(outfile);
+	return 0;
 }
 
 
@@ -36,20 +45,18 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
 	delay.initialize(44100, 44100 * 10);
 
 	delay.setDelayMs(1000.0);
-	delay.setFeedback(0.6);
+	delay.setFeedback(0.0);
 	delay.setMix(0.5);
 
 	for (int i = 0; i < in.at(0).size(); i++) {
+
 		sfloat L = in.at(0).at(i);
-		sfloat R = in.at(1).at(i);
+		sfloat R = in.at(0).at(i);
 
-		svec2 inVec = svec2(L, R);
-		svec2 outVec;
+		delay.tick(L, R);
 
-		delay.tick(inVec, outVec);
-
-		out.at(0).at(i) = outVec.L();
-		out.at(1).at(i) = outVec.R();
+		out.at(0).at(i) = delay.lastOutL();
+		out.at(1).at(i) = delay.lastOutR();
 
 	}
 }

@@ -1,6 +1,10 @@
 #include "../../include/dsp/LFO.h"
 #include <math.h>
 #include <assert.h>
+#if SLIB_DEBUG
+#include <stdexcept>
+#include <string>
+#endif
 
 using namespace siderialib;
 
@@ -27,6 +31,9 @@ void LFO::setRateMs(sfloat ms) {
 	
 #if SLIB_DEBUG
 	assert(ms > 0.0);
+	if (ms <= 0.0) {
+		throw new std::domain_error("Range cannot be less than or equal to zero, instead given: " + std::to_string(ms));
+	}
 #endif
 	
 	this->ms = ms;
@@ -39,8 +46,9 @@ void LFO::setRateMs(sfloat ms) {
 void LFO::setDepth(sfloat depth) {
 
 #if SLIB_DEBUG
-	assert(depth >= 0.0);
-	assert(depth <= 1.0);
+	if (depth < 0.0 || depth > 1.0) {
+		throw new std::domain_error("Depth ranges from 0.0 to 1.0, instead given: " + std::to_string(depth));
+	}
 #endif
 
 	this->depth = depth;

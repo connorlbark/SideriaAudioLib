@@ -32,13 +32,13 @@ namespace siderialib {
 		int numChannels() override final;
 
 		// fills out "in" with the most recently written samples
-		void readCircular(svec2& in);
+		sfloat readCircular(int channel);
 
 		// increments circular pointer and writes the sample
-		void writeCircular(svec2& in);
+		void writeCircular(sfloat L, sfloat R);
 
 		// read into the past starting from the latest write to the buffer
-		void readCircular(svec2& in, int numSampsAgo);
+		sfloat readCircular(int channel, int numSampsAgo);
 
 	};
 }

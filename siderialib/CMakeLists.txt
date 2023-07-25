@@ -3,7 +3,7 @@
 #
 
 # Add source to this project's executable.
-add_library (siderialib STATIC "SideriaAudioLib.cpp" "SideriaAudioLib.h"  "include/dsp/Types.h" "include/dsp/Buffer.h" "include/dsp/buffers/CBuffer.h" "include/dsp/buffers/StereoCircularBuffer.h" "src/dsp/buffers/StereoCircularBuffer.cpp" "src/dsp/buffers/CBuffer.cpp" "include/effects/delay/ModulatedDelay.h" "include/dsp/LFO.h" "src/dsp/LFO.cpp" "src/effects/delay/ModulatedDelay.cpp")
+add_library (siderialib STATIC "SideriaAudioLib.cpp" "SideriaAudioLib.h"  "include/dsp/Types.h" "include/dsp/Buffer.h" "include/dsp/buffers/CBuffer.h" "include/dsp/buffers/StereoCircularBuffer.h" "src/dsp/buffers/StereoCircularBuffer.cpp" "src/dsp/buffers/CBuffer.cpp" "include/effects/delay/ModulatedDelay.h" "include/dsp/LFO.h" "src/dsp/LFO.cpp" "src/effects/delay/ModulatedDelay.cpp" "include/StereoEffect.h")
 
 target_include_directories(siderialib PUBLIC include)
 target_compile_features(siderialib PUBLIC cxx_std_20)
