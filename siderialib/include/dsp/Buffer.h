@@ -17,5 +17,6 @@ namespace siderialib {
 		sfloat hermiteInterpolation(int channel, sfloat idx);
 		sfloat hermiteInterpolation(int channel, int index, sfloat t);
 		sfloat linearInterpolation(int channel, int index, sfloat t);
+		sfloat sincInterpolation(int channel, int index, sfloat t);
 	};
 }
