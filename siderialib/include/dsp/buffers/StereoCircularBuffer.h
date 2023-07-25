@@ -19,6 +19,7 @@ namespace siderialib {
 
 		void incrementCircularSampleIdx();
 	public:
+		int mapToNonCircularIndex(int sample);
 
 		// initializes the buffer with two channels and the specified number of samples
 		void initialize(int numSamples);
@@ -39,7 +40,6 @@ namespace siderialib {
 
 		// read into the past starting from the latest write to the buffer
 		sfloat readCircular(int channel, int numSampsAgo);
-
 	};
 }
 

@@ -13,5 +13,9 @@ namespace siderialib {
 		virtual int size() = 0;
 		// returns the number of channels the buffer contains
 		virtual int numChannels() = 0;
+
+		sfloat hermiteInterpolation(int channel, sfloat idx);
+		sfloat hermiteInterpolation(int channel, int index, sfloat t);
+		sfloat linearInterpolation(int channel, int index, sfloat t);
 	};
 }

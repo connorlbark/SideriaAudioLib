@@ -31,18 +31,13 @@ void StereoCircularBuffer::initialize(int numSamples) {
 }
 
 sfloat StereoCircularBuffer::read(int channel, int sample) {
-
-#if SLIB_DEBUG
-	if (sample >= numSamples || sample < 0) {
-		throw new std::domain_error("Samples should range from 0 to " + std::to_string(numSamples) + ", instead given: " + std::to_string(sample));
+	while (sample < 0) {
+		sample += numSamples;
 	}
-
-	if (channel >= numSamples || channel < 0) {
-		throw new std::domain_error("Channels should range from 0 to " + std::to_string(numChannels()) + ", instead given: " + std::to_string(channel));
+	while (sample >= numSamples) {
+		sample -= numSamples;
 	}
-#endif
-
-
+	
 	return buf[flattenIndex(channel, sample)];
 }
 
@@ -67,14 +62,7 @@ sfloat StereoCircularBuffer::readCircular(int channel) {
 
 
 sfloat StereoCircularBuffer::readCircular(int channel, int numSampsAgo) {
-
-	int finalIdx = circularSampleIdx - numSampsAgo;
-
-	while (finalIdx < 0) {
-		finalIdx += numSamples;
-	}
-
-	return buf[flattenIndex(channel, finalIdx)];
+	return buf[flattenIndex(channel, mapToNonCircularIndex(numSampsAgo))];
 
 }
 
@@ -92,4 +80,10 @@ int StereoCircularBuffer::size() {
 
 int StereoCircularBuffer::numChannels() {
 	return 2;
+}
+
+int StereoCircularBuffer::mapToNonCircularIndex(int numSampsAgo) {
+	int finalIdx = circularSampleIdx - numSampsAgo;
+
+	return finalIdx;
 }

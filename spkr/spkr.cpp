@@ -46,7 +46,7 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
 
 	delay.setDelayMs(1000.0);
 	delay.setFeedback(0.0);
-	delay.setMix(0.5);
+	delay.setMix(1.0);
 
 	for (int i = 0; i < in.at(0).size(); i++) {
 
