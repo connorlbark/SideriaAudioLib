@@ -1,0 +1,3 @@
+[submodule "spkr/thirdpartylibs/AudioFile"]
+	path = spkr/thirdpartylibs/AudioFile
+	url = https://github.com/adamstark/AudioFile
