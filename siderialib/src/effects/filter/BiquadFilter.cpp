@@ -7,7 +7,7 @@ using namespace siderialib;
 void BiquadFilter::initializeParams() {
 	this->aLen = 3;
 	this->a = (double*)malloc(sizeof(double) * aLen);
-	this->x = (double*)malloc(sizeof(double) * (aLen-1));
+	this->x = (double*)malloc(sizeof(double) * aLen);
 	for (int i = 0; i < aLen; i++) {
 		x[i] = 0.0;
 	}
@@ -30,16 +30,16 @@ void BiquadFilter::recalcParams() {
 	
 	b[0] = 2.0 * (W - 1.0) / alpha;
 	b[1] = (1.0 - (K / Q) + W) / alpha;
-	
-	if (type == BiquadType::HPF) {
-		a[0] = 1.0 / alpha;
-		a[1] = -2.0 * W / alpha;
-		a[2] = a[0];
-	} else {
-		a[0] = W / alpha;
-		a[1] = 2.0 * W / alpha;
-		a[2] = a[0];
-	}
+
+    if (type == BiquadType::LPF) {
+        a[0] = W/alpha;
+        a[1] = 2 * W/alpha;
+        a[2] = a[0];
+    } else if (type == BiquadType::HPF) {
+        a[0] = 1/alpha;
+        a[1] = -2 / alpha;
+        a[2] = a[0];
+    }
 }
 
 void BiquadFilter::initialize(sfloat samplingRate, BiquadType type, sfloat cutoffHz, sfloat Q) {

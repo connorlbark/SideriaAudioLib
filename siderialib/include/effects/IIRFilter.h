@@ -16,6 +16,7 @@ namespace siderialib {
 
 		
 		int mapAIdx(int idx) {
+            idx += circAIdx;
 			if (idx < 0) {
 				idx += aLen;
 			}
@@ -26,6 +27,7 @@ namespace siderialib {
 		}
 
 		int mapBIdx(int idx) {
+            idx += circBIdx;
 			if (idx < 0) {
 				idx += bLen;
 			}
@@ -49,23 +51,23 @@ namespace siderialib {
 		}
 
 		sfloat tick(sfloat in) {
-			double out = a[0] * in;
+            x[circAIdx] = in;
+            circAIdx = ++circAIdx % aLen;
 
-			int finalIdx = 0;
-			for (int aIdx = 1; aIdx < aLen; aIdx++) {
+            double out = 0.0;
+
+			int finalIdx;
+			for (int aIdx = 0; aIdx < aLen; aIdx++) {
 				finalIdx = mapAIdx(-aIdx);
 				out += x[finalIdx] * a[aIdx];
 			}
 
-			for (int bIdx = 1; bIdx < bLen; bIdx++) {
-				finalIdx = mapBIdx(-bIdx);
-				out += y[finalIdx] * b[bIdx];
+			for (int bIdx = 0; bIdx < bLen; bIdx++) {
+				finalIdx = mapBIdx(-bIdx - 1);
+				out -= y[finalIdx] * b[bIdx];
 			}
 
-			x[circAIdx] = in;
 			y[circBIdx] = out;
-
-			circAIdx = ++circAIdx % aLen;
 			circBIdx = ++circBIdx % bLen;
 
 			return (sfloat)out;

@@ -58,7 +58,7 @@ struct svec2 {
 		return svec2(this->x + f.x, this->y + f.y);
 	}
 
-	svec2 operator+=(svec2& f) {
+	void operator+=(svec2& f) {
 		this->x += f.x;
 		this->y += f.y;
 	}

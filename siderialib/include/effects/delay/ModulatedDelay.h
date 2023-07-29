@@ -14,7 +14,7 @@ namespace siderialib {
 		sfloat sampleRate;
 		sfloat feedback = 0.0;
 
-		LFO mod;
+		LFO _mod;
 
 		sfloat _lastOutL;
 		sfloat _lastOutR;
@@ -31,12 +31,14 @@ namespace siderialib {
 		sfloat lastOutR() override final;
 
 		void setMix(sfloat mix) { this->mix = mix; };
-		sfloat getMix() { this->mix; }
+		sfloat getMix() { return this->mix; }
 
 		void setDelayMs(sfloat ms) { this->delaySamps = (int)((ms / 1000.0f) * sampleRate); }
 		sfloat getDelayMs() { return (this->delaySamps / sampleRate) * 1000.0f; };
 
 		void setFeedback(sfloat feedback) { this->feedback = feedback; }
 		sfloat getFeedback() { return feedback; }
+
+        inline LFO &mod() { return _mod; };
 	};
 }

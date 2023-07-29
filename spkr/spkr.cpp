@@ -44,7 +44,7 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
 	siderialib::ModulatedDelay delay;
 	siderialib::BiquadFilter lpf;
 
-	//lpf.initialize(44100, siderialib::BiquadType::LPF, 3000.0, 1.0);
+	lpf.initialize(44100, siderialib::BiquadType::LPF, 1000.0, 2.0);
 
 	delay.initialize(44100, 44100 * 10);
 
@@ -56,13 +56,13 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
 	for (int i = 0; i < in.at(0).size(); i++) {
 
 		sfloat L = in.at(0).at(i);
-		sfloat R = in.at(0).at(i);
+		//sfloat R = in.at(0).at(i);
 
-		//sfloat filtered = lpf.tick(L);
-        delay.tick(L,R);
+		sfloat filtered = lpf.tick(L);
+        //delay.tick(L,R);
 
-		out.at(0).at(i) = delay.lastOutL();
-		out.at(1).at(i) = delay.lastOutR();
+		out.at(0).at(i) = filtered;//delay.lastOutL();
+		out.at(1).at(i) = L;//delay.lastOutR();
 
 	}
 }

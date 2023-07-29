@@ -4,14 +4,14 @@ using namespace siderialib;
 
 static int samples = 0;
 void ModulatedDelay::tick(sfloat L, sfloat R) {
-    double mod = this->mod.tick();
-    double modulatedDelaySamps = this->buf.mapToNonCircularIndex(this->delaySamps) + mod * 30.0;
+    double mod = this->_mod.tick();
+    double modulatedDelaySamps = this->buf.mapToNonCircularIndex(this->delaySamps) + mod * 400.0;
 
 	int flooredModDelaySamps = (int)floor(modulatedDelaySamps);
     double t = modulatedDelaySamps - flooredModDelaySamps;
 
-    sfloat delayedL = this->buf.linearInterpolation(0, flooredModDelaySamps, t);
-    sfloat delayedR = this->buf.linearInterpolation(1, flooredModDelaySamps, t);
+    sfloat delayedL = this->buf.hermiteInterpolation(0, flooredModDelaySamps, t);
+    sfloat delayedR = this->buf.hermiteInterpolation(1, flooredModDelaySamps, t);
 
 	this->buf.writeCircular(L + delayedL * feedback, R + delayedR * feedback);
 
@@ -40,9 +40,9 @@ void ModulatedDelay::initialize(float sampleRate, int maxDelaySamps) {
 	this->sampleRate = sampleRate;
 	_lastOutL = 0.f;
 	_lastOutR = 0.f;
-	this->mod.initialize(sampleRate);
-	this->mod.setDepth(1.0);
-	this->mod.setRateHz(1.0);
+	this->_mod.initialize(sampleRate);
+	this->_mod.setDepth(1.0);
+	this->_mod.setRateHz(1.0);
 }
 
 sfloat ModulatedDelay::lastOutL() {
