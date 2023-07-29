@@ -42,7 +42,13 @@ namespace siderialib {
 
 		virtual void initializeParams() = 0;
 	public:
-
+        ~IIRFilter() {
+            free(this->a);
+            free(this->b);
+            free(this->x);
+            free(this->y);
+        }
+        
 		void tick(Buffer& buf) override final {
 			return this->tick(buf, buf);
 		}

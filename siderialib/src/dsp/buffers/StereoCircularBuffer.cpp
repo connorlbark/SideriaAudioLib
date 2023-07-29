@@ -83,3 +83,7 @@ int StereoCircularBuffer::mapToNonCircularIndex(int numSampsAgo) {
 
 	return finalIdx;
 }
+
+StereoCircularBuffer::~StereoCircularBuffer() {
+    free(this->buf);
+}

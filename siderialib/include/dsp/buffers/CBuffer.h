@@ -13,6 +13,8 @@ namespace siderialib {
 		inline int flattenIndex(int channel, int sample);
 	public:
 
+        ~CBuffer();
+
 		virtual void initialize(int numChannels, int numSamples);
 
 		sfloat read(int channel, int sample) override final;

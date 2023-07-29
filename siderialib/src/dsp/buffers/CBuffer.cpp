@@ -43,3 +43,7 @@ int CBuffer::size() {
 int CBuffer::numChannels() {
 	return _numChannels;
 }
+
+CBuffer::~CBuffer() {
+    free(this->buf);
+}

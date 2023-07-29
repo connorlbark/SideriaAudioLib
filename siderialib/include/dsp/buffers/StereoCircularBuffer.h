@@ -17,6 +17,8 @@ namespace siderialib {
 
 		void incrementCircularSampleIdx();
 	public:
+        ~StereoCircularBuffer();
+
 		int mapToNonCircularIndex(int sample);
 
 		// initializes the buffer with two channels and the specified number of samples
