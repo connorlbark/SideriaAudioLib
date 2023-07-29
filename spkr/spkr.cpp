@@ -3,6 +3,7 @@
 #include "AudioFile.h"
 #include <vector>
 
+#include "../siderialib/include/siderialib.h"
 #include "../siderialib/include/effects/delay/ModulatedDelay.h"
 #include "../siderialib/include/effects/filter/BiquadFilter.h"
 
@@ -44,7 +45,7 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
 	siderialib::ModulatedDelay delay;
 	siderialib::BiquadFilter lpf;
 
-	lpf.initialize(44100, siderialib::BiquadType::LPF, 1000.0, 2.0);
+	lpf.initialize(44100, siderialib::BiquadType::HPF, 10000.0, 2.0);
 
 	delay.initialize(44100, 44100 * 10);
 
@@ -55,11 +56,8 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
 
 	for (int i = 0; i < in.at(0).size(); i++) {
 
-		sfloat L = in.at(0).at(i);
-		//sfloat R = in.at(0).at(i);
-
-		sfloat filtered = lpf.tick(L);
-        //delay.tick(L,R);
+		siderialib::sfloat L = in.at(0).at(i);
+        siderialib::sfloat filtered = lpf.tick(L);
 
 		out.at(0).at(i) = filtered;//delay.lastOutL();
 		out.at(1).at(i) = L;//delay.lastOutR();

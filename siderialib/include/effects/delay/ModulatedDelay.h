@@ -3,6 +3,7 @@
 #include "../../StereoEffect.h"
 #include "../../dsp/buffers/StereoCircularBuffer.h"
 #include "../../dsp/LFO.h"
+#include "../../effects/filter/BiquadFilter.h"
 
 namespace siderialib {
 	class ModulatedDelay : public StereoEffect {
@@ -15,6 +16,13 @@ namespace siderialib {
 		sfloat feedback = 0.0;
 
 		LFO _mod;
+
+        // placed before writing to circular buffer, so in essence, filters delayed sounds many times
+        BiquadFilter _lpf;
+        bool enableLpf;
+        // placed before writing to circular buffer, so in essence, filters delayed sounds many times
+        BiquadFilter _hpf;
+        bool enableHpf;
 
 		sfloat _lastOutL;
 		sfloat _lastOutR;

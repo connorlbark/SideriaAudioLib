@@ -1,8 +1,6 @@
 #pragma once
 
 #include "../Buffer.h"
-#include <assert.h>
-#include <memory>
 
 namespace siderialib {
 	// circular buffer with two channels for simplified

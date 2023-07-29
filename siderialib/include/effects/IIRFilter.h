@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Effect.h"
+#include "../siderialib.h"
 
 namespace siderialib {
 	class IIRFilter : public Effect {
@@ -13,6 +14,8 @@ namespace siderialib {
 		double* y;
 		int circBIdx = 0;
 		int bLen;
+
+        float linGain = 1.0;
 
 		
 		int mapAIdx(int idx) {
@@ -50,6 +53,10 @@ namespace siderialib {
 			}
 		}
 
+        void setGain(sfloat dB) {
+            this->linGain = std::pow(10.f, dB / 20.f);
+        }
+
 		sfloat tick(sfloat in) {
             x[circAIdx] = in;
             circAIdx = ++circAIdx % aLen;
@@ -70,7 +77,7 @@ namespace siderialib {
 			y[circBIdx] = out;
 			circBIdx = ++circBIdx % bLen;
 
-			return (sfloat)out;
+			return (sfloat)out * linGain;
 		}
 	};
 }

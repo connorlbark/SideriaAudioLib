@@ -1,4 +1,5 @@
 #include "../../../include/effects/delay/ModulatedDelay.h"
+#include "../../../include/siderialib.h"
 
 using namespace siderialib;
 
@@ -7,7 +8,7 @@ void ModulatedDelay::tick(sfloat L, sfloat R) {
     double mod = this->_mod.tick();
     double modulatedDelaySamps = this->buf.mapToNonCircularIndex(this->delaySamps) + mod * 400.0;
 
-	int flooredModDelaySamps = (int)floor(modulatedDelaySamps);
+	int flooredModDelaySamps = (int)std::floor(modulatedDelaySamps);
     double t = modulatedDelaySamps - flooredModDelaySamps;
 
     sfloat delayedL = this->buf.hermiteInterpolation(0, flooredModDelaySamps, t);
@@ -43,6 +44,11 @@ void ModulatedDelay::initialize(float sampleRate, int maxDelaySamps) {
 	this->_mod.initialize(sampleRate);
 	this->_mod.setDepth(1.0);
 	this->_mod.setRateHz(1.0);
+
+    this->enableHpf = false;
+    this->enableLpf = false;
+    this->_lpf.initialize(sampleRate, BiquadType::LPF, sampleRate/2.f, 1.0);
+    this->_hpf.initialize(sampleRate, BiquadType::HPF, 0.0f, 1.0);
 }
 
 sfloat ModulatedDelay::lastOutL() {

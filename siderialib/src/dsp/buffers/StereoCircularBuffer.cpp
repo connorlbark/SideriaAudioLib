@@ -1,8 +1,5 @@
 #include "../../../include/dsp/buffers/StereoCircularBuffer.h"
-#if SLIB_DEBUG
-#include <stdexcept>
-#include <string>
-#endif
+#include "../../../include/siderialib.h"
 
 using namespace siderialib;
 

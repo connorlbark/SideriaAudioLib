@@ -1,5 +1,5 @@
 #include "../../../include/effects/filter/BiquadFilter.h"
-#include <memory>
+#include "../../../include/siderialib.h"
 
 using namespace siderialib;
 
@@ -36,8 +36,8 @@ void BiquadFilter::recalcParams() {
         a[1] = 2 * W/alpha;
         a[2] = a[0];
     } else if (type == BiquadType::HPF) {
-        a[0] = 1/alpha;
-        a[1] = -2 / alpha;
+        a[0] = 1.0 / alpha;
+        a[1] = -2.0 / alpha;
         a[2] = a[0];
     }
 }

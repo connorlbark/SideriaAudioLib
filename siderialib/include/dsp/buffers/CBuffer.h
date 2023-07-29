@@ -1,8 +1,7 @@
 #pragma once
 
 #include "../Buffer.h"
-#include <assert.h>
-#include <memory>
+
 
 namespace siderialib {
 	class CBuffer : public Buffer {

@@ -3,8 +3,6 @@
 
 using namespace siderialib;
 
-
-
 sfloat Buffer::hermiteInterpolation(int channel, int index, double t) {
     return (sfloat)InterpolateHermite4pt3oX(
         read(channel, index - 1),

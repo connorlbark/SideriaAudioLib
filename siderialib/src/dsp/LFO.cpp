@@ -1,9 +1,5 @@
 #include "../../include/dsp/LFO.h"
-#include <math.h>
-#if SLIB_DEBUG
-#include <stdexcept>
-#include <string>
-#endif
+#include "../../include/siderialib.h"
 
 using namespace siderialib;
 
@@ -22,7 +18,7 @@ double LFO::tick() {
 double LFO::modSource(double phase) {
 	switch (this->type) {
 	default:
-        double out = (sin(phase * TWOPI) + 1) / 2;
+        double out = (std::sin(phase * TWOPI) + 1) / 2;
 
 		return out;
 	}

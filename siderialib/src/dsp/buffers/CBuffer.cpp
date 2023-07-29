@@ -1,4 +1,5 @@
 #include "../../../include/dsp/buffers/CBuffer.h"
+#include "../../../include/siderialib.h"
 
 using namespace siderialib;
 
