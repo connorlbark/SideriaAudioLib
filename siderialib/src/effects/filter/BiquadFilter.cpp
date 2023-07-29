@@ -62,3 +62,9 @@ void BiquadFilter::setQ(sfloat Q) {
 	this->recalcParams();
 }
 
+void BiquadFilter::setParams(sfloat cutoff, sfloat Q, sfloat dB) {
+    this->cutoffHz = cutoff;
+    this->Q =Q;
+    setGain(dB);
+    this->recalcParams();
+}

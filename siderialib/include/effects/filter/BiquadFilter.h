@@ -25,5 +25,7 @@ namespace siderialib {
 		sfloat getCutoff() { return this->cutoffHz; }
 		void setQ(sfloat Q);
 		sfloat getQ() { return this->Q; }
+
+        void setParams(sfloat cutoff, sfloat Q, sfloat dB);
 	};
 }
