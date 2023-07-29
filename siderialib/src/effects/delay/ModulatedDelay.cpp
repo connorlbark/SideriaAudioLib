@@ -2,22 +2,23 @@
 
 using namespace siderialib;
 
+static int samples = 0;
 void ModulatedDelay::tick(sfloat L, sfloat R) {
-	sfloat modulatedDelaySamps = this->delaySamps + this->mod.tick() * 100.0;
+    double mod = this->mod.tick();
+    double modulatedDelaySamps = this->buf.mapToNonCircularIndex(this->delaySamps) + mod * 30.0;
 
-	int flooredModDelaySamps = (int)modulatedDelaySamps;
+	int flooredModDelaySamps = (int)floor(modulatedDelaySamps);
+    double t = modulatedDelaySamps - flooredModDelaySamps;
 
-	sfloat t = modulatedDelaySamps - flooredModDelaySamps;
-	flooredModDelaySamps = this->buf.mapToNonCircularIndex(flooredModDelaySamps);
+    sfloat delayedL = this->buf.linearInterpolation(0, flooredModDelaySamps, t);
+    sfloat delayedR = this->buf.linearInterpolation(1, flooredModDelaySamps, t);
 
-
-	sfloat delayedL = this->buf.linearInterpolation(0, flooredModDelaySamps, t);
-	sfloat delayedR = this->buf.linearInterpolation(1, flooredModDelaySamps, t);
-	
 	this->buf.writeCircular(L + delayedL * feedback, R + delayedR * feedback);
 
 	_lastOutL = L * (mix - 1.f) + delayedL * mix;
 	_lastOutR = R * (mix - 1.f) + delayedR * mix;
+
+    samples++;
 }
 
 void ModulatedDelay::tick(Buffer& buf) {
@@ -41,7 +42,7 @@ void ModulatedDelay::initialize(float sampleRate, int maxDelaySamps) {
 	_lastOutR = 0.f;
 	this->mod.initialize(sampleRate);
 	this->mod.setDepth(1.0);
-	this->mod.setRateMs(500);
+	this->mod.setRateHz(1.0);
 }
 
 sfloat ModulatedDelay::lastOutL() {

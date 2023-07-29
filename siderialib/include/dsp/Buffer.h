@@ -15,8 +15,8 @@ namespace siderialib {
 		virtual int numChannels() = 0;
 
 		sfloat hermiteInterpolation(int channel, sfloat idx);
-		sfloat hermiteInterpolation(int channel, int index, sfloat t);
-		sfloat linearInterpolation(int channel, int index, sfloat t);
+		sfloat hermiteInterpolation(int channel, int index, double t);
+		double linearInterpolation(int channel, int index, double t);
 		sfloat sincInterpolation(int channel, int index, sfloat t);
 	};
 }

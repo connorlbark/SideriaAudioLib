@@ -1,6 +1,5 @@
 #include "../../include/dsp/LFO.h"
 #include <math.h>
-#include <assert.h>
 #if SLIB_DEBUG
 #include <stdexcept>
 #include <string>
@@ -10,37 +9,36 @@ using namespace siderialib;
 
 void LFO::incrementPhase() {
 	phase += phasePerSample;
-	if (phase > 1.0f) {
-		phase -= 1.0f;
+	if (phase > 1.0) {
+		phase -= 1.0;
 	}
 }
 
-sfloat LFO::tick() {
+double LFO::tick() {
 	incrementPhase();
 	return modSource(phase) * depth;
 }
 
-sfloat LFO::modSource(sfloat phase) {
+double LFO::modSource(double phase) {
 	switch (this->type) {
 	default:
-		return sinf(phase * TWOPI);
+        double out = (sin(phase * TWOPI) + 1) / 2;
+
+		return out;
 	}
 }
 
-void LFO::setRateMs(sfloat ms) {
+void LFO::setRateHz(sfloat hz) {
 	
 #if SLIB_DEBUG
-	assert(ms > 0.0);
-	if (ms <= 0.0) {
-		throw new std::domain_error("Range cannot be less than or equal to zero, instead given: " + std::to_string(ms));
+	if (hz <= 0.0) {
+		throw new std::domain_error("Hz cannot be less than or equal to zero, instead given: " + std::to_string(hz));
 	}
 #endif
 	
-	this->ms = ms;
+	this->hz = hz;
 
-	// sampleRate * ms/1000.0 = num samples per LFO repetition
-	// 1/num samples per LFO repetition = phase (from 0 to 1) per sample
-	phasePerSample = 1.0f / (sampleRate * (ms / 1000.0f));
+	phasePerSample = (long double)hz/(long double)sampleRate;
 }
 
 void LFO::setDepth(sfloat depth) {
@@ -54,8 +52,8 @@ void LFO::setDepth(sfloat depth) {
 	this->depth = depth;
 }
 
-sfloat LFO::getRateMs() {
-	return this->ms;
+sfloat LFO::getRateHz() {
+	return this->hz;
 }
 
 sfloat LFO::getDepth() {

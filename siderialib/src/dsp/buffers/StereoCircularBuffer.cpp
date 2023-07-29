@@ -67,11 +67,10 @@ sfloat StereoCircularBuffer::readCircular(int channel, int numSampsAgo) {
 }
 
 void StereoCircularBuffer::writeCircular(sfloat L, sfloat R) {
-	incrementCircularSampleIdx();
-
 	buf[flattenIndex(0, circularSampleIdx)] = L;
 	buf[flattenIndex(1, circularSampleIdx)] = R;
 
+    incrementCircularSampleIdx();
 }
 
 int StereoCircularBuffer::size() {

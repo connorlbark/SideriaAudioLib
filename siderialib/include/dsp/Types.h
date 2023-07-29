@@ -12,8 +12,8 @@
 #endif
 
 
-#define PI 3.1415926535897932384626f
-#define TWOPI 2.f*PI
+#define PI 3.1415926535897932384626
+#define TWOPI 2*PI
 
 // svec2 offers an easy way to work with stereo audio
 struct svec2 {
