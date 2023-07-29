@@ -48,7 +48,7 @@ namespace siderialib {
             free(this->x);
             free(this->y);
         }
-        
+
 		void tick(Buffer& buf) override final {
 			return this->tick(buf, buf);
 		}
