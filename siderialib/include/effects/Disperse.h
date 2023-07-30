@@ -11,13 +11,24 @@ namespace siderialib {
     // maximum dispersion, as a function of the time param
     constexpr sfloat maxTimeDisperse = 0.2;
     constexpr sfloat maxModRateDisperse = 0.2;
+    constexpr sfloat maxDelayMs = 5000.0;
 
     class Disperse : public StereoEffect {
     private:
+        sfloat sampleRate;
+
         ModulatedDelay voice1;
         sfloat voice1Pan = 0.f;
         ModulatedDelay voice2;
         sfloat voice2Pan = 0.f;
+        ModulatedDelay voice3;
+        sfloat voice3Pan = 0.f;
+        ModulatedDelay voice4;
+        sfloat voice4Pan = 0.f;
+        ModulatedDelay voice5;
+        sfloat voice5Pan = 0.f;
+        ModulatedDelay voice6;
+        sfloat voice6Pan = 0.f;
 
         sfloat dispersion;
         sfloat spread;
@@ -39,7 +50,16 @@ namespace siderialib {
         inline void updateTone();
         inline void updateAllParams();
     public:
-        void initialize(sfloat mix, sfloat dispersion, sfloat spread, sfloat feedback, sfloat tone, DisperseArrangement arrangement);
+        void initialize(sfloat sampleRate,
+                        sfloat mix,
+                        sfloat dispersion,
+                        sfloat spread,
+                        sfloat time,
+                        sfloat feedback,
+                        sfloat tone,
+                        sfloat modRateHz,
+                        sfloat modDepth,
+                        DisperseArrangement arrangement);
 
         void tick(Buffer& buf) override final;
         void tick(Buffer& in, Buffer& out) override final;

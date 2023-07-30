@@ -55,6 +55,7 @@ void ModulatedDelay::initialize(float sampleRate, int maxDelaySamps) {
 	this->sampleRate = sampleRate;
 	_lastOutL = 0.f;
 	_lastOutR = 0.f;
+    this->mix = 1.0f;
 	this->_mod.initialize(sampleRate);
 	this->_mod.setDepth(0.0);
 	this->_mod.setRateHz(1.0);

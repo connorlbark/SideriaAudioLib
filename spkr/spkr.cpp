@@ -5,6 +5,7 @@
 
 #include "../siderialib/include/siderialib.h"
 #include "../siderialib/include/effects/delay/ModulatedDelay.h"
+#include "../siderialib/include/effects/Disperse.h"
 
 void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out);
 
@@ -40,20 +41,18 @@ int main(int argc, char *argv[]) {
 }
 
 
-void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out) {
+void applyDelay(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out) {
 	siderialib::ModulatedDelay delay;
 
 	delay.initialize(44100, 44100 * 10);
 
-    delay.setDelayMs(100.0);
-    delay.setFeedback(0.5);
+    delay.setDelayMs(2000.0);
+    delay.setFeedback(0.6);
 
     delay.enableLpf(true);
-    delay.setLpfParams(5000.0, 1.0, 0.0);
+    delay.setLpfParams(1000.0, 1.0, 0.0);
 
-	delay.setDelayMs(20.0);
-	delay.setFeedback(0.0);
-	delay.setMix(0.8);
+    delay.setMix(.8);
 
     delay.mod().setRateHz(2.0);
     delay.mod().setDepth(1.0);
@@ -70,3 +69,41 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
 	}
 }
 
+
+void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out) {
+    siderialib::Disperse disperse;
+
+    float sampleRate = 44100;
+    float mix = 1.0;
+    float timeMs = 800.0;
+    float dispersion = 0.4;
+    float spread = 0.0;
+    float feedback = 0.6;
+    float tone = 0.5;
+    float modRateHz = 2.0;
+    float modDepth = 0.5;
+
+    siderialib::DisperseArrangement arrangement = siderialib::FULL_PARALLEL;
+    disperse.initialize(
+            sampleRate,
+            mix,
+            dispersion,
+            spread,
+            timeMs,
+            feedback,
+            tone,
+            modRateHz,
+            modDepth,
+            arrangement);
+
+    for (int i = 0; i < in.at(0).size(); i++) {
+
+        siderialib::sfloat L = in.at(0).at(i);
+
+        disperse.tick(L, L);
+
+        out.at(0).at(i) = disperse.lastOutL();
+        out.at(1).at(i) = disperse.lastOutR();
+
+    }
+}
