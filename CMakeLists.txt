@@ -14,6 +14,9 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 endif()
 
 project ("SideriaAudioLib")
+set (CMAKE_CXX_STANDARD 14)
+
+option(CompileDaisyProjects "CompileDaisyProjects" OFF)
 
 # Include sub-projects.
 add_subdirectory ("siderialib")

@@ -13,7 +13,7 @@ namespace siderialib {
     constexpr sfloat maxModRateDisperse = 0.2;
     constexpr sfloat maxDelayMs = 5000.0;
 
-    class Disperse : public StereoEffect {
+    class Disperse {
     private:
         sfloat sampleRate;
 
@@ -61,13 +61,12 @@ namespace siderialib {
                         sfloat modDepth,
                         DisperseArrangement arrangement);
 
-        void tick(Buffer& buf) override final;
-        void tick(Buffer& in, Buffer& out) override final;
+        virtual ~Disperse() {}
 
-        void tick(sfloat L, sfloat R) override final;
+        void tick(sfloat L, sfloat R);
 
-        sfloat lastOutL() override final;
-        sfloat lastOutR() override final;
+        sfloat lastOutL();
+        sfloat lastOutR();
 
         void setTimeMs(sfloat timeMs);
         void setSpread(sfloat spread);

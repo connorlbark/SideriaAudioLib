@@ -1,3 +1,9 @@
 [submodule "spkr/thirdpartylibs/AudioFile"]
 	path = spkr/thirdpartylibs/AudioFile
 	url = https://github.com/adamstark/AudioFile
+[submodule "external/libDaisy"]
+	path = external/libDaisy
+	url = https://github.com/electro-smith/libDaisy.git
+[submodule "external/DaisySP"]
+	path = external/DaisySP
+	url = https://github.com/electro-smith/DaisySP.git

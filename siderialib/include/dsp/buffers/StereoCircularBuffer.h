@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../Buffer.h"
+#include "../../siderialib.h"
 
 namespace siderialib {
 	// circular buffer with two channels for simplified
 	// operation in the most common case, stereo
-	class StereoCircularBuffer : public Buffer {
+	class StereoCircularBuffer {
 	private:
 
 		sfloat* buf;
@@ -17,20 +17,22 @@ namespace siderialib {
 
 		void incrementCircularSampleIdx();
 	public:
-        ~StereoCircularBuffer();
+        ~StereoCircularBuffer() {
+            free(this->buf);
+        }
 
 		int mapToNonCircularIndex(int sample);
 
 		// initializes the buffer with two channels and the specified number of samples
 		void initialize(int numSamples);
 
-		sfloat read(int channel, int sample) override final;
+		sfloat read(int channel, int sample);
 
-		void write(sfloat val, int channel, int sample) override final;
+		void write(sfloat val, int channel, int sample);
 
-		int size() override final;
+		int size();
 
-		int numChannels() override final;
+		int numChannels();
 
 		// fills out "in" with the most recently written samples
 		sfloat readCircular(int channel);
@@ -40,6 +42,9 @@ namespace siderialib {
 
 		// read into the past starting from the latest write to the buffer
 		sfloat readCircular(int channel, int numSampsAgo);
-	};
+
+        sfloat hermiteInterpolation(int channel, int index, double t);
+        sfloat linearInterpolation(int channel, int index, double t);
+    };
 }
 

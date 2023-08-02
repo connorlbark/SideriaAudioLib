@@ -181,17 +181,3 @@ void Disperse::initialize(sfloat sampleRate,
     this->updateAllParams();
 
 }
-
-void Disperse::tick(Buffer& buf) {
-    return this->tick(buf, buf);
-}
-
-void Disperse::tick(Buffer& in, Buffer& out) {
-
-    for (int i = 0; i < in.size(); i++) {
-        this->tick(in.read(0, i), in.read(1, i));
-
-        out.write(_lastOutL, 0, i);
-        out.write(_lastOutR, 1, i);
-    }
-}

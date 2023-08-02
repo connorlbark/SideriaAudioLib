@@ -36,20 +36,6 @@ void ModulatedDelay::writeToBuffer(sfloat L, sfloat R) {
     this->buf.writeCircular(L, R);
 }
 
-void ModulatedDelay::tick(Buffer& buf) {
-	return this->tick(buf, buf);
-}
-
-void ModulatedDelay::tick(Buffer& in, Buffer& out) {
-
-	for (int i = 0; i < in.size(); i++) {
-		this->tick(in.read(0, i), in.read(1, i));
-
-		out.write(_lastOutL, 0, i);
-		out.write(_lastOutR, 1, i);
-	}
-}
-
 void ModulatedDelay::initialize(float sampleRate, int maxDelaySamps) {
 	this->buf.initialize(maxDelaySamps);
 	this->sampleRate = sampleRate;

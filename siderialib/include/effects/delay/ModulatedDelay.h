@@ -1,12 +1,11 @@
 #pragma once
 
-#include "../../StereoEffect.h"
 #include "../../dsp/buffers/StereoCircularBuffer.h"
 #include "../../dsp/LFO.h"
 #include "../../effects/filter/BiquadFilter.h"
 
 namespace siderialib {
-	class ModulatedDelay : public StereoEffect {
+	class ModulatedDelay {
 	private:
 		StereoCircularBuffer buf;
 
@@ -33,14 +32,11 @@ namespace siderialib {
 	public:
 
 		void initialize(sfloat sampleRate, int maxDelaySamps);
+        
+		void tick(sfloat L, sfloat R);
 
-		void tick(Buffer& buf) override final;
-		void tick(Buffer& in, Buffer& out) override final;
-
-		void tick(sfloat L, sfloat R) override final;
-
-		sfloat lastOutL() override final;
-		sfloat lastOutR() override final;
+		sfloat lastOutL();
+		sfloat lastOutR();
 
 		void setMix(sfloat mix) { this->mix = mix; };
 		sfloat getMix() { return this->mix; }
