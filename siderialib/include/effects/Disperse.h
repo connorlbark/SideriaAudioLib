@@ -50,6 +50,23 @@ namespace siderialib {
         inline void updateTone();
         inline void updateAllParams();
     public:
+        void initialize(sfloat *voice1Buf,
+                        sfloat *voice2Buf,
+                        sfloat *voice3Buf,
+                        sfloat *voice4Buf,
+                        sfloat *voice5Buf,
+                        sfloat *voice6Buf,
+                        int bufLength,
+                        sfloat sampleRate,
+                        sfloat mix,
+                        sfloat dispersion,
+                        sfloat spread,
+                        sfloat time,
+                        sfloat feedback,
+                        sfloat tone,
+                        sfloat modRateHz,
+                        sfloat modDepth,
+                        DisperseArrangement arrangement);
         void initialize(sfloat sampleRate,
                         sfloat mix,
                         sfloat dispersion,

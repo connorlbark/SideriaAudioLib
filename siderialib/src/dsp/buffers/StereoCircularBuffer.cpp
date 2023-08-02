@@ -17,15 +17,19 @@ void StereoCircularBuffer::incrementCircularSampleIdx() {
 
 void StereoCircularBuffer::initialize(int numSamples) {
 	buf = (sfloat*)malloc(sizeof(sfloat) * 2 * numSamples);
-	circularSampleIdx = 0;
-	this->numSamples = numSamples;
+	this->initialize(buf, numSamples * 2);
+}
 
-	if (buf) {
-		for (int i = 0; i < numSamples * 2; i++) {
-			buf[i] = 0.f;
-		}
-	}
+void StereoCircularBuffer::initialize(sfloat *buf, int length) {
+    buf = buf;
+    circularSampleIdx = 0;
+    this->numSamples = length / 2;
 
+    if (buf) {
+        for (int i = 0; i < numSamples * 2; i++) {
+            buf[i] = 0.f;
+        }
+    }
 }
 
 sfloat StereoCircularBuffer::read(int channel, int sample) {
@@ -40,16 +44,6 @@ sfloat StereoCircularBuffer::read(int channel, int sample) {
 }
 
 void StereoCircularBuffer::write(sfloat val, int channel, int sample) {
-
-#if SLIB_DEBUG
-	if (sample >= numSamples || sample < 0) {
-		throw new std::domain_error("Samples should range from 0 to " + std::to_string(numSamples) + ", instead given: " + std::to_string(sample));
-	}
-
-	if (channel >= numSamples || channel < 0) {
-		throw new std::domain_error("Channels should range from 0 to " + std::to_string(numChannels()) + ", instead given: " + std::to_string(channel));
-	}
-#endif
 
 	buf[flattenIndex(channel, sample)] = val;
 }

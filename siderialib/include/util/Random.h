@@ -9,6 +9,7 @@ worldwide. This software is distributed without any warranty.
 See <http://creativecommons.org/publicdomain/zero/1.0/>. */
 
 #include <cstdint>
+#include <cstring>
 
 /* This is xoshiro256+ 1.0, our best and fastest generator for floating-point
    numbers. We suggest to use its upper bits for floating-point
@@ -26,45 +27,46 @@ See <http://creativecommons.org/publicdomain/zero/1.0/>. */
    output to fill s. */
 
 
-namespace siderialib::random {
+namespace siderialib {
+    namespace random {
+        static inline uint64_t rotl(const uint64_t x, int k) {
+            return (x << k) | (x >> (64 - k));
+        }
 
-    static inline uint64_t rotl(const uint64_t x, int k) {
-        return (x << k) | (x >> (64 - k));
-    }
 
+        static uint64_t s[4];
 
-    static uint64_t s[4];
+        uint64_t next(void) {
+            const uint64_t result = s[0] + s[3];
 
-    uint64_t next(void) {
-        const uint64_t result = s[0] + s[3];
+            const uint64_t t = s[1] << 17;
 
-        const uint64_t t = s[1] << 17;
+            s[2] ^= s[0];
+            s[3] ^= s[1];
+            s[1] ^= s[2];
+            s[0] ^= s[3];
 
-        s[2] ^= s[0];
-        s[3] ^= s[1];
-        s[1] ^= s[2];
-        s[0] ^= s[3];
+            s[2] ^= t;
 
-        s[2] ^= t;
+            s[3] = rotl(s[3], 45);
 
-        s[3] = rotl(s[3], 45);
+            return result;
+        }
 
-        return result;
-    }
+        // from https://stackoverflow.com/questions/52147419/how-to-convert-random-uint64-t-to-random-double-in-range-0-1-using-bit-wise-o
+        double to_01(uint64_t i) {
+            constexpr uint64_t mask1 = 0x3FF0000000000000ULL;
+            constexpr uint64_t mask2 = 0x3FFFFFFFFFFFFFFFULL;
+            const uint64_t to_12 = (i | mask1) & mask2;
+            double d;
+            memcpy(&d, &to_12,
+            8);
+            return d - 1;
+        }
 
-    // from https://stackoverflow.com/questions/52147419/how-to-convert-random-uint64-t-to-random-double-in-range-0-1-using-bit-wise-o
-    double to_01(uint64_t i)
-    {
-        constexpr uint64_t mask1 = 0x3FF0000000000000ULL;
-        constexpr uint64_t mask2 = 0x3FFFFFFFFFFFFFFFULL;
-        const uint64_t to_12 = (i | mask1) & mask2;
-        double d;
-        memcpy(&d, &to_12, 8);
-        return d - 1;
-    }
-
-    float nextUniform() {
-        return (float)to_01(next());
+        float nextUniform() {
+            return (float) to_01(next());
+        }
     }
 }
 

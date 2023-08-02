@@ -54,6 +54,25 @@ void ModulatedDelay::initialize(float sampleRate, int maxDelaySamps) {
     this->_hpfR.initialize(sampleRate, BiquadType::HPF, 0.0f, 1.0);
 }
 
+void ModulatedDelay::initialize(float sampleRate, sfloat *buf, int bufLength) {
+    this->buf.initialize(buf, bufLength);
+    this->sampleRate = sampleRate;
+    _lastOutL = 0.f;
+    _lastOutR = 0.f;
+    this->mix = 1.0f;
+    this->_mod.initialize(sampleRate);
+    this->_mod.setDepth(0.0);
+    this->_mod.setRateHz(1.0);
+
+    this->_enableHpf = false;
+    this->_enableLpf = false;
+    this->_lpfL.initialize(sampleRate, BiquadType::LPF, sampleRate/2.f, 1.0);
+    this->_lpfR.initialize(sampleRate, BiquadType::LPF, sampleRate/2.f, 1.0);
+    this->_hpfL.initialize(sampleRate, BiquadType::HPF, 0.0f, 1.0);
+    this->_hpfR.initialize(sampleRate, BiquadType::HPF, 0.0f, 1.0);
+
+}
+
 sfloat ModulatedDelay::lastOutL() {
 	return _lastOutL;
 }

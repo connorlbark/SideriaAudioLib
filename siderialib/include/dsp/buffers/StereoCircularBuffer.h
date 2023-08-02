@@ -24,7 +24,9 @@ namespace siderialib {
 		int mapToNonCircularIndex(int sample);
 
 		// initializes the buffer with two channels and the specified number of samples
-		void initialize(int numSamples);
+        void initialize(int numSamples);
+        // takes in and takes ownership of *buf; when the destructor of this class is called, it will free this buffer.
+        void initialize(sfloat *buf, int len);
 
 		sfloat read(int channel, int sample);
 

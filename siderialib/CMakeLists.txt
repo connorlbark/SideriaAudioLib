@@ -9,11 +9,11 @@ add_library (siderialib STATIC "include/siderialib.h"  "include/dsp/Types.h" "in
         include/util/Random.h)
 
 target_include_directories(siderialib PUBLIC include)
-target_compile_features(siderialib PUBLIC cxx_std_20)
+target_compile_features(siderialib PUBLIC cxx_std_14)
 
 add_compile_definitions(SLIB_DEBUG=1)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET siderialib PROPERTY CXX_STANDARD 20)
+  set_property(TARGET siderialib PROPERTY CXX_STANDARD 14)
 endif()
 

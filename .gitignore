@@ -2,3 +2,6 @@
 out/
 debug/
 arm-debug/
+
+.DS_Store
+**/.DS_Store

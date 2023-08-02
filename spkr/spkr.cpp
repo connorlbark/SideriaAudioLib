@@ -2,6 +2,7 @@
 
 #include "AudioFile.h"
 #include <vector>
+#include <chrono>
 
 #include "../siderialib/include/siderialib.h"
 #include "../siderialib/include/effects/delay/ModulatedDelay.h"
@@ -28,14 +29,21 @@ int main(int argc, char *argv[]) {
 
 
 
+    std::chrono::time_point start = std::chrono::high_resolution_clock::now();
 	try {
 		apply(in, out);
 	}
 	catch (std::exception e) {
 		printf("Exception: %s\n", e.what());
 	}
+    std::chrono::time_point end = std::chrono::high_resolution_clock::now();
 
-	file.setAudioBuffer(out);
+    auto duration = duration_cast<std::chrono::microseconds>(end - start);
+
+    std::cout << "Time to execute: " << duration.count() / 1000000.f << " seconds." << std::endl;
+    std::cout << "File length: " << file.getLengthInSeconds() << " seconds." << std:: endl;
+
+    file.setAudioBuffer(out);
 	file.save(outfile);
 	return 0;
 }

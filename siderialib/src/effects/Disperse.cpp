@@ -181,3 +181,41 @@ void Disperse::initialize(sfloat sampleRate,
     this->updateAllParams();
 
 }
+
+void Disperse::initialize(sfloat *voice1Buf,
+                          sfloat *voice2Buf,
+                          sfloat *voice3Buf,
+                          sfloat *voice4Buf,
+                          sfloat *voice5Buf,
+                          sfloat *voice6Buf,
+                          int bufLength,
+                          sfloat sampleRate,
+                          sfloat mix,
+                          sfloat dispersion,
+                          sfloat spread,
+                          sfloat timeMs,
+                          sfloat feedback,
+                          sfloat tone,
+                          sfloat modRateHz,
+                          sfloat modDepth,
+                          DisperseArrangement arrangement) {
+    this->voice1.initialize(sampleRate, voice1Buf, bufLength);
+    this->voice2.initialize(sampleRate, voice2Buf, bufLength);
+    this->voice3.initialize(sampleRate, voice3Buf, bufLength);
+    this->voice4.initialize(sampleRate, voice4Buf, bufLength);
+    this->voice5.initialize(sampleRate, voice5Buf, bufLength);
+    this->voice6.initialize(sampleRate, voice6Buf, bufLength);
+
+    this->timeMs = timeMs;
+    this->mix = mix;
+    this->dispersion = dispersion;
+    this->spread = spread;
+    this->feedback = feedback;
+    this->tone = tone;
+    this->modRateHz = modRateHz;
+    this->modDepth = modDepth;
+
+    this->arrangement = arrangement;
+
+    this->updateAllParams();
+}

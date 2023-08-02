@@ -25,26 +25,12 @@ double LFO::modSource(double phase) {
 }
 
 void LFO::setRateHz(sfloat hz) {
-	
-#if SLIB_DEBUG
-	if (hz <= 0.0) {
-		throw new std::domain_error("Hz cannot be less than or equal to zero, instead given: " + std::to_string(hz));
-	}
-#endif
-	
 	this->hz = hz;
 
 	phasePerSample = (long double)hz/(long double)sampleRate;
 }
 
 void LFO::setDepth(sfloat depth) {
-
-#if SLIB_DEBUG
-	if (depth < 0.0 || depth > 1.0) {
-		throw new std::domain_error("Depth ranges from 0.0 to 1.0, instead given: " + std::to_string(depth));
-	}
-#endif
-
 	this->depth = depth;
 }
 

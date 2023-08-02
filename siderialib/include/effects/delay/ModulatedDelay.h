@@ -31,8 +31,9 @@ namespace siderialib {
         void writeToBuffer(sfloat L, sfloat R);
 	public:
 
-		void initialize(sfloat sampleRate, int maxDelaySamps);
-        
+        void initialize(sfloat sampleRate, int maxDelaySamps);
+        void initialize(sfloat sampleRate, sfloat *buf, int maxDelaySamps);
+
 		void tick(sfloat L, sfloat R);
 
 		sfloat lastOutL();
