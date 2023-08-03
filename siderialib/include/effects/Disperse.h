@@ -49,6 +49,8 @@ namespace siderialib {
         inline void updateFeedback();
         inline void updateTone();
         inline void updateAllParams();
+
+        inline void updateRandomValues();
     public:
         void initialize(sfloat *voice1Buf,
                         sfloat *voice2Buf,
@@ -86,11 +88,27 @@ namespace siderialib {
         sfloat lastOutR();
 
         void setTimeMs(sfloat timeMs);
+        inline sfloat getTimeMs() { return timeMs; };
         void setSpread(sfloat spread);
+        inline sfloat getSpread() { return spread; };
         void setFeedback(sfloat feedback);
+        inline sfloat getFeedback() { return feedback; };
         void setDispersion(sfloat dispersion);
+        inline sfloat getDispersion() { return dispersion; };
         void setTone(sfloat tone);
+        inline sfloat getTone() { return tone; };
         void setArrangement(DisperseArrangement arrangement);
+        inline DisperseArrangement getArrangement() { return arrangement; };
+
+        inline void setAllParams(sfloat mix,
+                          sfloat dispersion,
+                          sfloat spread,
+                          sfloat time,
+                          sfloat feedback,
+                          sfloat tone,
+                          sfloat modRateHz,
+                          sfloat modDepth,
+                          DisperseArrangement arrangement);
 
     };
 }

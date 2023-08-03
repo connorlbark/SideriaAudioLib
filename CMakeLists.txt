@@ -12,6 +12,6 @@ option(ARM "ARM" OFF)
 
 # Include sub-projects.
 add_subdirectory ("siderialib")
-if(NOT ${ARM} MATCHES OFF)
+if(${ARM} MATCHES OFF)
     add_subdirectory ("spkr")
 endif()
