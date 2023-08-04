@@ -8,51 +8,11 @@
 #include "../siderialib/include/effects/delay/ModulatedDelay.h"
 #include "../siderialib/include/effects/Disperse.h"
 
-void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out);
-
-int main(int argc, char *argv[]) {
-
-	if (argc != 3) {
-		std::cout << "Use:\n./spkr <input/file> <output/file>" << std::endl;
-		return 0;
-	}
-
-	char* filename = argv[1];
-	char* outfile = argv[2];
-
-	AudioFile<double> file;
-	file.load(filename);
-
-	std::vector<std::vector<double>> in = file.samples;
-
-	std::vector<std::vector<double>> out = std::vector < std::vector<double >>(2, std::vector<double > (in.at(0).size()));
-
-
-
-    std::chrono::time_point start = std::chrono::high_resolution_clock::now();
-	try {
-		apply(in, out);
-	}
-	catch (std::exception e) {
-		printf("Exception: %s\n", e.what());
-	}
-    std::chrono::time_point end = std::chrono::high_resolution_clock::now();
-
-    auto duration = duration_cast<std::chrono::microseconds>(end - start);
-
-    std::cout << "Time to execute: " << duration.count() / 1000000.f << " seconds." << std::endl;
-    std::cout << "File length: " << file.getLengthInSeconds() << " seconds." << std:: endl;
-
-    file.setAudioBuffer(out);
-	file.save(outfile);
-	return 0;
-}
-
 
 void applyDelay(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out) {
-	siderialib::ModulatedDelay delay;
+    siderialib::ModulatedDelay delay;
 
-	delay.initialize(44100, 44100 * 10);
+    delay.initialize(44100, 44100 * 10);
 
     delay.setDelayMs(2000.0);
     delay.setFeedback(0.6);
@@ -62,28 +22,31 @@ void applyDelay(std::vector<std::vector<double>> in, std::vector<std::vector<dou
 
     delay.setMix(.8);
 
-    delay.mod().setRateHz(2.0);
-    delay.mod().setDepth(1.0);
+    delay.mod1().setRateHz(2.0);
+    delay.mod1().setDepth(00.0);
+    delay.mod2().setRateHz(1.0);
+    delay.mod2().setDepth(44100);
+    delay.mod2().setType(siderialib::RANDOM);
 
-	for (int i = 0; i < in.at(0).size(); i++) {
+    for (int i = 0; i < in.at(0).size(); i++) {
 
         siderialib::sfloat L = in.at(0).at(i);
 
         delay.tick(L, L);
 
-		out.at(0).at(i) = delay.lastOutL();
-		out.at(1).at(i) = delay.lastOutR();
+        out.at(0).at(i) = delay.lastOutL();
+        out.at(1).at(i) = delay.lastOutR();
 
-	}
+    }
 }
 
 
-void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out) {
+void applyDisperse(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out) {
     siderialib::Disperse disperse;
 
     float sampleRate = 44100;
     float mix = 1.0;
-    float timeMs = 800.0;
+    float timeMs = 1000.0;
     float dispersion = 0.4;
     float spread = 0.0;
     float feedback = 0.6;
@@ -115,3 +78,42 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
 
     }
 }
+
+int main(int argc, char *argv[]) {
+
+	if (argc != 3) {
+		std::cout << "Use:\n./spkr <input/file> <output/file>" << std::endl;
+		return 0;
+	}
+
+	char* filename = argv[1];
+	char* outfile = argv[2];
+
+	AudioFile<double> file;
+	file.load(filename);
+
+	std::vector<std::vector<double>> in = file.samples;
+
+	std::vector<std::vector<double>> out = std::vector < std::vector<double >>(2, std::vector<double > (in.at(0).size()));
+
+
+
+    std::chrono::time_point start = std::chrono::high_resolution_clock::now();
+	try {
+		applyDelay(in, out);
+	}
+	catch (std::exception e) {
+		printf("Exception: %s\n", e.what());
+	}
+    std::chrono::time_point end = std::chrono::high_resolution_clock::now();
+
+    auto duration = duration_cast<std::chrono::microseconds>(end - start);
+
+    std::cout << "Time to execute: " << duration.count() / 1000000.f << " seconds." << std::endl;
+    std::cout << "File length: " << file.getLengthInSeconds() << " seconds." << std:: endl;
+
+    file.setAudioBuffer(out);
+	file.save(outfile);
+	return 0;
+}
+

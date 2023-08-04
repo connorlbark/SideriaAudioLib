@@ -48,9 +48,20 @@ namespace siderialib {
         inline void updateDispersion();
         inline void updateFeedback();
         inline void updateTone();
+        inline void updateTime();
         inline void updateAllParams();
 
-        inline void updateRandomValues();
+        inline void initializeRandomState();
+
+        inline void initializeParams(sfloat mix,
+                        sfloat dispersion,
+                        sfloat spread,
+                        sfloat time,
+                        sfloat feedback,
+                        sfloat tone,
+                        sfloat modRateHz,
+                        sfloat modDepth,
+                        DisperseArrangement arrangement);
     public:
         void initialize(sfloat *voice1Buf,
                         sfloat *voice2Buf,

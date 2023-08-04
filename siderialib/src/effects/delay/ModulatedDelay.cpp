@@ -5,8 +5,13 @@ using namespace siderialib;
 
 static int samples = 0;
 void ModulatedDelay::tick(sfloat L, sfloat R) {
-    double mod = this->_mod.tick();
-    double modulatedDelaySamps = this->buf.mapToNonCircularIndex(this->delaySamps) + mod * 400.0;
+    double mod = this->_mod1.tick() + this->_mod2.tick();
+    printf("%f\n", mod);
+    double modulatedDelaySamps = this->buf.mapToNonCircularIndex(this->delaySamps) + mod;
+
+    // make sure it is still w/n range ( may create artifacts, so make sure this doesn't happen outside the delay )
+    modulatedDelaySamps = (modulatedDelaySamps < 0.f ? 0.f : modulatedDelaySamps);
+    modulatedDelaySamps = (modulatedDelaySamps > this->buf.size() ? this->buf.size() : modulatedDelaySamps);
 
 	int flooredModDelaySamps = (int)std::floor(modulatedDelaySamps);
     double t = modulatedDelaySamps - flooredModDelaySamps;
@@ -42,9 +47,12 @@ void ModulatedDelay::initialize(float sampleRate, int maxDelaySamps) {
 	_lastOutL = 0.f;
 	_lastOutR = 0.f;
     this->mix = 1.0f;
-	this->_mod.initialize(sampleRate);
-	this->_mod.setDepth(0.0);
-	this->_mod.setRateHz(1.0);
+	this->_mod1.initialize(sampleRate);
+	this->_mod1.setDepth(0.0);
+	this->_mod1.setRateHz(1.0);
+    this->_mod2.initialize(sampleRate);
+    this->_mod2.setDepth(0.0);
+    this->_mod2.setRateHz(1.0);
 
     this->_enableHpf = false;
     this->_enableLpf = false;
@@ -60,9 +68,12 @@ void ModulatedDelay::initialize(float sampleRate, sfloat *buf, int bufLength) {
     _lastOutL = 0.f;
     _lastOutR = 0.f;
     this->mix = 1.0f;
-    this->_mod.initialize(sampleRate);
-    this->_mod.setDepth(0.0);
-    this->_mod.setRateHz(1.0);
+    this->_mod1.initialize(sampleRate);
+    this->_mod1.setDepth(0.0);
+    this->_mod1.setRateHz(1.0);
+    this->_mod2.initialize(sampleRate);
+    this->_mod2.setDepth(0.0);
+    this->_mod2.setRateHz(1.0);
 
     this->_enableHpf = false;
     this->_enableLpf = false;

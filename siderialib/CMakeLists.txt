@@ -6,7 +6,8 @@
 add_library (siderialib STATIC "include/siderialib.h"  "include/dsp/Types.h" "include/dsp/buffers/StereoCircularBuffer.h" "src/dsp/buffers/StereoCircularBuffer.cpp" "include/effects/delay/ModulatedDelay.h" "include/dsp/LFO.h" "src/dsp/LFO.cpp" "src/effects/delay/ModulatedDelay.cpp" "include/dsp/Math.h" "src/dsp/Math.cpp" "include/effects/filter/BiquadFilter.h" "src/effects/filter/BiquadFilter.cpp"
         include/effects/Disperse.h
         src/effects/Disperse.cpp
-        include/util/Random.h)
+        include/util/Random.h
+        include/effects/disperse/DisperseVoice.h)
 
 target_include_directories(siderialib PUBLIC include)
 target_compile_features(siderialib PUBLIC cxx_std_14)

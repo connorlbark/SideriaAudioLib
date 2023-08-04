@@ -10,11 +10,12 @@ namespace siderialib {
 		StereoCircularBuffer buf;
 
 		sfloat mix = 0.5;
-		int delaySamps = 1;
+		sfloat delaySamps = 1;
 		sfloat sampleRate;
 		sfloat feedback = 0.0;
 
-		LFO _mod;
+        LFO _mod1;
+        LFO _mod2;
 
         // placed before writing to circular buffer, so in essence, filters delayed sounds many times
         BiquadFilter _lpfL;
@@ -42,13 +43,14 @@ namespace siderialib {
 		void setMix(sfloat mix) { this->mix = mix; };
 		sfloat getMix() { return this->mix; }
 
-		void setDelayMs(sfloat ms) { this->delaySamps = (int)((ms / 1000.0f) * sampleRate); }
+		void setDelayMs(sfloat ms) { this->delaySamps = ((ms / 1000.0f) * sampleRate); }
 		sfloat getDelayMs() { return (this->delaySamps / sampleRate) * 1000.0f; };
 
 		void setFeedback(sfloat feedback) { this->feedback = feedback; }
 		sfloat getFeedback() { return feedback; }
 
-        inline LFO &mod() { return _mod; };
+        inline LFO &mod1() { return _mod1; };
+        inline LFO &mod2() { return _mod2; }
 
         void setLpfParams(sfloat cutoff, sfloat Q, sfloat dBGain);
         void setHpfParams(sfloat cutoff, sfloat Q, sfloat dBGain);
