@@ -12,11 +12,16 @@ void LFO::incrementPhase() {
 
 double LFO::tick() {
 	incrementPhase();
-	return modSource(phase) * depth;
+	return value();
 }
 
 double LFO::modSource(double phase) {
 	switch (this->type) {
+    case TRIANGLE:
+        if (phase < 0.5) {
+            return phase * 2;
+        }
+        return 2. - phase * 2;
 	default:
         double out = (std::sin(phase * TWOPI) + 1) / 2;
 
@@ -45,3 +50,4 @@ sfloat LFO::getDepth() {
 void LFO::setType(LFOType type) {
 	this->type = type;
 }
+

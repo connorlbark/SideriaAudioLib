@@ -1,6 +1,6 @@
 #include "../../include/effects/Disperse.h"
 #include "../../include/util/Random.h"
-
+#include "../../include/dsp/Math.h"
 
 using namespace siderialib;
 
@@ -40,8 +40,8 @@ void Disperse::tick(siderialib::sfloat L, siderialib::sfloat R) {
         _lastOutL += voice6.lastOutL();
         _lastOutR += voice6.lastOutR();
 
-//        _lastOutL /= 2.f;
-//        _lastOutR /= 2.f;
+        _lastOutL /= 6.f;
+        _lastOutR /= 6.f;
     }
 
     // at this point, _lastOutL/R are purely wet, so we need to mix in the dry
@@ -51,7 +51,7 @@ void Disperse::tick(siderialib::sfloat L, siderialib::sfloat R) {
 
 void Disperse::setTimeMs(sfloat timeMs) {
     this->timeMs = timeMs;
-    updateDispersion();
+    updateDispersionAndPosition();
 }
 
 void Disperse::setSpread(sfloat spread) {
@@ -66,7 +66,7 @@ void Disperse::setFeedback(sfloat feedback) {
 
 void Disperse::setDispersion(sfloat dispersion) {
     this->dispersion = dispersion;
-    updateDispersion();
+    updateDispersionAndPosition();
 }
 
 void Disperse::setTone(sfloat tone) {
@@ -86,96 +86,54 @@ sfloat Disperse::lastOutL() {
     return _lastOutL;
 }
 
-static sfloat voice1TimeDisperseMs = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-static sfloat voice2TimeDisperseMs = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-static sfloat voice3TimeDisperseMs = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-static sfloat voice4TimeDisperseMs = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-static sfloat voice5TimeDisperseMs = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-static sfloat voice6TimeDisperseMs = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-static sfloat voice1ModRateDisperse = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-static sfloat voice2ModRateDisperse = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-static sfloat voice3ModRateDisperse = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-static sfloat voice4ModRateDisperse = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-static sfloat voice5ModRateDisperse = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-static sfloat voice6ModRateDisperse = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
+inline sfloat calcVoicePosition(sfloat harmonic, sfloat position, sfloat depth) {
+    return triangleWave(fmod(harmonic * position, 1.f)) * depth;
+}
 
+void Disperse::updateDispersionAndPosition() {
 
-inline void Disperse::updateRandomValues() {
-    random::s[0] = 123452346;
-    random::s[1] = 567892346;
-    random::s[2] = 2345672456;
-    random::s[3] = 4567890212;
-    
-    voice1TimeDisperseMs = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-    voice2TimeDisperseMs = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-    voice3TimeDisperseMs = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-    voice4TimeDisperseMs = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-    voice5TimeDisperseMs = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-    voice6TimeDisperseMs = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-    voice1ModRateDisperse = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-    voice2ModRateDisperse = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-    voice3ModRateDisperse = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-    voice4ModRateDisperse = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-    voice5ModRateDisperse = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
-    voice6ModRateDisperse = (random::nextUniform() * 2 - 1) * maxTimeDisperse;
+    sfloat depth = this->timeMs * this->dispersion / 2.f;
+
+    printf("%f\n", this->timeMs);
+    printf("%f\n", this->timeMs + calcVoicePosition(2.f, this->position, depth));
+    printf("%f\n", this->timeMs + calcVoicePosition(4.f, this->position, depth));
+    printf("%f\n", this->timeMs + calcVoicePosition(6.f, this->position, depth));
+    printf("%f\n", this->timeMs + calcVoicePosition(8.f, this->position, depth));
+    printf("%f\n", this->timeMs + calcVoicePosition(10.f, this->position, depth));
+    voice1.setDelayMs(this->timeMs);
+    voice2.setDelayMs(this->timeMs + calcVoicePosition(2.f, this->position, depth));
+    voice3.setDelayMs(this->timeMs + calcVoicePosition(4.f, this->position, depth));
+    voice4.setDelayMs(this->timeMs + calcVoicePosition(6.f, this->position, depth));
+    voice5.setDelayMs(this->timeMs + calcVoicePosition(8.f, this->position, depth));
+    voice6.setDelayMs(this->timeMs + calcVoicePosition(10.f, this->position, depth));
 
 }
 
-inline void Disperse::updateDispersion() {
-
-    sfloat scalar = this->timeMs * this->dispersion;
-
-    voice1.setDelayMs(this->timeMs + voice1TimeDisperseMs * scalar);
-    voice2.setDelayMs(this->timeMs + voice2TimeDisperseMs * scalar);
-    voice3.setDelayMs(this->timeMs + voice3TimeDisperseMs * scalar);
-    voice4.setDelayMs(this->timeMs + voice4TimeDisperseMs * scalar);
-    voice5.setDelayMs(this->timeMs + voice5TimeDisperseMs * scalar);
-    voice6.setDelayMs(this->timeMs + voice6TimeDisperseMs * scalar);
-
-    voice1.mod().setRateHz(this->modRateHz + voice1ModRateDisperse);
-    voice2.mod().setRateHz(this->modRateHz + voice2ModRateDisperse);
-    voice3.mod().setRateHz(this->modRateHz + voice3ModRateDisperse);
-    voice4.mod().setRateHz(this->modRateHz + voice4ModRateDisperse);
-    voice5.mod().setRateHz(this->modRateHz + voice5ModRateDisperse);
-    voice6.mod().setRateHz(this->modRateHz + voice6ModRateDisperse);
-}
-
-inline void Disperse::updateFeedback() {
+void Disperse::updateFeedback() {
     voice1.setFeedback(feedback);
     voice2.setFeedback(feedback);
+    voice3.setFeedback(feedback);
+    voice4.setFeedback(feedback);
+    voice5.setFeedback(feedback);
+    voice6.setFeedback(feedback);
 }
 
-inline void Disperse::updateTone() {
+void Disperse::updateTone() {
     // todo
 }
 
-inline void Disperse::updateSpread() {
-    random::s[0] = 4684568345;
-    random::s[1] = 23462346;
-    random::s[2] = 293486720394;
-    random::s[3] = 7345734562;
-
-    voice1Pan = (random::nextUniform() * 2 - 1) * this->spread;
-    voice2Pan = (random::nextUniform() * 2 - 1) * this->spread;
+void Disperse::updateSpread() {
+    // todo
 }
 
-inline void Disperse::updateAllParams() {
-    updateDispersion();
+void Disperse::updateAllParams() {
+    updateDispersionAndPosition();
     updateSpread();
     updateTone();
     updateFeedback();
 }
 
-void Disperse::initialize(sfloat sampleRate,
-                          sfloat mix,
-                          sfloat dispersion,
-                          sfloat spread,
-                          sfloat timeMs,
-                          sfloat feedback,
-                          sfloat tone,
-                          sfloat modRateHz,
-                          sfloat modDepth,
-                          DisperseArrangement arrangement) {
+void Disperse::initialize(sfloat sampleRate) {
 
     int maxDelaySamps = std::ceil((maxDelayMs/1000.0) * sampleRate);
     this->voice1.initialize(sampleRate, maxDelaySamps);
@@ -185,18 +143,8 @@ void Disperse::initialize(sfloat sampleRate,
     this->voice5.initialize(sampleRate, maxDelaySamps);
     this->voice6.initialize(sampleRate, maxDelaySamps);
 
-    this->timeMs = timeMs;
-    this->mix = mix;
-    this->dispersion = dispersion;
-    this->spread = spread;
-    this->feedback = feedback;
-    this->tone = tone;
-    this->modRateHz = modRateHz;
-    this->modDepth = modDepth;
-
-    this->arrangement = arrangement;
-
-    this->updateAllParams();
+    this->_initialize();
+    this->setAllParams(mix, dispersion, spread, timeMs, feedback, tone, modRateHz, modDepth, position, arrangement);
 
 }
 
@@ -207,16 +155,7 @@ void Disperse::initialize(sfloat *voice1Buf,
                           sfloat *voice5Buf,
                           sfloat *voice6Buf,
                           int bufLength,
-                          sfloat sampleRate,
-                          sfloat mix,
-                          sfloat dispersion,
-                          sfloat spread,
-                          sfloat timeMs,
-                          sfloat feedback,
-                          sfloat tone,
-                          sfloat modRateHz,
-                          sfloat modDepth,
-                          DisperseArrangement arrangement) {
+                          sfloat sampleRate) {
     this->sampleRate = sampleRate;
 
     this->voice1.initialize(sampleRate, voice1Buf, bufLength);
@@ -226,12 +165,17 @@ void Disperse::initialize(sfloat *voice1Buf,
     this->voice5.initialize(sampleRate, voice5Buf, bufLength);
     this->voice6.initialize(sampleRate, voice6Buf, bufLength);
 
-    this->setAllParams(mix, dispersion, spread, timeMs, feedback, tone, modRateHz, modDepth, arrangement);
+    this->_initialize();
+    this->setAllParams(mix, dispersion, spread, timeMs, feedback, tone, modRateHz, modDepth, position, arrangement);
 
 }
 
-inline void Disperse::setAllParams(sfloat mix, sfloat dispersion, sfloat spread, sfloat timeMs, sfloat feedback,
-                       sfloat tone, sfloat modRateHz, sfloat modDepth, DisperseArrangement arrangement) {
+void Disperse::_initialize() {
+}
+
+
+void Disperse::setAllParams(sfloat mix, sfloat dispersion, sfloat spread, sfloat timeMs, sfloat feedback,
+                       sfloat tone, sfloat modRateHz, sfloat modDepth, sfloat position, DisperseArrangement arrangement) {
 
     this->timeMs = timeMs;
     this->mix = mix;
@@ -241,6 +185,7 @@ inline void Disperse::setAllParams(sfloat mix, sfloat dispersion, sfloat spread,
     this->tone = tone;
     this->modRateHz = modRateHz;
     this->modDepth = modDepth;
+    this->position = position;
 
     this->arrangement = arrangement;
 

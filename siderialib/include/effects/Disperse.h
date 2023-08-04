@@ -9,48 +9,56 @@ namespace siderialib {
     };
 
     // maximum dispersion, as a function of the time param
-    constexpr sfloat maxTimeDisperse = 0.2;
+    constexpr sfloat maxTimeDisperse = 0.5;
     constexpr sfloat maxModRateDisperse = 0.2;
     constexpr sfloat maxDelayMs = 5000.0;
+    constexpr sfloat minDelayMs = 100.0;
 
     class Disperse {
     private:
         sfloat sampleRate;
 
+        // special, always-centered voice
         ModulatedDelay voice1;
-        sfloat voice1Pan = 0.f;
+
         ModulatedDelay voice2;
         sfloat voice2Pan = 0.f;
+
         ModulatedDelay voice3;
         sfloat voice3Pan = 0.f;
+
         ModulatedDelay voice4;
         sfloat voice4Pan = 0.f;
+
         ModulatedDelay voice5;
         sfloat voice5Pan = 0.f;
+
         ModulatedDelay voice6;
         sfloat voice6Pan = 0.f;
 
-        sfloat dispersion;
-        sfloat spread;
-        sfloat feedback;
-        sfloat timeMs;
-        sfloat mix;
-        sfloat tone;
-        DisperseArrangement arrangement;
 
-        sfloat modRateHz;
-        sfloat modDepth;
+        sfloat dispersion = 0.0;
+        sfloat spread = 0.0;
+        sfloat feedback = 0.5;
+        sfloat timeMs = 100.0;
+        sfloat mix = 1.0;
+        sfloat tone = 0.5;
+        sfloat position = 0.0;
+        DisperseArrangement arrangement = FULL_PARALLEL;
+
+        sfloat modRateHz = 1.0;
+        sfloat modDepth = 0.0;
 
         sfloat _lastOutL;
         sfloat _lastOutR;
 
-        inline void updateSpread();
-        inline void updateDispersion();
-        inline void updateFeedback();
-        inline void updateTone();
-        inline void updateAllParams();
+        void updateSpread();
+        void updateDispersionAndPosition();
+        void updateFeedback();
+        void updateTone();
+        void updateAllParams();
 
-        inline void updateRandomValues();
+        void _initialize();
     public:
         void initialize(sfloat *voice1Buf,
                         sfloat *voice2Buf,
@@ -59,26 +67,8 @@ namespace siderialib {
                         sfloat *voice5Buf,
                         sfloat *voice6Buf,
                         int bufLength,
-                        sfloat sampleRate,
-                        sfloat mix,
-                        sfloat dispersion,
-                        sfloat spread,
-                        sfloat time,
-                        sfloat feedback,
-                        sfloat tone,
-                        sfloat modRateHz,
-                        sfloat modDepth,
-                        DisperseArrangement arrangement);
-        void initialize(sfloat sampleRate,
-                        sfloat mix,
-                        sfloat dispersion,
-                        sfloat spread,
-                        sfloat time,
-                        sfloat feedback,
-                        sfloat tone,
-                        sfloat modRateHz,
-                        sfloat modDepth,
-                        DisperseArrangement arrangement);
+                        sfloat sampleRate);
+        void initialize(sfloat sampleRate);
 
         virtual ~Disperse() {}
 
@@ -100,7 +90,7 @@ namespace siderialib {
         void setArrangement(DisperseArrangement arrangement);
         inline DisperseArrangement getArrangement() { return arrangement; };
 
-        inline void setAllParams(sfloat mix,
+        void setAllParams(sfloat mix,
                           sfloat dispersion,
                           sfloat spread,
                           sfloat time,
@@ -108,6 +98,7 @@ namespace siderialib {
                           sfloat tone,
                           sfloat modRateHz,
                           sfloat modDepth,
+                          sfloat position,
                           DisperseArrangement arrangement);
 
     };
