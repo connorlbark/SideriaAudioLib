@@ -12,12 +12,14 @@ C_INCLUDES += -I../../siderialib/include
 LIBDAISY_DIR = ../../external/libDaisy
 DAISYSP_DIR = ../../external/DaisySP
 
-# include sideria library in search path
-SIDERIALIB_DIR = ../../siderialib
-SIDERIALIB_SRC = {SIDERIALIB_DIR}/src
 
 # Link sideria library
-LIBDIR += -L../../arm-debug/siderialib
+ifdef DEBUG
+	LIBDIR += -L../../cmake-build-daisy-debug/siderialib
+else
+	LIBDIR += -L../../cmake-build-daisy-release/siderialib
+endif
+
 LIBS += -lsiderialib
 
 # Core location, and generic makefile.

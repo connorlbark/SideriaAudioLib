@@ -1,7 +1,6 @@
 .vs/
 out/
-debug/
-arm-debug/
+cmake-*
 
 .DS_Store
 **/.DS_Store
