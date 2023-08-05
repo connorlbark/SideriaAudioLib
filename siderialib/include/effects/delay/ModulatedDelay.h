@@ -7,12 +7,12 @@
 namespace siderialib {
 	class ModulatedDelay {
 	private:
-		StereoCircularBuffer buf;
+		StereoCircularBuffer _buf;
 
-		sfloat mix = 0.5;
-		int delaySamps = 1;
-		sfloat sampleRate;
-		sfloat feedback = 0.0;
+		sfloat _mix = 0.5;
+		int _delaySamps = 1;
+		sfloat _sampleRate;
+		sfloat _feedback = 0.0;
 
 		LFO _mod;
 
@@ -39,14 +39,14 @@ namespace siderialib {
 		sfloat lastOutL();
 		sfloat lastOutR();
 
-		void setMix(sfloat mix) { this->mix = mix; };
-		sfloat getMix() { return this->mix; }
+		void setMix(sfloat mix) { this->_mix = mix; };
+		sfloat getMix() { return this->_mix; }
 
-		void setDelayMs(sfloat ms) { this->delaySamps = (int)((ms / 1000.0f) * sampleRate); }
-		sfloat getDelayMs() { return (this->delaySamps / sampleRate) * 1000.0f; };
+		void setDelayMs(sfloat ms) { this->_delaySamps = (int)((ms / 1000.0f) * _sampleRate); }
+		sfloat getDelayMs() { return (this->_delaySamps / _sampleRate) * 1000.0f; };
 
-		void setFeedback(sfloat feedback) { this->feedback = feedback; }
-		sfloat getFeedback() { return feedback; }
+		void setFeedback(sfloat feedback) { this->_feedback = feedback; }
+		sfloat getFeedback() { return _feedback; }
 
         inline LFO &mod() { return _mod; };
 

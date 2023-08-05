@@ -5,28 +5,28 @@
 using namespace siderialib;
 
 int StereoCircularBuffer::flattenIndex(int channel, int sample) {
-	return numSamples * channel + sample;
-};
+	return _numSamples * channel + sample;
+}
 
 void StereoCircularBuffer::incrementCircularSampleIdx() {
-	circularSampleIdx++;
-	if (circularSampleIdx == numSamples) {
-		circularSampleIdx = 0;
+	_circularSampleIdx++;
+	if (_circularSampleIdx == _numSamples) {
+        _circularSampleIdx = 0;
 	}
-};
+}
 
 void StereoCircularBuffer::initialize(int numSamples) {
-	buf = (sfloat*)malloc(sizeof(sfloat) * 2 * numSamples);
-	this->initialize(buf, numSamples * 2);
+    _buf = (sfloat*)malloc(sizeof(sfloat) * 2 * numSamples);
+	this->initialize(_buf, numSamples * 2);
 }
 
 void StereoCircularBuffer::initialize(sfloat *buf, int length) {
-    buf = buf;
-    circularSampleIdx = 0;
-    this->numSamples = length / 2;
+    this->_buf = buf;
+    _circularSampleIdx = 0;
+    this->_numSamples = length / 2;
 
     if (buf) {
-        for (int i = 0; i < numSamples * 2; i++) {
+        for (int i = 0; i < _numSamples * 2; i++) {
             buf[i] = 0.f;
         }
     }
@@ -34,39 +34,39 @@ void StereoCircularBuffer::initialize(sfloat *buf, int length) {
 
 sfloat StereoCircularBuffer::read(int channel, int sample) {
 	while (sample < 0) {
-		sample += numSamples;
+		sample += _numSamples;
 	}
-	while (sample >= numSamples) {
-		sample -= numSamples;
+	while (sample >= _numSamples) {
+		sample -= _numSamples;
 	}
 	
-	return buf[flattenIndex(channel, sample)];
+	return _buf[flattenIndex(channel, sample)];
 }
 
 void StereoCircularBuffer::write(sfloat val, int channel, int sample) {
 
-	buf[flattenIndex(channel, sample)] = val;
+    _buf[flattenIndex(channel, sample)] = val;
 }
 
 sfloat StereoCircularBuffer::readCircular(int channel) {
-	return buf[flattenIndex(channel, circularSampleIdx)];
+	return _buf[flattenIndex(channel, _circularSampleIdx)];
 }
 
 
 sfloat StereoCircularBuffer::readCircular(int channel, int numSampsAgo) {
-	return buf[flattenIndex(channel, mapToNonCircularIndex(numSampsAgo))];
+	return _buf[flattenIndex(channel, mapToNonCircularIndex(numSampsAgo))];
 
 }
 
 void StereoCircularBuffer::writeCircular(sfloat L, sfloat R) {
-	buf[flattenIndex(0, circularSampleIdx)] = L;
-	buf[flattenIndex(1, circularSampleIdx)] = R;
+    _buf[flattenIndex(0, _circularSampleIdx)] = L;
+    _buf[flattenIndex(1, _circularSampleIdx)] = R;
 
     incrementCircularSampleIdx();
 }
 
 int StereoCircularBuffer::size() {
-	return numSamples;
+	return _numSamples;
 }
 
 int StereoCircularBuffer::numChannels() {
@@ -74,7 +74,7 @@ int StereoCircularBuffer::numChannels() {
 }
 
 int StereoCircularBuffer::mapToNonCircularIndex(int numSampsAgo) {
-	int finalIdx = circularSampleIdx - numSampsAgo;
+	int finalIdx = _circularSampleIdx - numSampsAgo;
 
 	return finalIdx;
 }

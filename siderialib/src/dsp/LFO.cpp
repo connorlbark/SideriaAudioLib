@@ -4,9 +4,9 @@
 using namespace siderialib;
 
 void LFO::incrementPhase() {
-	phase += phasePerSample;
-	if (phase > 1.0) {
-		phase -= 1.0;
+    _phase += _phasePerSample;
+	if (_phase > 1.0) {
+        _phase -= 1.0;
 	}
 }
 
@@ -16,7 +16,7 @@ double LFO::tick() {
 }
 
 double LFO::modSource(double phase) {
-	switch (this->type) {
+	switch (this->_type) {
     case TRIANGLE:
         if (phase < 0.5) {
             return phase * 2;
@@ -30,24 +30,24 @@ double LFO::modSource(double phase) {
 }
 
 void LFO::setRateHz(sfloat hz) {
-	this->hz = hz;
+	this->_hz = hz;
 
-	phasePerSample = (long double)hz/(long double)sampleRate;
+    _phasePerSample = (double)hz / (double)_sampleRate;
 }
 
 void LFO::setDepth(sfloat depth) {
-	this->depth = depth;
+	this->_depth = depth;
 }
 
 sfloat LFO::getRateHz() {
-	return this->hz;
+	return this->_hz;
 }
 
 sfloat LFO::getDepth() {
-	return this->depth;
+	return this->_depth;
 }
 
 void LFO::setType(LFOType type) {
-	this->type = type;
+	this->_type = type;
 }
 

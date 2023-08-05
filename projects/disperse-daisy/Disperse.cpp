@@ -22,11 +22,11 @@ float DSY_SDRAM_BSS voice5[MAX_DELAY_SAMPLES * 2];
 float DSY_SDRAM_BSS voice6[MAX_DELAY_SAMPLES * 2];
 
 SmoothedParameter time;
-Parameter spread;
+Parameter position;
 Parameter dispersion;
 Parameter mix;
 Parameter feedback;
-Parameter tone;
+// Parameter tone;
 Parameter modDepth;
 
 Oscillator timeLfo;
@@ -46,7 +46,7 @@ void InitDisperse()
     feedback.Init(hardware.knob[terrarium::Terrarium::KNOB_2], 0.0, 0.99, Parameter::LINEAR);
     dispersion.Init(hardware.knob[terrarium::Terrarium::KNOB_3], 0.0, 1.0, Parameter::LINEAR);
     mix.Init(hardware.knob[terrarium::Terrarium::KNOB_6], 0.0, 1.0, Parameter::LINEAR);
-    tone.Init(hardware.knob[terrarium::Terrarium::KNOB_4], 0.0, 1.0, Parameter::LINEAR);
+    position.Init(hardware.knob[terrarium::Terrarium::KNOB_4], 0.0, 1.0, Parameter::LINEAR);
     modDepth.Init(hardware.knob[terrarium::Terrarium::KNOB_5], 0.0, 1.0, Parameter::LINEAR);
 
     disperse.initialize(
@@ -57,16 +57,7 @@ void InitDisperse()
         voice5,
         voice6,
         MAX_DELAY_SAMPLES * 2,
-        SAMPLE_RATE,
-        0.0,
-        0.0,
-        0.0,
-        100.0,
-        0.0,
-        0.5,
-        1.0,
-        0.0,
-        siderialib::DisperseArrangement::FULL_PARALLEL);
+        SAMPLE_RATE);
 }
 
 inline bool hasChanged(float param, float curr, float sensitivity = 0.01)
@@ -81,12 +72,13 @@ void UpdateParams()
     disperse.setAllParams(
         mix.Value(),
         dispersion.Value(),
-        spread.Value(),
+        0.0,
         time.Value(),
         feedback.Value(),
-        tone.Value(),
+        0.5, // tone.Value(),
         2.0,
         modDepth.Value(),
+        position.Value(),
         siderialib::DisperseArrangement::FULL_PARALLEL);
 }
 

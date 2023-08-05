@@ -16,38 +16,28 @@ namespace siderialib {
 
     class Disperse {
     private:
-        sfloat sampleRate;
+        sfloat _sampleRate;
 
-        // special, always-centered voice
-        ModulatedDelay voice1;
-
-        ModulatedDelay voice2;
-        sfloat voice2Pan = 0.f;
-
-        ModulatedDelay voice3;
-        sfloat voice3Pan = 0.f;
-
-        ModulatedDelay voice4;
-        sfloat voice4Pan = 0.f;
-
-        ModulatedDelay voice5;
-        sfloat voice5Pan = 0.f;
-
-        ModulatedDelay voice6;
-        sfloat voice6Pan = 0.f;
+        // voice1: special, always-centered voice
+        ModulatedDelay _voice1;
+        ModulatedDelay _voice2;
+        ModulatedDelay _voice3;
+        ModulatedDelay _voice4;
+        ModulatedDelay _voice5;
+        ModulatedDelay _voice6;
 
 
-        sfloat dispersion = 0.0;
-        sfloat spread = 0.0;
-        sfloat feedback = 0.5;
-        sfloat timeMs = 100.0;
-        sfloat mix = 1.0;
-        sfloat tone = 0.5;
-        sfloat position = 0.0;
-        DisperseArrangement arrangement = FULL_PARALLEL;
+        sfloat _dispersion = 0.0;
+        sfloat _spread = 0.0;
+        sfloat _feedback = 0.5;
+        sfloat _timeMs = 100.0;
+        sfloat _mix = 1.0;
+        sfloat _tone = 0.5;
+        sfloat _position = 0.0;
+        DisperseArrangement _arrangement = FULL_PARALLEL;
 
-        sfloat modRateHz = 1.0;
-        sfloat modDepth = 0.0;
+        sfloat _modRateHz = 1.0;
+        sfloat _modDepth = 0.0;
 
         sfloat _lastOutL;
         sfloat _lastOutR;
@@ -78,17 +68,17 @@ namespace siderialib {
         sfloat lastOutR();
 
         void setTimeMs(sfloat timeMs);
-        inline sfloat getTimeMs() { return timeMs; };
+        inline sfloat getTimeMs() { return _timeMs; };
         void setSpread(sfloat spread);
-        inline sfloat getSpread() { return spread; };
+        inline sfloat getSpread() { return _spread; };
         void setFeedback(sfloat feedback);
-        inline sfloat getFeedback() { return feedback; };
+        inline sfloat getFeedback() { return _feedback; };
         void setDispersion(sfloat dispersion);
-        inline sfloat getDispersion() { return dispersion; };
+        inline sfloat getDispersion() { return _dispersion; };
         void setTone(sfloat tone);
-        inline sfloat getTone() { return tone; };
+        inline sfloat getTone() { return _tone; };
         void setArrangement(DisperseArrangement arrangement);
-        inline DisperseArrangement getArrangement() { return arrangement; };
+        inline DisperseArrangement getArrangement() { return _arrangement; };
 
         void setAllParams(sfloat mix,
                           sfloat dispersion,

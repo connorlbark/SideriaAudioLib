@@ -8,17 +8,17 @@ namespace siderialib {
 	class StereoCircularBuffer {
 	private:
 
-		sfloat* buf;
-		int numSamples;
+		sfloat* _buf;
+		int _numSamples;
 
-		int circularSampleIdx;
+		int _circularSampleIdx;
 
 		inline int flattenIndex(int channel, int sample);
 
 		void incrementCircularSampleIdx();
 	public:
         ~StereoCircularBuffer() {
-            free(this->buf);
+            free(this->_buf);
         }
 
 		int mapToNonCircularIndex(int sample);

@@ -10,90 +10,90 @@ namespace siderialib {
 	
 	class BiquadFilter  {
 	private:
-        double* a;
-        double* x;
-        int circAIdx = 0;
-        int aLen;
-        double* b;
-        double* y;
-        int circBIdx = 0;
-        int bLen;
+        double* _a;
+        double* _x;
+        int _circAIdx = 0;
+        int _aLen;
+        double* _b;
+        double* _y;
+        int _circBIdx = 0;
+        int _bLen;
 
-        float linGain = 1.0;
+        float _linGain = 1.0;
 
 
         int mapAIdx(int idx) {
-            idx += circAIdx;
+            idx += _circAIdx;
             if (idx < 0) {
-                idx += aLen;
+                idx += _aLen;
             }
-            else if (idx >= aLen) {
-                idx -= aLen;
+            else if (idx >= _aLen) {
+                idx -= _aLen;
             }
             return idx;
         }
 
         int mapBIdx(int idx) {
-            idx += circBIdx;
+            idx += _circBIdx;
             if (idx < 0) {
-                idx += bLen;
+                idx += _bLen;
             }
-            else if (idx >= bLen) {
-                idx -= bLen;
+            else if (idx >= _bLen) {
+                idx -= _bLen;
             }
             return idx;
         }
 
-		BiquadType type = BiquadType::LPF;
-		sfloat samplingRate;
+		BiquadType _type = BiquadType::LPF;
+		sfloat _samplingRate;
 	
-		sfloat Q;
-		sfloat cutoffHz;
+		sfloat _Q;
+		sfloat _cutoffHz;
 
 		void initializeParams();
 		void recalcParams();
 	public:
         ~BiquadFilter() {
-            free(this->a);
-            free(this->b);
-            free(this->x);
-            free(this->y);
+            free(this->_a);
+            free(this->_b);
+            free(this->_x);
+            free(this->_y);
         }
 
 		void initialize(sfloat samplingRate, BiquadType type, sfloat cutoffHz, sfloat Q);
 
 		void setCutoff(sfloat cutoffHz);
-		sfloat getCutoff() { return this->cutoffHz; }
+		sfloat getCutoff() { return this->_cutoffHz; }
 		void setQ(sfloat Q);
-		sfloat getQ() { return this->Q; }
+		sfloat getQ() { return this->_Q; }
 
         void setParams(sfloat cutoff, sfloat Q, sfloat dB);
 
         void setGain(sfloat dB) {
-            this->linGain = std::pow(10.f, dB / 20.f);
+            this->_linGain = std::pow(10.f, dB / 20.f);
         }
 
         sfloat tick(sfloat in) {
-            x[circAIdx] = in;
-            circAIdx = (circAIdx+1) % aLen;
+            _x[_circAIdx] = in;
+            _circAIdx = (_circAIdx+1) % _aLen;
 
             double out = 0.0;
 
             int finalIdx;
-            for (int aIdx = 0; aIdx < aLen; aIdx++) {
+            for (int aIdx = 0; aIdx < _aLen; aIdx++) {
                 finalIdx = mapAIdx(-aIdx);
-                out += x[finalIdx] * a[aIdx];
+                out += _x[finalIdx] * _a[aIdx];
             }
 
-            for (int bIdx = 0; bIdx < bLen; bIdx++) {
+            for (int bIdx = 0; bIdx < _bLen; bIdx++) {
                 finalIdx = mapBIdx(-bIdx - 1);
-                out -= y[finalIdx] * b[bIdx];
+                out -= _y[finalIdx] * _b[bIdx];
             }
 
-            y[circBIdx] = out;
-            circBIdx = (circBIdx+1) % bLen;
+            _y[_circBIdx] = out;
+            _circBIdx = (_circBIdx+1) % _bLen;
 
-            return (sfloat)out * linGain;
+            return (sfloat)out * _linGain;
         }
 	};
 }

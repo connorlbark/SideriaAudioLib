@@ -84,13 +84,13 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
     float sampleRate = 44100;
     float mix = 1.0;
     float timeMs = 800.0;
-    float dispersion = 1.0;
+    float dispersion = 0.6;
     float spread = 0.0;
-    float feedback = 0.0;
+    float feedback = 0.5;
     float tone = 0.5;
     float modRateHz = 2.0;
     float modDepth = 0.5;
-    float position = 0.4;
+    float position = 0.3245;
 
     siderialib::DisperseArrangement arrangement = siderialib::FULL_PARALLEL;
     disperse.initialize(sampleRate);
