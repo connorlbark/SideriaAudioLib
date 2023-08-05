@@ -13,5 +13,7 @@ option(ARM "ARM" OFF)
 # Include sub-projects.
 add_subdirectory ("siderialib")
 if(${ARM} MATCHES OFF)
+    add_subdirectory ("external/JUCE")
+    add_subdirectory ("projects/disperse-juce")
     add_subdirectory ("spkr")
 endif()

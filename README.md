@@ -2,6 +2,12 @@
 
 ## Building (native and ARM)
 
+First, compile JUCE.
+```bash
+cmake . -B cmake-build -DJUCE_BUILD_EXAMPLES=ON -DJUCE_BUILD_EXTRAS=ON
+```
+
+Then, set up build profiles
 - Set Debug profile with default toolchain output to `cmake-build-debug`, with "Build Type" set to "Debug"
 - Download arm toolchain for Daisy
 - Create new CMake profile with the CMake flag `-DCMAKE_TOOLCHAIN_FILE=/Users/connorbarker/code/sideria/SideriaAudioLib/external/libDaisy/cmake/toolchains/stm32h750xx.cmake`. This will make sure CMake knows how to use the arm compiler properly
