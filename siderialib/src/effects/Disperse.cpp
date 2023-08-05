@@ -45,8 +45,8 @@ void Disperse::tick(siderialib::sfloat L, siderialib::sfloat R) {
     }
 
     // at this point, _lastOutL/R are purely wet, so we need to mix in the dry
-//    _lastOutL = L * (1.f - mix) + _lastOutL * mix;
-//    _lastOutR = R * (1.f - mix) + _lastOutR * mix;
+    _lastOutL = L * (1.f - _mix) + _lastOutL * _mix;
+    _lastOutR = R * (1.f - _mix) + _lastOutR * _mix;
 }
 
 void Disperse::setTimeMs(sfloat timeMs) {
@@ -68,6 +68,26 @@ void Disperse::setDispersion(sfloat dispersion) {
     this->_dispersion = dispersion;
     updateDispersionAndPosition();
 }
+
+void Disperse::setPosition(sfloat position) {
+    this->_position = position;
+    updateDispersionAndPosition();
+}
+
+void Disperse::setMix(sfloat mix) {
+    this->_mix = mix;
+}
+
+void Disperse::setModDepth(sfloat depth) {
+    this->_modDepth = depth;
+    this->updateMod();
+}
+
+void Disperse::setModRateHz(sfloat modRateHz) {
+    this->_modRateHz = modRateHz;
+    this->updateMod();
+}
+
 
 void Disperse::setTone(sfloat tone) {
     this->_tone = tone;
@@ -94,12 +114,6 @@ void Disperse::updateDispersionAndPosition() {
 
     sfloat depth = this->_timeMs * this->_dispersion / 2.f;
 
-    printf("%f\n", this->_timeMs);
-    printf("%f\n", this->_timeMs + calcVoicePosition(2.f, this->_position, depth));
-    printf("%f\n", this->_timeMs + calcVoicePosition(4.f, this->_position, depth));
-    printf("%f\n", this->_timeMs + calcVoicePosition(6.f, this->_position, depth));
-    printf("%f\n", this->_timeMs + calcVoicePosition(8.f, this->_position, depth));
-    printf("%f\n", this->_timeMs + calcVoicePosition(10.f, this->_position, depth));
     _voice1.setDelayMs(this->_timeMs);
     _voice2.setDelayMs(this->_timeMs + calcVoicePosition(2.f, this->_position, depth));
     _voice3.setDelayMs(this->_timeMs + calcVoicePosition(4.f, this->_position, depth));
@@ -126,8 +140,27 @@ void Disperse::updateSpread() {
     // todo
 }
 
+constexpr float modDepthSamps = 10.0;
+
+void Disperse::updateMod() {
+    _voice1.mod().setRateHz(this->_modRateHz);
+    _voice1.mod().setDepth(this->_modDepth * modDepthSamps);
+    _voice2.mod().setRateHz(this->_modRateHz);
+    _voice2.mod().setDepth(this->_modDepth * modDepthSamps);
+    _voice3.mod().setRateHz(this->_modRateHz);
+    _voice3.mod().setDepth(this->_modDepth * modDepthSamps);
+    _voice4.mod().setRateHz(this->_modRateHz);
+    _voice4.mod().setDepth(this->_modDepth * modDepthSamps);
+    _voice5.mod().setRateHz(this->_modRateHz);
+    _voice5.mod().setDepth(this->_modDepth * modDepthSamps);
+    _voice6.mod().setRateHz(this->_modRateHz);
+    _voice6.mod().setDepth(this->_modDepth * modDepthSamps);
+
+}
+
 void Disperse::updateAllParams() {
     updateDispersionAndPosition();
+    updateMod();
     updateSpread();
     updateTone();
     updateFeedback();
@@ -144,7 +177,6 @@ void Disperse::initialize(sfloat sampleRate) {
     this->_voice5.initialize(_sampleRate, maxDelaySamps);
     this->_voice6.initialize(_sampleRate, maxDelaySamps);
 
-    this->_initialize();
     this->setAllParams(_mix, _dispersion, _spread, _timeMs, _feedback, _tone, _modRateHz, _modDepth, _position, _arrangement);
 
 }
@@ -166,12 +198,8 @@ void Disperse::initialize(sfloat *voice1Buf,
     this->_voice5.initialize(_sampleRate, voice5Buf, bufLength);
     this->_voice6.initialize(_sampleRate, voice6Buf, bufLength);
 
-    this->_initialize();
     this->setAllParams(_mix, _dispersion, _spread, _timeMs, _feedback, _tone, _modRateHz, _modDepth, _position, _arrangement);
 
-}
-
-void Disperse::_initialize() {
 }
 
 

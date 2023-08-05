@@ -9,10 +9,10 @@ namespace siderialib {
     };
 
     // maximum dispersion, as a function of the time param
-    constexpr sfloat maxTimeDisperse = 0.5;
-    constexpr sfloat maxModRateDisperse = 0.2;
-    constexpr sfloat maxDelayMs = 5000.0;
-    constexpr sfloat minDelayMs = 100.0;
+    constexpr sfloat maxTimeDisperse = 0.5f;
+    constexpr sfloat maxModRateDisperse = 0.2f;
+    constexpr sfloat maxDelayMs = 5000.0f;
+    constexpr sfloat minDelayMs = 100.0f;
 
     class Disperse {
     private:
@@ -47,8 +47,8 @@ namespace siderialib {
         void updateFeedback();
         void updateTone();
         void updateAllParams();
+        void updateMod();
 
-        void _initialize();
     public:
         void initialize(sfloat *voice1Buf,
                         sfloat *voice2Buf,
@@ -68,17 +68,25 @@ namespace siderialib {
         sfloat lastOutR();
 
         void setTimeMs(sfloat timeMs);
-        inline sfloat getTimeMs() { return _timeMs; };
+        inline sfloat getTimeMs() { return _timeMs; }
         void setSpread(sfloat spread);
-        inline sfloat getSpread() { return _spread; };
+        inline sfloat getSpread() { return _spread; }
         void setFeedback(sfloat feedback);
-        inline sfloat getFeedback() { return _feedback; };
+        inline sfloat getFeedback() { return _feedback; }
         void setDispersion(sfloat dispersion);
-        inline sfloat getDispersion() { return _dispersion; };
+        inline sfloat getDispersion() { return _dispersion; }
         void setTone(sfloat tone);
-        inline sfloat getTone() { return _tone; };
+        inline sfloat getTone() { return _tone; }
         void setArrangement(DisperseArrangement arrangement);
-        inline DisperseArrangement getArrangement() { return _arrangement; };
+        inline DisperseArrangement getArrangement() { return _arrangement; }
+        void setPosition(sfloat position);
+        inline sfloat getPosition() { return this->_position; }
+        void setModRateHz(sfloat modRateHz);
+        inline sfloat getModRateHz() { return this->_modRateHz; }
+        void setModDepth(sfloat depth);
+        inline sfloat getModDepth() { return this->_modDepth; }
+        void setMix(sfloat mix);
+        inline sfloat getMix() { return this->_mix; }
 
         void setAllParams(sfloat mix,
                           sfloat dispersion,

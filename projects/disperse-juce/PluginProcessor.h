@@ -1,11 +1,14 @@
 #pragma once
 
 #include <juce_audio_processors/juce_audio_processors.h>
+#include "effects/Disperse.h"
 
 //==============================================================================
 class AudioPluginAudioProcessor  : public juce::AudioProcessor
 {
 public:
+    siderialib::Disperse _disperse;
+
     //==============================================================================
     AudioPluginAudioProcessor();
     ~AudioPluginAudioProcessor() override;

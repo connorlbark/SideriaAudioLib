@@ -66,7 +66,8 @@ juce_add_plugin(DispersePlugin
 target_sources(DispersePlugin
     PRIVATE
         PluginEditor.cpp
-        PluginProcessor.cpp)
+        PluginProcessor.cpp
+        ui/DebugUI.cpp)
 
 # `target_compile_definitions` adds some preprocessor definitions to our target. In a Projucer
 # project, these might be passed in the 'Preprocessor Definitions' field. JUCE modules also make use
@@ -97,8 +98,13 @@ target_compile_definitions(DispersePlugin
 # linked automatically. If we'd generated a binary data target above, we would need to link to it
 # here too. This is a standard CMake command.
 
+include_directories(../../siderialib/include)
+
+target_link_libraries(DispersePlugin PUBLIC siderialib)
+
 target_link_libraries(DispersePlugin
     PRIVATE
+        #siderialib
         # AudioPluginData           # If we'd created a binary data target, we'd link to it here
         juce::juce_audio_utils
     PUBLIC

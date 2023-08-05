@@ -39,16 +39,16 @@ namespace siderialib {
 		sfloat lastOutL();
 		sfloat lastOutR();
 
-		void setMix(sfloat mix) { this->_mix = mix; };
+		void setMix(sfloat mix) { this->_mix = mix; }
 		sfloat getMix() { return this->_mix; }
 
 		void setDelayMs(sfloat ms) { this->_delaySamps = (int)((ms / 1000.0f) * _sampleRate); }
-		sfloat getDelayMs() { return (this->_delaySamps / _sampleRate) * 1000.0f; };
+		sfloat getDelayMs() { return (this->_delaySamps / _sampleRate) * 1000.0f; }
 
 		void setFeedback(sfloat feedback) { this->_feedback = feedback; }
 		sfloat getFeedback() { return _feedback; }
 
-        inline LFO &mod() { return _mod; };
+        inline LFO &mod() { return _mod; }
 
         void setLpfParams(sfloat cutoff, sfloat Q, sfloat dBGain);
         void setHpfParams(sfloat cutoff, sfloat Q, sfloat dBGain);

@@ -27,7 +27,7 @@ namespace siderialib {
 		void initialize(sfloat sampleRate) { this->_sampleRate = sampleRate; }
 		// tick modulation, result will be inbetween 0.0 to 1.0
 		double tick();
-        inline double value() { return this->modSource(_phase) * _depth; };
+        inline double value() { return this->modSource(_phase) * _depth; }
 		// set rate as a time in milliseconds
 		void setRateHz(sfloat ms);
 		// set depth as a percentage, from 0.0 to 1.0
