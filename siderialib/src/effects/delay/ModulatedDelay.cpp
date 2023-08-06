@@ -5,14 +5,15 @@ using namespace siderialib;
 
 static int samples = 0;
 void ModulatedDelay::tick(sfloat L, sfloat R) {
-    double mod = this->_mod.tick();
-    double modulatedDelaySamps = this->_buf.mapToNonCircularIndex(this->_delaySamps) + mod * 400.0;
+    double mod = this->_mod->value();
+
+    double modulatedDelaySamps = this->_buf.mapToNonCircularIndex(this->_delaySamps.tick()) + mod * 400.0;
 
 	int flooredModDelaySamps = (int)std::floor(modulatedDelaySamps);
     double t = modulatedDelaySamps - flooredModDelaySamps;
 
-    sfloat delayedL = this->_buf.hermiteInterpolation(0, flooredModDelaySamps, t);
-    sfloat delayedR = this->_buf.hermiteInterpolation(1, flooredModDelaySamps, t);
+    sfloat delayedL = this->_buf.linearInterpolation(0, flooredModDelaySamps, t);
+    sfloat delayedR = this->_buf.linearInterpolation(1, flooredModDelaySamps, t);
 
 
     writeToBuffer(L + delayedL * _feedback, R + delayedR * _feedback);
@@ -36,15 +37,18 @@ void ModulatedDelay::writeToBuffer(sfloat L, sfloat R) {
     this->_buf.writeCircular(L, R);
 }
 
-void ModulatedDelay::initialize(float sampleRate, int maxDelaySamps) {
+void ModulatedDelay::initialize(LFO *lfo, float sampleRate, int maxDelaySamps) {
 	this->_buf.initialize(maxDelaySamps);
+    this->_delaySamps.initialize(1000.0, sampleRate);
 	this->_sampleRate = sampleRate;
 	_lastOutL = 0.f;
 	_lastOutR = 0.f;
     this->_mix = 1.0f;
-	this->_mod.initialize(_sampleRate);
-	this->_mod.setDepth(0.0);
-	this->_mod.setRateHz(1.0);
+
+    this->_mod = lfo;
+//	this->_mod.initialize(_sampleRate);
+//	this->_mod.setDepth(0.0);
+//	this->_mod.setRateHz(1.0);
 
     this->_enableHpf = false;
     this->_enableLpf = false;
@@ -54,15 +58,18 @@ void ModulatedDelay::initialize(float sampleRate, int maxDelaySamps) {
     this->_hpfR.initialize(_sampleRate, BiquadType::HPF, 0.0f, 1.0);
 }
 
-void ModulatedDelay::initialize(float sampleRate, sfloat *buf, int bufLength) {
+void ModulatedDelay::initialize(LFO *lfo, float sampleRate, sfloat *buf, int bufLength) {
     this->_buf.initialize(buf, bufLength);
+    this->_delaySamps.initialize(1000.0, sampleRate);
     this->_sampleRate = sampleRate;
     _lastOutL = 0.f;
     _lastOutR = 0.f;
     this->_mix = 1.0f;
-    this->_mod.initialize(sampleRate);
-    this->_mod.setDepth(0.0);
-    this->_mod.setRateHz(1.0);
+
+    this->_mod = lfo;
+//    this->_mod.initialize(sampleRate);
+//    this->_mod.setDepth(0.0);
+//    this->_mod.setRateHz(1.0);
 
     this->_enableHpf = false;
     this->_enableLpf = false;

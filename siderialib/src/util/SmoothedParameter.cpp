@@ -10,7 +10,8 @@ void SmoothedParameter::initialize(sfloat smoothingTimeMs, sfloat sampleRate) {
 }
 
 
-void SmoothedParameter::process()
+sfloat SmoothedParameter::tick()
 {
     _val = (_target * _b) + (_val * _a);
+    return _val;
 }

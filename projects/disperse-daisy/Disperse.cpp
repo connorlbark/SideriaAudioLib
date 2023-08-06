@@ -69,17 +69,17 @@ void UpdateParams()
 {
     hardware.ProcessAllControls();
 
-    disperse.setAllParams(
-        mix.Value(),
-        dispersion.Value(),
-        0.0,
-        time.Value(),
-        feedback.Value(),
-        0.5, // tone.Value(),
-        2.0,
-        modDepth.Value(),
-        position.Value(),
-        siderialib::DisperseArrangement::FULL_PARALLEL);
+    // disperse.setAllParams(
+    //     mix.Value(),
+    //     dispersion.Value(),
+    //     0.0,
+    //     time.Value(),
+    //     feedback.Value(),
+    //     0.5, // tone.Value(),
+    //     2.0,
+    //     modDepth.Value(),
+    //     position.Value(),
+    //     siderialib::DisperseArrangement::FULL_PARALLEL);
 }
 
 void Tick()
@@ -88,10 +88,13 @@ void Tick()
     bypassLed.Set(effectActive ? 1.f : 0.f);
 }
 
+CpuLoadMeter meter;
+
 void AudioCallback(AudioHandle::InterleavingInputBuffer in,
                    AudioHandle::InterleavingOutputBuffer out,
                    size_t size)
 {
+    meter.OnBlockStart();
     UpdateParams();
     Tick();
 
@@ -99,10 +102,21 @@ void AudioCallback(AudioHandle::InterleavingInputBuffer in,
     for (size_t i = 0; i < size; i += 2)
     {
 
-        disperse.tick(in[i], in[i + 1]);
+        disperse.tick(in[i], in[i]);
 
         out[i] = disperse.lastOutL();
-        out[i + 1] = disperse.lastOutR();
+        out[i + 1] = disperse.lastOutL();
+    }
+
+    meter.OnBlockEnd();
+
+    if (meter.GetMaxCpuLoad() > .99f)
+    {
+        hardware.seed.SetLed(true);
+    }
+    else
+    {
+        hardware.seed.SetLed(false);
     }
 }
 
@@ -110,10 +124,19 @@ int main(void)
 {
     // Initialize the Daisy Seed
     hardware.Init();
+    hardware.seed.PrintLine("Starting up!");
+    hardware.SetAudioBlockSize(4);
 
+    hardware.SetAudioSampleRate(SaiHandle::Config::SampleRate::SAI_48KHZ);
+
+    hardware.seed.PrintLine("Initializing disperse...");
     InitDisperse();
+    hardware.seed.PrintLine("Done. Starting audio...");
 
-    hardware.ChangeAudioCallback(AudioCallback);
+    hardware.StartAdc();
+    hardware.StartAudio(AudioCallback);
+
+    meter.Init(SAMPLE_RATE, 4);
 
     // Loop forever
     for (;;)

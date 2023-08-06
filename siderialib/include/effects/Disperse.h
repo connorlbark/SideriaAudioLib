@@ -42,6 +42,8 @@ namespace siderialib {
         sfloat _lastOutL;
         sfloat _lastOutR;
 
+        LFO _lfo;
+
         void updateSpread();
         void updateDispersionAndPosition();
         void updateFeedback();

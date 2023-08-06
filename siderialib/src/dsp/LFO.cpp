@@ -10,20 +10,20 @@ void LFO::incrementPhase() {
 	}
 }
 
-double LFO::tick() {
+void LFO::tick() {
 	incrementPhase();
-	return value();
+	_val = this->modSource(_phase) * _depth;
 }
 
 double LFO::modSource(double phase) {
 	switch (this->_type) {
     case TRIANGLE:
         if (phase < 0.5) {
-            return phase * 2;
+            return phase * 2.f;
         }
-        return 2. - phase * 2;
+        return 2.f - phase * 2.f;
 	default:
-        double out = (std::sin(phase * TWOPI) + 1) / 2;
+        double out = (sinf(phase * TWOPI) + 1) / 2;
 
 		return out;
 	}
@@ -32,7 +32,7 @@ double LFO::modSource(double phase) {
 void LFO::setRateHz(sfloat hz) {
 	this->_hz = hz;
 
-    _phasePerSample = (double)hz / (double)_sampleRate;
+    _phasePerSample = hz / _sampleRate;
 }
 
 void LFO::setDepth(sfloat depth) {

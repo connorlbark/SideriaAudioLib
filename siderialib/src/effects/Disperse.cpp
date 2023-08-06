@@ -5,6 +5,7 @@
 using namespace siderialib;
 
 void Disperse::tick(siderialib::sfloat L, siderialib::sfloat R) {
+    _lfo.tick();
 
     _lastOutL = 0.f;
     _lastOutR = 0.f;
@@ -140,21 +141,21 @@ void Disperse::updateSpread() {
     // todo
 }
 
-constexpr float modDepthSamps = 10.0;
-
 void Disperse::updateMod() {
-    _voice1.mod().setRateHz(this->_modRateHz);
-    _voice1.mod().setDepth(this->_modDepth * modDepthSamps);
-    _voice2.mod().setRateHz(this->_modRateHz);
-    _voice2.mod().setDepth(this->_modDepth * modDepthSamps);
-    _voice3.mod().setRateHz(this->_modRateHz);
-    _voice3.mod().setDepth(this->_modDepth * modDepthSamps);
-    _voice4.mod().setRateHz(this->_modRateHz);
-    _voice4.mod().setDepth(this->_modDepth * modDepthSamps);
-    _voice5.mod().setRateHz(this->_modRateHz);
-    _voice5.mod().setDepth(this->_modDepth * modDepthSamps);
-    _voice6.mod().setRateHz(this->_modRateHz);
-    _voice6.mod().setDepth(this->_modDepth * modDepthSamps);
+    this->_lfo.setRateHz(this->_modRateHz);
+    this->_lfo.setDepth(this->_modDepth);
+//    _voice1.mod().setRateHz(this->_modRateHz);
+//    _voice1.mod().setDepth(this->_modDepth * modDepthSamps);
+//    _voice2.mod().setRateHz(this->_modRateHz);
+//    _voice2.mod().setDepth(this->_modDepth * modDepthSamps);
+//    _voice3.mod().setRateHz(this->_modRateHz);
+//    _voice3.mod().setDepth(this->_modDepth * modDepthSamps);
+//    _voice4.mod().setRateHz(this->_modRateHz);
+//    _voice4.mod().setDepth(this->_modDepth * modDepthSamps);
+//    _voice5.mod().setRateHz(this->_modRateHz);
+//    _voice5.mod().setDepth(this->_modDepth * modDepthSamps);
+//    _voice6.mod().setRateHz(this->_modRateHz);
+//    _voice6.mod().setDepth(this->_modDepth * modDepthSamps);
 
 }
 
@@ -168,14 +169,15 @@ void Disperse::updateAllParams() {
 
 void Disperse::initialize(sfloat sampleRate) {
     this->_sampleRate = sampleRate;
+    _lfo.initialize(sampleRate);
 
     int maxDelaySamps = std::ceil((maxDelayMs/1000.0) * _sampleRate);
-    this->_voice1.initialize(_sampleRate, maxDelaySamps);
-    this->_voice2.initialize(_sampleRate, maxDelaySamps);
-    this->_voice3.initialize(_sampleRate, maxDelaySamps);
-    this->_voice4.initialize(_sampleRate, maxDelaySamps);
-    this->_voice5.initialize(_sampleRate, maxDelaySamps);
-    this->_voice6.initialize(_sampleRate, maxDelaySamps);
+    this->_voice1.initialize(&_lfo, _sampleRate, maxDelaySamps);
+    this->_voice2.initialize(&_lfo, _sampleRate, maxDelaySamps);
+    this->_voice3.initialize(&_lfo, _sampleRate, maxDelaySamps);
+    this->_voice4.initialize(&_lfo, _sampleRate, maxDelaySamps);
+    this->_voice5.initialize(&_lfo, _sampleRate, maxDelaySamps);
+    this->_voice6.initialize(&_lfo, _sampleRate, maxDelaySamps);
 
     this->setAllParams(_mix, _dispersion, _spread, _timeMs, _feedback, _tone, _modRateHz, _modDepth, _position, _arrangement);
 
@@ -190,13 +192,14 @@ void Disperse::initialize(sfloat *voice1Buf,
                           int bufLength,
                           sfloat sampleRate) {
     this->_sampleRate = sampleRate;
+    _lfo.initialize(sampleRate);
 
-    this->_voice1.initialize(_sampleRate, voice1Buf, bufLength);
-    this->_voice2.initialize(_sampleRate, voice2Buf, bufLength);
-    this->_voice3.initialize(_sampleRate, voice3Buf, bufLength);
-    this->_voice4.initialize(_sampleRate, voice4Buf, bufLength);
-    this->_voice5.initialize(_sampleRate, voice5Buf, bufLength);
-    this->_voice6.initialize(_sampleRate, voice6Buf, bufLength);
+    this->_voice1.initialize(&_lfo, _sampleRate, voice1Buf, bufLength);
+    this->_voice2.initialize(&_lfo, _sampleRate, voice2Buf, bufLength);
+    this->_voice3.initialize(&_lfo, _sampleRate, voice3Buf, bufLength);
+    this->_voice4.initialize(&_lfo, _sampleRate, voice4Buf, bufLength);
+    this->_voice5.initialize(&_lfo, _sampleRate, voice5Buf, bufLength);
+    this->_voice6.initialize(&_lfo, _sampleRate, voice6Buf, bufLength);
 
     this->setAllParams(_mix, _dispersion, _spread, _timeMs, _feedback, _tone, _modRateHz, _modDepth, _position, _arrangement);
 

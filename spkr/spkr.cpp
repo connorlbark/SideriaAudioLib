@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
 void applyDelay(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out) {
 	siderialib::ModulatedDelay delay;
 
-	delay.initialize(44100, 44100 * 10);
+	delay.initialize(nullptr, 44100, 44100 * 10);
 
     delay.setDelayMs(2000.0);
     delay.setFeedback(0.6);
@@ -62,8 +62,8 @@ void applyDelay(std::vector<std::vector<double>> in, std::vector<std::vector<dou
 
     delay.setMix(.8);
 
-    delay.mod().setRateHz(2.0);
-    delay.mod().setDepth(0.0);
+//    delay.mod().setRateHz(2.0);
+//    delay.mod().setDepth(0.0);
 
 	for (int i = 0; i < in.at(0).size(); i++) {
 
