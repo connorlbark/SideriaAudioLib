@@ -5,16 +5,15 @@ using namespace siderialib;
 
 static int samples = 0;
 void ModulatedDelay::tick(sfloat L, sfloat R) {
-    double mod = this->_mod->value();
+    sfloat mod = this->_mod->value();
 
-    double modulatedDelaySamps = this->_buf.mapToNonCircularIndex(this->_delaySamps.tick()) + mod * 400.0;
+    sfloat modulatedDelaySamps = this->_buf.mapToNonCircularIndex(this->_delaySamps.tick()) + mod * 400.0;
 
 	int flooredModDelaySamps = (int)std::floor(modulatedDelaySamps);
     double t = modulatedDelaySamps - flooredModDelaySamps;
 
     sfloat delayedL = this->_buf.linearInterpolation(0, flooredModDelaySamps, t);
     sfloat delayedR = this->_buf.linearInterpolation(1, flooredModDelaySamps, t);
-
 
     writeToBuffer(L + delayedL * _feedback, R + delayedR * _feedback);
 

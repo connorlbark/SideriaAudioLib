@@ -7,10 +7,12 @@ using namespace siderialib;
 void Disperse::tick(siderialib::sfloat L, siderialib::sfloat R) {
     _lfo.tick();
 
-    _lastOutL = 0.f;
-    _lastOutR = 0.f;
 
-    if (_arrangement == DisperseArrangement::FULL_PARALLEL) {
+
+    if (_arrangement == DisperseArrangement::FULL_PARALLEL && _clockTick == 0) {
+        _lastOutL = 0.f;
+        _lastOutR = 0.f;
+
         _voice1.tick(L, R);
 
         _lastOutL += _voice1.lastOutL();
@@ -43,6 +45,12 @@ void Disperse::tick(siderialib::sfloat L, siderialib::sfloat R) {
 
         _lastOutL /= 6.f;
         _lastOutR /= 6.f;
+    }
+
+    if (_clockTick == 0) {
+        _clockTick = _downsampleFactor;
+    } else {
+        _clockTick--;
     }
 
     // at this point, _lastOutL/R are purely wet, so we need to mix in the dry
@@ -95,6 +103,10 @@ void Disperse::setTone(sfloat tone) {
     updateTone();
 }
 
+void Disperse::setDownsampleFactor(int ratio) {
+    this->_downsampleFactor = ratio;
+}
+
 void Disperse::setArrangement(DisperseArrangement arrangement) {
     this->_arrangement = arrangement;
 }
@@ -134,12 +146,18 @@ void Disperse::updateFeedback() {
 }
 
 void Disperse::updateTone() {
-    // todo
+    _voice1.setLpfParams(_tone * _sampleRate * 0.5, 1.0, 0.0);
+    _voice2.setLpfParams(_tone * _sampleRate * 0.5, 1.0, 0.0);
+    _voice3.setLpfParams(_tone * _sampleRate * 0.5, 1.0, 0.0);
+    _voice4.setLpfParams(_tone * _sampleRate * 0.5, 1.0, 0.0);
+    _voice5.setLpfParams(_tone * _sampleRate * 0.5, 1.0, 0.0);
+    _voice6.setLpfParams(_tone * _sampleRate * 0.5, 1.0, 0.0);
 }
 
 void Disperse::updateSpread() {
     // todo
 }
+
 
 void Disperse::updateMod() {
     this->_lfo.setRateHz(this->_modRateHz);
@@ -173,13 +191,19 @@ void Disperse::initialize(sfloat sampleRate) {
 
     int maxDelaySamps = std::ceil((maxDelayMs/1000.0) * _sampleRate);
     this->_voice1.initialize(&_lfo, _sampleRate, maxDelaySamps);
+    this->_voice1.enableLpf(true);
     this->_voice2.initialize(&_lfo, _sampleRate, maxDelaySamps);
+    this->_voice2.enableLpf(true);
     this->_voice3.initialize(&_lfo, _sampleRate, maxDelaySamps);
+    this->_voice3.enableLpf(true);
     this->_voice4.initialize(&_lfo, _sampleRate, maxDelaySamps);
+    this->_voice4.enableLpf(true);
     this->_voice5.initialize(&_lfo, _sampleRate, maxDelaySamps);
+    this->_voice5.enableLpf(true);
     this->_voice6.initialize(&_lfo, _sampleRate, maxDelaySamps);
+    this->_voice6.enableLpf(true);
 
-    this->setAllParams(_mix, _dispersion, _spread, _timeMs, _feedback, _tone, _modRateHz, _modDepth, _position, _arrangement);
+    this->setAllParams(_mix, _dispersion, _spread, _timeMs, _feedback, _tone, _modRateHz, _modDepth, _position, _downsampleFactor, _arrangement);
 
 }
 
@@ -195,19 +219,25 @@ void Disperse::initialize(sfloat *voice1Buf,
     _lfo.initialize(sampleRate);
 
     this->_voice1.initialize(&_lfo, _sampleRate, voice1Buf, bufLength);
+    this->_voice1.enableLpf(true);
     this->_voice2.initialize(&_lfo, _sampleRate, voice2Buf, bufLength);
+    this->_voice2.enableLpf(true);
     this->_voice3.initialize(&_lfo, _sampleRate, voice3Buf, bufLength);
+    this->_voice3.enableLpf(true);
     this->_voice4.initialize(&_lfo, _sampleRate, voice4Buf, bufLength);
+    this->_voice4.enableLpf(true);
     this->_voice5.initialize(&_lfo, _sampleRate, voice5Buf, bufLength);
+    this->_voice5.enableLpf(true);
     this->_voice6.initialize(&_lfo, _sampleRate, voice6Buf, bufLength);
+    this->_voice6.enableLpf(true);
 
-    this->setAllParams(_mix, _dispersion, _spread, _timeMs, _feedback, _tone, _modRateHz, _modDepth, _position, _arrangement);
+    this->setAllParams(_mix, _dispersion, _spread, _timeMs, _feedback, _tone, _modRateHz, _modDepth, _position, _downsampleFactor, _arrangement);
 
 }
 
 
 void Disperse::setAllParams(sfloat mix, sfloat dispersion, sfloat spread, sfloat timeMs, sfloat feedback,
-                       sfloat tone, sfloat modRateHz, sfloat modDepth, sfloat position, DisperseArrangement arrangement) {
+                       sfloat tone, sfloat modRateHz, sfloat modDepth, sfloat position, int downsampleFactor, DisperseArrangement arrangement) {
 
     this->_timeMs = timeMs;
     this->_mix = mix;
@@ -218,6 +248,7 @@ void Disperse::setAllParams(sfloat mix, sfloat dispersion, sfloat spread, sfloat
     this->_modRateHz = modRateHz;
     this->_modDepth = modDepth;
     this->_position = position;
+    this->_downsampleFactor = downsampleFactor;
 
     this->_arrangement = arrangement;
 

@@ -52,15 +52,17 @@ int main(int argc, char *argv[]) {
 void applyDelay(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out) {
 	siderialib::ModulatedDelay delay;
 
-	delay.initialize(nullptr, 44100, 44100 * 10);
+    siderialib::LFO lfo;
+    lfo.initialize(44100.0);
+	delay.initialize(&lfo, 44100, 44100 * 10);
 
     delay.setDelayMs(2000.0);
     delay.setFeedback(0.6);
 
-    delay.enableLpf(true);
+    delay.enableLpf(false);
     delay.setLpfParams(1000.0, 1.0, 0.0);
 
-    delay.setMix(.8);
+    delay.setMix(1.0);
 
 //    delay.mod().setRateHz(2.0);
 //    delay.mod().setDepth(0.0);
@@ -82,20 +84,21 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
     siderialib::Disperse disperse;
 
     float sampleRate = 44100;
-    float mix = 1.0;
-    float timeMs = 800.0;
-    float dispersion = 0.6;
+    float mix = 0.8;
+    float timeMs = 1000.0;
+    float dispersion = 0.8;
     float spread = 0.0;
     float feedback = 0.5;
-    float tone = 0.5;
+    float tone = 0.1;
     float modRateHz = 2.0;
-    float modDepth = 0.5;
-    float position = 0.3245;
+    float modDepth = 0.1;
+    float position = 0.35;
+    int downsampleFactor = 1;
 
     siderialib::DisperseArrangement arrangement = siderialib::FULL_PARALLEL;
     disperse.initialize(sampleRate);
 
-    disperse.setAllParams(mix, dispersion, spread, timeMs, feedback, tone, modRateHz, modDepth, position, arrangement);
+    disperse.setAllParams(mix, dispersion, spread, timeMs, feedback, tone, modRateHz, modDepth, position, downsampleFactor, arrangement);
 
     for (int i = 0; i < in.at(0).size(); i++) {
 

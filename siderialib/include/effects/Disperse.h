@@ -34,13 +34,16 @@ namespace siderialib {
         sfloat _mix = 1.0;
         sfloat _tone = 0.5;
         sfloat _position = 0.0;
+        int _downsampleFactor = 0;
         DisperseArrangement _arrangement = FULL_PARALLEL;
 
         sfloat _modRateHz = 1.0;
         sfloat _modDepth = 0.0;
 
-        sfloat _lastOutL;
-        sfloat _lastOutR;
+        int _clockTick = 0;
+
+        sfloat _lastOutL = 0.f;
+        sfloat _lastOutR = 0.f;
 
         LFO _lfo;
 
@@ -62,7 +65,7 @@ namespace siderialib {
                         sfloat sampleRate);
         void initialize(sfloat sampleRate);
 
-        virtual ~Disperse() {}
+        virtual ~Disperse() = default;
 
         void tick(sfloat L, sfloat R);
 
@@ -89,6 +92,8 @@ namespace siderialib {
         inline sfloat getModDepth() { return this->_modDepth; }
         void setMix(sfloat mix);
         inline sfloat getMix() { return this->_mix; }
+        void setDownsampleFactor(int factor);
+        inline int getDownsampleFactor() { return _downsampleFactor; }
 
         void setAllParams(sfloat mix,
                           sfloat dispersion,
@@ -99,6 +104,7 @@ namespace siderialib {
                           sfloat modRateHz,
                           sfloat modDepth,
                           sfloat position,
+                          int downsampleFactor,
                           DisperseArrangement arrangement);
 
     };
