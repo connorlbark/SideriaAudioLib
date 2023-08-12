@@ -1,5 +1,4 @@
 #include "../../../include/effects/delay/ModulatedDelay.h"
-#include "../../../include/siderialib.h"
 
 using namespace siderialib;
 
@@ -42,9 +41,6 @@ void ModulatedDelay::initialize(LFO *lfo, float sampleRate, int maxDelaySamps) {
     this->_mix = 1.0f;
 
     this->_mod = lfo;
-//	this->_mod.initialize(_sampleRate);
-//	this->_mod.setDepth(0.0);
-//	this->_mod.setRateHz(1.0);
 
     this->_enableHpf = false;
     this->_enableLpf = false;
