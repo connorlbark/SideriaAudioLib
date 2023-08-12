@@ -18,7 +18,7 @@ target_compile_features(siderialib PUBLIC cxx_std_14)
 if(MSVC)
   target_compile_options(siderialib PRIVATE /W4 /WX)
 else()
-  target_compile_options(siderialib PRIVATE -Wall -Wextra -Wpedantic -Werror)
+  target_compile_options(siderialib PRIVATE -Wall -Wextra -Wpedantic -Werror -O2)
 endif()
 
 

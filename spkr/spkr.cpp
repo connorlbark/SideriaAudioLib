@@ -93,7 +93,7 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
     float modRateHz = 2.0;
     float modDepth = 0.1;
     float position = 0.35;
-    int downsampleFactor = 1;
+    int downsampleFactor = 0;
 
     siderialib::DisperseArrangement arrangement = siderialib::FULL_PARALLEL;
     disperse.initialize(sampleRate);
@@ -108,6 +108,23 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
 
         out.at(0).at(i) = disperse.lastOutL();
         out.at(1).at(i) = disperse.lastOutR();
+
+    }
+}
+
+void applyFilter(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out) {
+    siderialib::BiquadFilter filter;
+
+    filter.initialize(44100.0, siderialib::BiquadType::LPF, 1000.0, 1.0);
+
+    for (int i = 0; i < in.at(0).size(); i++) {
+
+        siderialib::sfloat L = in.at(0).at(i);
+
+        float filtered = filter.tick(L);
+
+        out.at(0).at(i) = filtered;
+        out.at(1).at(i) = filtered;
 
     }
 }

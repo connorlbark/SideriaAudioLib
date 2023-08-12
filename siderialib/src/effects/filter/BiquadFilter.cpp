@@ -4,41 +4,23 @@
 using namespace siderialib;
 
 
-void BiquadFilter::initializeParams() {
-	this->_aLen = 3;
-	this->_a = (double*)malloc(sizeof(double) * _aLen);
-	this->_x = (double*)malloc(sizeof(double) * _aLen);
-	for (int i = 0; i < _aLen; i++) {
-        _x[i] = 0.0;
-	}
-
-	this->_bLen = 2;
-	this->_b = (double*)malloc(sizeof(double) * _bLen);
-	this->_y = (double*)malloc(sizeof(double) * _bLen);
-	for (int i = 0; i < _bLen; i++) {
-        _y[i] = 0.0;
-	}
-
-	recalcParams();
-}
-
 void BiquadFilter::recalcParams() {
 	double thetac = TWOPI * _cutoffHz / (double)this->_samplingRate;
 	double K = tan(thetac / 2.0);
 	double W = K * K;
 	double alpha = 1.0 + (K / _Q) + W;
 
-    _b[0] = 2.0 * (W - 1.0) / alpha;
-    _b[1] = (1.0 - (K / _Q) + W) / alpha;
+    _b1 = 2.0 * (W - 1.0) / alpha;
+    _b2 = (1.0 - (K / _Q) + W) / alpha;
 
     if (_type == BiquadType::LPF) {
-        _a[0] = W/alpha;
-        _a[1] = 2 * W/alpha;
-        _a[2] = _a[0];
+        _a0 = W/alpha;
+        _a1 = 2 * W/alpha;
+        _a2 = _a0;
     } else if (_type == BiquadType::HPF) {
-        _a[0] = 1.0 / alpha;
-        _a[1] = -2.0 / alpha;
-        _a[2] = _a[0];
+        _a0 = 1.0 / alpha;
+        _a1 = -2.0 / alpha;
+        _a2 = _a0;
     }
 }
 
@@ -49,7 +31,7 @@ void BiquadFilter::initialize(sfloat samplingRate, BiquadType type, sfloat cutof
 	this->_cutoffHz = cutoffHz;
 	this->_Q = Q;
 
-	initializeParams();
+	recalcParams();
 }
 
 void BiquadFilter::setCutoff(sfloat cutoffHz) {
@@ -67,4 +49,17 @@ void BiquadFilter::setParams(sfloat cutoff, sfloat Q, sfloat dB) {
     this->_Q =Q;
     setGain(dB);
     this->recalcParams();
+}
+
+sfloat BiquadFilter::tick(sfloat x0) {
+
+    _out = x0 * _a0 + _x1 * _a1 * _x2 * _a2 -  _y1 * _b1 - _y2 * _b2;
+
+    _x2 = _x1;
+    _x1 = x0;
+
+    _y2 = _y1;
+    _y1 = _out;
+
+    return (sfloat)_out * _linGain;
 }

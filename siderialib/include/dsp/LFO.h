@@ -40,7 +40,7 @@ namespace siderialib {
 		sfloat getDepth();
 		// set modulation type, e.g., SIN
 		void setType(LFOType type);
-        void setPhase(sfloat phase) { this->_phase = fmod(phase, 1.0); }
+        void setPhase(sfloat phase) { this->_phase = fmod(phase, 1.0f); }
         double getPhase() { return this->_phase; }
 	};
 }
