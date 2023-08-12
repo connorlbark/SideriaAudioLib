@@ -10,22 +10,22 @@ namespace siderialib {
 	
 	class BiquadFilter  {
 	private:
-        double _a0;
-        double _a1;
-        double _a2;
+        double _a0 = 0.f;
+        double _a1 = 0.f;
+        double _a2 = 0.f;
 
-        double _b1;
-        double _b2;
+        double _b1 = 0.f;
+        double _b2 = 0.f;
 
-        double _x1;
-        double _x2;
+        double _x1 = 0.f;
+        double _x2 = 0.f;
 
-        double _y1;
-        double _y2;
+        double _y1 = 0.f;
+        double _y2 = 0.f;
 
-        double _out;
+        double _out = 0.f;
 
-        float _linGain = 1.0;
+        double _linGain = 1.0;
 
 
 		BiquadType _type = BiquadType::LPF;

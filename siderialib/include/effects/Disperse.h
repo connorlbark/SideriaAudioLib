@@ -46,6 +46,8 @@ namespace siderialib {
         sfloat _lastOutR = 0.f;
 
         LFO _lfo;
+        BiquadFilter _postLpfL;
+        BiquadFilter _postLpfR;
 
         void updateSpread();
         void updateDispersionAndPosition();
@@ -69,8 +71,8 @@ namespace siderialib {
 
         void tick(sfloat L, sfloat R);
 
-        const sfloat lastOutL();
-        const sfloat lastOutR();
+        sfloat lastOutL() const;
+        sfloat lastOutR() const;
 
         void setTimeMs(sfloat timeMs);
         inline sfloat getTimeMs() const { return _timeMs; }

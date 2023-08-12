@@ -13,35 +13,37 @@ namespace siderialib {
 
 		int _circularSampleIdx;
 
-		inline int flattenIndex(int channel, int sample) const;
+        int flattenIndex(int channel, int sample) const;
 
 		void incrementCircularSampleIdx();
 	public:
+        StereoCircularBuffer() = default;
+
         ~StereoCircularBuffer() {
             delete _buf;
         }
 
-        StereoCircularBuffer(StereoCircularBuffer const &fp) = delete;
-        StereoCircularBuffer const & operator=(StereoCircularBuffer const &fp) = delete;
-
-        StereoCircularBuffer& operator=(StereoCircularBuffer&& other) noexcept
-        {
-            if (this != &other) {
-                if (this->_buf != nullptr) {
-                    free(this->_buf);
-                }
-
-                this->_buf = other._buf;
-                this->_numSamples = other._numSamples;
-                this->_circularSampleIdx = other._circularSampleIdx;
-
-                other._buf = nullptr;
-                other._numSamples = 0;
-                other._circularSampleIdx = 0;
-            }
-
-            return *this;
-        }
+//        StereoCircularBuffer(StereoCircularBuffer const &fp) = delete;
+//        StereoCircularBuffer const & operator=(StereoCircularBuffer const &fp) = delete;
+//
+//        StereoCircularBuffer& operator=(StereoCircularBuffer&& other) noexcept
+//        {
+//            if (this != &other) {
+//                if (this->_buf != nullptr) {
+//                    free(this->_buf);
+//                }
+//
+//                this->_buf = other._buf;
+//                this->_numSamples = other._numSamples;
+//                this->_circularSampleIdx = other._circularSampleIdx;
+//
+//                other._buf = nullptr;
+//                other._numSamples = 0;
+//                other._circularSampleIdx = 0;
+//            }
+//
+//            return *this;
+//        }
 
 		int mapToNonCircularIndex(int sample) const;
 

@@ -56,11 +56,11 @@ void applyDelay(std::vector<std::vector<double>> in, std::vector<std::vector<dou
     lfo.initialize(44100.0f);
 	delay.initialize(&lfo, 44100.f, 44100 * 10);
 
-    delay.setDelayMs(2000.0f);
-    delay.setFeedback(0.6f);
+    delay.setDelayMs(500.0f);
+    delay.setFeedback(0.0f);
 
-    delay.enableLpf(false);
-    delay.setLpfParams(1000.0f, 1.0f, 0.0f);
+    delay.enableLpf(true);
+    delay.setLpfParams(4000.0f, 0.7f, 12.0f);
 
     delay.setMix(1.0f);
 
@@ -81,15 +81,15 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
     siderialib::Disperse disperse;
 
     float sampleRate = 44100.f;
-    float mix = 0.8f;
-    float timeMs = 1000.0f;
-    float dispersion = 0.8f;
+    float mix = 1.0f;
+    float timeMs = 500.0f;
+    float dispersion = 0.0f;
     float spread = 0.0f;
-    float feedback = 0.5f;
-    float tone = 0.1f;
+    float feedback = 0.0f;
+    float tone = 0.3f;
     float modRateHz = 2.0f;
-    float modDepth = 0.1f;
-    float position = 0.35f;
+    float modDepth = 0.0f;
+    float position = 0.f;
     int downsampleFactor = 0;
 
     siderialib::DisperseArrangement arrangement = siderialib::DisperseArrangement::FULL_PARALLEL;
@@ -99,7 +99,7 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
 
     for (int i = 0; i < in.at(0).size(); i++) {
 
-        siderialib::sfloat L = (siderialib::sfloat)in.at(0).at(i);
+        float L = (float)in.at(0).at(i);
 
         disperse.tick(L, L);
 
@@ -110,15 +110,19 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
 }
 
 void applyFilter(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out) {
-    siderialib::BiquadFilter filter;
+    siderialib::BiquadFilter filter1;
+    siderialib::BiquadFilter filter2;
 
-    filter.initialize(44100.0, siderialib::BiquadType::LPF, 1000.0, 1.0);
+    filter1.initialize(44100.0, siderialib::BiquadType::LPF, 1000.0, 0.5);
+    filter1.setParams(8000.0, 0.7, 12.0);
 
+    filter2.initialize(44100.0, siderialib::BiquadType::LPF, 1000.0, 0.5);
+    filter2.setParams(8000.0, 0.7, 12.0);
     for (int i = 0; i < in.at(0).size(); i++) {
 
         siderialib::sfloat L = (siderialib::sfloat)in.at(0).at(i);
 
-        float filtered = filter.tick(L);
+        float filtered = filter1.tick(filter2.tick(L));
 
         out.at(0).at(i) = filtered;
         out.at(1).at(i) = filtered;

@@ -39,9 +39,6 @@ void Disperse::tick(siderialib::sfloat L, siderialib::sfloat R) {
 
         _lastOutL += _voice6.lastOutL();
         _lastOutR += _voice6.lastOutR();
-
-        _lastOutL /= 6.f;
-        _lastOutR /= 6.f;
     }
 
     if (_clockTick == 0) {
@@ -49,6 +46,9 @@ void Disperse::tick(siderialib::sfloat L, siderialib::sfloat R) {
     } else {
         _clockTick--;
     }
+
+    _lastOutL = _postLpfL.tick(_lastOutL);
+    _lastOutR = _postLpfR.tick(_lastOutR);
 
     // at this point, _lastOutL/R are purely wet, so we need to mix in the dry
     _lastOutL = L * (1.f - _mix) + _lastOutL * _mix;
@@ -108,11 +108,11 @@ void Disperse::setArrangement(DisperseArrangement arrangement) {
     this->_arrangement = arrangement;
 }
 
-const sfloat Disperse::lastOutR() {
+sfloat Disperse::lastOutR() const {
     return _lastOutR;
 }
 
-const sfloat Disperse::lastOutL() {
+sfloat Disperse::lastOutL() const {
     return _lastOutL;
 }
 
@@ -143,12 +143,19 @@ void Disperse::updateFeedback() {
 }
 
 void Disperse::updateTone() {
-    _voice1.setLpfParams(_tone * _sampleRate * 0.5f, 1.0f, 0.0f);
-    _voice2.setLpfParams(_tone * _sampleRate * 0.5f, 1.0f, 0.0f);
-    _voice3.setLpfParams(_tone * _sampleRate * 0.5f, 1.0f, 0.0f);
-    _voice4.setLpfParams(_tone * _sampleRate * 0.5f, 1.0f, 0.0f);
-    _voice5.setLpfParams(_tone * _sampleRate * 0.5f, 1.0f, 0.0f);
-    _voice6.setLpfParams(_tone * _sampleRate * 0.5f, 1.0f, 0.0f);
+    // from 1000hz to 8000hz;
+    sfloat cutoff = 1000.0f + 7000.0f * _tone;
+    sfloat Q = 0.7;
+    sfloat gain = -3.0;
+
+    _voice1.setLpfParams(cutoff, Q, gain);
+    _voice2.setLpfParams(cutoff, Q, gain);
+    _voice3.setLpfParams(cutoff, Q, gain);
+    _voice4.setLpfParams(cutoff, Q, gain);
+    _voice5.setLpfParams(cutoff, Q, gain);
+    _voice6.setLpfParams(cutoff, Q, gain);
+    _postLpfL.setParams(cutoff, Q, gain);
+    _postLpfR.setParams(cutoff, Q, gain);
 }
 
 void Disperse::updateSpread() {
@@ -172,6 +179,8 @@ void Disperse::updateAllParams() {
 void Disperse::initialize(sfloat sampleRate) {
     this->_sampleRate = sampleRate;
     _lfo.initialize(sampleRate);
+    _postLpfL.initialize(_sampleRate, BiquadType::LPF, 8000.0, 0.7);
+    _postLpfR.initialize(_sampleRate, BiquadType::LPF, 8000.0, 0.7);
 
     int maxDelaySamps = std::ceil((maxDelayMs/1000.0) * _sampleRate);
     this->_voice1.initialize(&_lfo, _sampleRate, maxDelaySamps);
@@ -201,6 +210,8 @@ void Disperse::initialize(sfloat *voice1Buf,
                           sfloat sampleRate) {
     this->_sampleRate = sampleRate;
     _lfo.initialize(sampleRate);
+    _postLpfL.initialize(_sampleRate, BiquadType::LPF, 8000.0, 0.7);
+    _postLpfR.initialize(_sampleRate, BiquadType::LPF, 8000.0, 0.7);
 
     this->_voice1.initialize(&_lfo, _sampleRate, voice1Buf, bufLength);
     this->_voice1.enableLpf(true);

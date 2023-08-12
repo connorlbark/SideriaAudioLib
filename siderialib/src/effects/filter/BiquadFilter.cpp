@@ -52,8 +52,7 @@ void BiquadFilter::setParams(sfloat cutoff, sfloat Q, sfloat dB) {
 }
 
 sfloat BiquadFilter::tick(sfloat x0) {
-
-    _out = x0 * _a0 + _x1 * _a1 * _x2 * _a2 -  _y1 * _b1 - _y2 * _b2;
+    _out = (x0 * _a0) + (_x1 * _a1) +  (_x2 * _a2) - (_y1 * _b1) - (_y2 * _b2);
 
     _x2 = _x1;
     _x1 = x0;
@@ -61,5 +60,5 @@ sfloat BiquadFilter::tick(sfloat x0) {
     _y2 = _y1;
     _y1 = _out;
 
-    return (sfloat)_out * _linGain;
+    return (sfloat)(_out * _linGain);
 }

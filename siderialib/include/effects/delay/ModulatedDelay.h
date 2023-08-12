@@ -19,21 +19,21 @@ namespace siderialib
 
 		LFO *_mod;
 
-		// placed before writing to circular buffer, so in essence, filters delayed sounds many times
-		BiquadFilter _lpfL;
-		BiquadFilter _lpfR;
-		bool _enableLpf;
-		// placed before writing to circular buffer, so in essence, filters delayed sounds many times
-		BiquadFilter _hpfL;
-		BiquadFilter _hpfR;
-		bool _enableHpf;
+		// 2-stage lpf placed before writing to circular buffer, so in essence, filters delayed sounds many times
+		BiquadFilter _lpf1L;
+		BiquadFilter _lpf1R;
+        BiquadFilter _lpf2L;
+        BiquadFilter _lpf2R;
+        bool _enableLpf;
 
-		sfloat _lastOutL;
-		sfloat _lastOutR;
+		sfloat _lastOutL = 0.f;
+		sfloat _lastOutR = 0.f;
 
 		void writeToBuffer(sfloat L, sfloat R);
 
 	public:
+        ModulatedDelay() = default;
+
 		void initialize(LFO *lfo, sfloat sampleRate, int maxDelaySamps);
 		void initialize(LFO *lfo, sfloat sampleRate, sfloat *buf, int maxDelaySamps);
 
@@ -52,9 +52,6 @@ namespace siderialib
 		sfloat getFeedback() const { return _feedback; }
 
 		void setLpfParams(sfloat cutoff, sfloat Q, sfloat dBGain);
-		void setHpfParams(sfloat cutoff, sfloat Q, sfloat dBGain);
-
 		void enableLpf(bool enabled) { this->_enableLpf = enabled; }
-		void enableHpf(bool enabled) { this->_enableHpf = enabled; }
 	};
 }
