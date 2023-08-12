@@ -17,8 +17,8 @@ int main(int argc, char *argv[]) {
 		return 0;
 	}
 
-	char* filename = argv[1];
-	char* outfile = argv[2];
+	char const* filename = argv[1];
+	char const* outfile = argv[2];
 
 	AudioFile<double> file;
 	file.load(filename);
@@ -33,14 +33,14 @@ int main(int argc, char *argv[]) {
 	try {
 		apply(in, out);
 	}
-	catch (std::exception e) {
+	catch (std::exception &e) {
 		printf("Exception: %s\n", e.what());
 	}
     std::chrono::time_point end = std::chrono::high_resolution_clock::now();
 
     auto duration = duration_cast<std::chrono::microseconds>(end - start);
 
-    std::cout << "Time to execute: " << duration.count() / 1000000.f << " seconds." << std::endl;
+    std::cout << "Time to execute: " << duration.count() / 1000000.0L << " seconds." << std::endl;
     std::cout << "File length: " << file.getLengthInSeconds() << " seconds." << std:: endl;
 
     file.setAudioBuffer(out);
@@ -53,23 +53,20 @@ void applyDelay(std::vector<std::vector<double>> in, std::vector<std::vector<dou
 	siderialib::ModulatedDelay delay;
 
     siderialib::LFO lfo;
-    lfo.initialize(44100.0);
-	delay.initialize(&lfo, 44100, 44100 * 10);
+    lfo.initialize(44100.0f);
+	delay.initialize(&lfo, 44100.f, 44100 * 10);
 
-    delay.setDelayMs(2000.0);
-    delay.setFeedback(0.6);
+    delay.setDelayMs(2000.0f);
+    delay.setFeedback(0.6f);
 
     delay.enableLpf(false);
-    delay.setLpfParams(1000.0, 1.0, 0.0);
+    delay.setLpfParams(1000.0f, 1.0f, 0.0f);
 
-    delay.setMix(1.0);
-
-//    delay.mod().setRateHz(2.0);
-//    delay.mod().setDepth(0.0);
+    delay.setMix(1.0f);
 
 	for (int i = 0; i < in.at(0).size(); i++) {
 
-        siderialib::sfloat L = in.at(0).at(i);
+        siderialib::sfloat L = (float)in.at(0).at(i);
 
         delay.tick(L, L);
 
@@ -83,26 +80,26 @@ void applyDelay(std::vector<std::vector<double>> in, std::vector<std::vector<dou
 void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out) {
     siderialib::Disperse disperse;
 
-    float sampleRate = 44100;
-    float mix = 0.8;
-    float timeMs = 1000.0;
-    float dispersion = 0.8;
-    float spread = 0.0;
-    float feedback = 0.5;
-    float tone = 0.1;
-    float modRateHz = 2.0;
-    float modDepth = 0.1;
-    float position = 0.35;
+    float sampleRate = 44100.f;
+    float mix = 0.8f;
+    float timeMs = 1000.0f;
+    float dispersion = 0.8f;
+    float spread = 0.0f;
+    float feedback = 0.5f;
+    float tone = 0.1f;
+    float modRateHz = 2.0f;
+    float modDepth = 0.1f;
+    float position = 0.35f;
     int downsampleFactor = 0;
 
-    siderialib::DisperseArrangement arrangement = siderialib::FULL_PARALLEL;
+    siderialib::DisperseArrangement arrangement = siderialib::DisperseArrangement::FULL_PARALLEL;
     disperse.initialize(sampleRate);
 
     disperse.setAllParams(mix, dispersion, spread, timeMs, feedback, tone, modRateHz, modDepth, position, downsampleFactor, arrangement);
 
     for (int i = 0; i < in.at(0).size(); i++) {
 
-        siderialib::sfloat L = in.at(0).at(i);
+        siderialib::sfloat L = (siderialib::sfloat)in.at(0).at(i);
 
         disperse.tick(L, L);
 
@@ -119,7 +116,7 @@ void applyFilter(std::vector<std::vector<double>> in, std::vector<std::vector<do
 
     for (int i = 0; i < in.at(0).size(); i++) {
 
-        siderialib::sfloat L = in.at(0).at(i);
+        siderialib::sfloat L = (siderialib::sfloat)in.at(0).at(i);
 
         float filtered = filter.tick(L);
 

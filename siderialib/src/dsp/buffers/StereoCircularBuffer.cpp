@@ -4,7 +4,7 @@
 
 using namespace siderialib;
 
-int StereoCircularBuffer::flattenIndex(int channel, int sample) {
+int StereoCircularBuffer::flattenIndex(int channel, int sample) const {
 	return _numSamples * channel + sample;
 }
 
@@ -32,7 +32,7 @@ void StereoCircularBuffer::initialize(sfloat *buf, int length) {
     }
 }
 
-sfloat StereoCircularBuffer::read(int channel, int sample) {
+sfloat StereoCircularBuffer::read(int channel, int sample) const {
 	while (sample < 0) {
 		sample += _numSamples;
 	}
@@ -48,12 +48,12 @@ void StereoCircularBuffer::write(sfloat val, int channel, int sample) {
     _buf[flattenIndex(channel, sample)] = val;
 }
 
-sfloat StereoCircularBuffer::readCircular(int channel) {
+sfloat StereoCircularBuffer::readCircular(int channel) const {
 	return _buf[flattenIndex(channel, _circularSampleIdx)];
 }
 
 
-sfloat StereoCircularBuffer::readCircular(int channel, int numSampsAgo) {
+sfloat StereoCircularBuffer::readCircular(int channel, int numSampsAgo) const {
 	return _buf[flattenIndex(channel, mapToNonCircularIndex(numSampsAgo))];
 
 }
@@ -65,25 +65,21 @@ void StereoCircularBuffer::writeCircular(sfloat L, sfloat R) {
     incrementCircularSampleIdx();
 }
 
-int StereoCircularBuffer::size() {
+int StereoCircularBuffer::size() const {
 	return _numSamples;
 }
 
-int StereoCircularBuffer::numChannels() {
+int StereoCircularBuffer::numChannels() const {
 	return 2;
 }
 
-int StereoCircularBuffer::mapToNonCircularIndex(int numSampsAgo) {
+int StereoCircularBuffer::mapToNonCircularIndex(int numSampsAgo) const {
 	int finalIdx = _circularSampleIdx - numSampsAgo;
 
 	return finalIdx;
 }
 
-//StereoCircularBuffer::~StereoCircularBuffer() {
-//    free(this->buf);
-//}
-
-sfloat StereoCircularBuffer::hermiteInterpolation(int channel, int index, double t) {
+sfloat StereoCircularBuffer::hermiteInterpolation(int channel, int index, double t) const {
     return (sfloat)InterpolateHermite4pt3oX(
             read(channel, index - 1),
             read(channel, index),
@@ -93,11 +89,9 @@ sfloat StereoCircularBuffer::hermiteInterpolation(int channel, int index, double
     );
 }
 
-sfloat x1;
-sfloat x2;
-sfloat StereoCircularBuffer::linearInterpolation(int channel, int index, double t) {
-    x1 = read(channel, index);
-    x2 = read(channel, index + 1);
+sfloat StereoCircularBuffer::linearInterpolation(int channel, int index, double t) const {
+    sfloat x1 = read(channel, index);
+    sfloat x2 = read(channel, index + 1);
 
     double out = x1 + (x2 - x1) * t;
     return (sfloat) out;

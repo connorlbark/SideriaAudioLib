@@ -90,7 +90,7 @@ void AudioPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     // initialisation that you need..
     juce::ignoreUnused (sampleRate, samplesPerBlock);
 
-    this->_disperse.initialize((float)sampleRate);
+    this->disperse.initialize((float)sampleRate);
 }
 
 void AudioPluginAudioProcessor::releaseResources()
@@ -153,13 +153,13 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
         L = buffer.getSample(0, sampleIdx);
         R = (totalNumInputChannels >= 2 ? buffer.getSample(1, sampleIdx) : buffer.getSample(0, sampleIdx));
 
-        this->_disperse.tick(L, R);
+        this->disperse.tick(L, R);
 
         if (totalNumOutputChannels >= 2) {
-            buffer.setSample(0, sampleIdx, _disperse.lastOutL());
-            buffer.setSample(1, sampleIdx, _disperse.lastOutR());
+            buffer.setSample(0, sampleIdx, disperse.lastOutL());
+            buffer.setSample(1, sampleIdx, disperse.lastOutR());
         } else {
-            buffer.setSample(0, sampleIdx, (_disperse.lastOutL()+_disperse.lastOutR()) / 2.f);
+            buffer.setSample(0, sampleIdx, (disperse.lastOutL() + disperse.lastOutR()) / 2.f);
         }
     }
 }

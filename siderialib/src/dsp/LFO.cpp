@@ -1,12 +1,11 @@
 #include "../../include/dsp/LFO.h"
-#include "../../include/siderialib.h"
 
 using namespace siderialib;
 
 void LFO::incrementPhase() {
     _phase += _phasePerSample;
-	if (_phase > 1.0) {
-        _phase -= 1.0;
+	if (_phase > 1.0f) {
+        _phase -= 1.0f;
 	}
 }
 
@@ -15,17 +14,16 @@ void LFO::tick() {
 	_val = this->modSource(_phase) * _depth;
 }
 
-double LFO::modSource(double phase) {
+sfloat LFO::modSource(sfloat phase) const {
 	switch (this->_type) {
-    case TRIANGLE:
-        if (phase < 0.5) {
+    case LFOType::TRIANGLE:
+        if (phase < 0.5f) {
             return phase * 2.f;
         }
         return 2.f - phase * 2.f;
 	default:
-        double out = (sinf(phase * TWOPI) + 1) / 2;
 
-		return out;
+		return (sinf(phase * TWOPI) + 1.f) / 2.f;
 	}
 }
 
@@ -39,11 +37,11 @@ void LFO::setDepth(sfloat depth) {
 	this->_depth = depth;
 }
 
-sfloat LFO::getRateHz() {
+sfloat LFO::getRateHz() const {
 	return this->_hz;
 }
 
-sfloat LFO::getDepth() {
+sfloat LFO::getDepth() const {
 	return this->_depth;
 }
 

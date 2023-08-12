@@ -39,19 +39,17 @@ namespace siderialib
 
 		void tick(sfloat L, sfloat R);
 
-		sfloat lastOutL();
-		sfloat lastOutR();
+		sfloat lastOutL() const;
+		sfloat lastOutR() const;
 
 		void setMix(sfloat mix) { this->_mix = mix; }
-		sfloat getMix() { return this->_mix; }
+		sfloat getMix() const { return this->_mix; }
 
-		void setDelayMs(sfloat ms) { this->_delaySamps.setTarget(((ms / 1000.0f) * _sampleRate)); }
-		sfloat getDelayMs() { return (this->_delaySamps.value() / _sampleRate) * 1000.0f; }
+		void setDelayMs(sfloat ms) { this->_delaySamps.setTarget((ms / 1000.0f) * _sampleRate); }
+		sfloat getDelayMs() const { return (this->_delaySamps.value() / _sampleRate) * 1000.0f; }
 
 		void setFeedback(sfloat feedback) { this->_feedback = feedback; }
-		sfloat getFeedback() { return _feedback; }
-
-		// inline LFO &mod() { return _mod; }
+		sfloat getFeedback() const { return _feedback; }
 
 		void setLpfParams(sfloat cutoff, sfloat Q, sfloat dBGain);
 		void setHpfParams(sfloat cutoff, sfloat Q, sfloat dBGain);

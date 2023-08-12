@@ -3,14 +3,13 @@
 
 using namespace siderialib;
 
-static int samples = 0;
 void ModulatedDelay::tick(sfloat L, sfloat R) {
     sfloat mod = this->_mod->value();
 
-    sfloat modulatedDelaySamps = this->_buf.mapToNonCircularIndex(this->_delaySamps.tick()) + mod * 400.0;
+    sfloat modulatedDelaySamps = (sfloat)this->_buf.mapToNonCircularIndex((int)this->_delaySamps.tick()) + mod * 400.0f;
 
 	int flooredModDelaySamps = (int)std::floor(modulatedDelaySamps);
-    double t = modulatedDelaySamps - flooredModDelaySamps;
+    double t = modulatedDelaySamps - (sfloat)flooredModDelaySamps;
 
     sfloat delayedL = this->_buf.linearInterpolation(0, flooredModDelaySamps, t);
     sfloat delayedR = this->_buf.linearInterpolation(1, flooredModDelaySamps, t);
@@ -19,8 +18,6 @@ void ModulatedDelay::tick(sfloat L, sfloat R) {
 
 	_lastOutL = L * (_mix - 1.f) + delayedL * _mix;
 	_lastOutR = R * (_mix - 1.f) + delayedR * _mix;
-
-    samples++;
 }
 
 void ModulatedDelay::writeToBuffer(sfloat L, sfloat R) {
@@ -79,11 +76,11 @@ void ModulatedDelay::initialize(LFO *lfo, float sampleRate, sfloat *buf, int buf
 
 }
 
-sfloat ModulatedDelay::lastOutL() {
+sfloat ModulatedDelay::lastOutL() const {
 	return _lastOutL;
 }
 
-sfloat ModulatedDelay::lastOutR() {
+sfloat ModulatedDelay::lastOutR() const {
 	return _lastOutR;
 }
 

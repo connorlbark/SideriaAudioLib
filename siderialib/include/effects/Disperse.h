@@ -4,7 +4,7 @@
 #include "delay/ModulatedDelay.h"
 
 namespace siderialib {
-    enum DisperseArrangement {
+    enum class DisperseArrangement {
         FULL_PARALLEL = 0,
     };
 
@@ -35,7 +35,7 @@ namespace siderialib {
         sfloat _tone = 0.5;
         sfloat _position = 0.0;
         int _downsampleFactor = 0;
-        DisperseArrangement _arrangement = FULL_PARALLEL;
+        DisperseArrangement _arrangement = DisperseArrangement::FULL_PARALLEL;
 
         sfloat _modRateHz = 1.0;
         sfloat _modDepth = 0.0;
@@ -69,31 +69,31 @@ namespace siderialib {
 
         void tick(sfloat L, sfloat R);
 
-        sfloat lastOutL();
-        sfloat lastOutR();
+        const sfloat lastOutL();
+        const sfloat lastOutR();
 
         void setTimeMs(sfloat timeMs);
-        inline sfloat getTimeMs() { return _timeMs; }
+        inline sfloat getTimeMs() const { return _timeMs; }
         void setSpread(sfloat spread);
-        inline sfloat getSpread() { return _spread; }
+        inline sfloat getSpread() const { return _spread; }
         void setFeedback(sfloat feedback);
-        inline sfloat getFeedback() { return _feedback; }
+        inline sfloat getFeedback() const { return _feedback; }
         void setDispersion(sfloat dispersion);
-        inline sfloat getDispersion() { return _dispersion; }
+        inline sfloat getDispersion() const { return _dispersion; }
         void setTone(sfloat tone);
-        inline sfloat getTone() { return _tone; }
+        inline sfloat getTone() const { return _tone; }
         void setArrangement(DisperseArrangement arrangement);
-        inline DisperseArrangement getArrangement() { return _arrangement; }
+        inline DisperseArrangement getArrangement() const { return _arrangement; }
         void setPosition(sfloat position);
-        inline sfloat getPosition() { return this->_position; }
+        inline sfloat getPosition() const { return this->_position; }
         void setModRateHz(sfloat modRateHz);
-        inline sfloat getModRateHz() { return this->_modRateHz; }
+        inline sfloat getModRateHz() const { return this->_modRateHz; }
         void setModDepth(sfloat depth);
-        inline sfloat getModDepth() { return this->_modDepth; }
+        inline sfloat getModDepth() const { return this->_modDepth; }
         void setMix(sfloat mix);
-        inline sfloat getMix() { return this->_mix; }
+        inline sfloat getMix() const { return this->_mix; }
         void setDownsampleFactor(int factor);
-        inline int getDownsampleFactor() { return _downsampleFactor; }
+        inline int getDownsampleFactor() const { return _downsampleFactor; }
 
         void setAllParams(sfloat mix,
                           sfloat dispersion,

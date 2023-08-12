@@ -4,7 +4,7 @@
 #include "../siderialib.h"
 
 namespace siderialib {
-	enum LFOType {
+	enum class LFOType {
 		SIN = 0,
         TRIANGLE = 1,
 	};
@@ -23,24 +23,24 @@ namespace siderialib {
         sfloat _val = 0.f;
 
 		void incrementPhase();
-		double modSource(double phase);
+		sfloat modSource(sfloat phase) const;
 
 	public:
 		void initialize(sfloat sampleRate) { this->_sampleRate = sampleRate; }
 		// tick modulation, result will be inbetween 0.0 to 1.0
 		void tick();
-        inline sfloat value() { return _val; }
+        inline sfloat value() const { return _val; }
 		// set rate as a time in milliseconds
 		void setRateHz(sfloat ms);
 		// set depth as a percentage, from 0.0 to 1.0
 		void setDepth(sfloat depth);
 		// get rate as milliseconds
-		sfloat getRateHz();
+		sfloat getRateHz() const;
 		// get depth as percentage
-		sfloat getDepth();
+		sfloat getDepth() const;
 		// set modulation type, e.g., SIN
 		void setType(LFOType type);
         void setPhase(sfloat phase) { this->_phase = fmod(phase, 1.0f); }
-        double getPhase() { return this->_phase; }
+        sfloat getPhase() const { return this->_phase; }
 	};
 }

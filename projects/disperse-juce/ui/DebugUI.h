@@ -25,7 +25,7 @@ private:
 
     siderialib::Disperse &_disperse;
 public:
-    DebugUI(siderialib::Disperse &disperse);
+    explicit DebugUI(siderialib::Disperse &disperse);
 
     void resized() override;
 

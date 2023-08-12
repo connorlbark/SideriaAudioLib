@@ -1,13 +1,10 @@
 #include "../../include/effects/Disperse.h"
-#include "../../include/util/Random.h"
 #include "../../include/dsp/Math.h"
 
 using namespace siderialib;
 
 void Disperse::tick(siderialib::sfloat L, siderialib::sfloat R) {
     _lfo.tick();
-
-
 
     if (_arrangement == DisperseArrangement::FULL_PARALLEL && _clockTick == 0) {
         _lastOutL = 0.f;
@@ -111,11 +108,11 @@ void Disperse::setArrangement(DisperseArrangement arrangement) {
     this->_arrangement = arrangement;
 }
 
-sfloat Disperse::lastOutR() {
+const sfloat Disperse::lastOutR() {
     return _lastOutR;
 }
 
-sfloat Disperse::lastOutL() {
+const sfloat Disperse::lastOutL() {
     return _lastOutL;
 }
 
@@ -146,12 +143,12 @@ void Disperse::updateFeedback() {
 }
 
 void Disperse::updateTone() {
-    _voice1.setLpfParams(_tone * _sampleRate * 0.5, 1.0, 0.0);
-    _voice2.setLpfParams(_tone * _sampleRate * 0.5, 1.0, 0.0);
-    _voice3.setLpfParams(_tone * _sampleRate * 0.5, 1.0, 0.0);
-    _voice4.setLpfParams(_tone * _sampleRate * 0.5, 1.0, 0.0);
-    _voice5.setLpfParams(_tone * _sampleRate * 0.5, 1.0, 0.0);
-    _voice6.setLpfParams(_tone * _sampleRate * 0.5, 1.0, 0.0);
+    _voice1.setLpfParams(_tone * _sampleRate * 0.5f, 1.0f, 0.0f);
+    _voice2.setLpfParams(_tone * _sampleRate * 0.5f, 1.0f, 0.0f);
+    _voice3.setLpfParams(_tone * _sampleRate * 0.5f, 1.0f, 0.0f);
+    _voice4.setLpfParams(_tone * _sampleRate * 0.5f, 1.0f, 0.0f);
+    _voice5.setLpfParams(_tone * _sampleRate * 0.5f, 1.0f, 0.0f);
+    _voice6.setLpfParams(_tone * _sampleRate * 0.5f, 1.0f, 0.0f);
 }
 
 void Disperse::updateSpread() {
@@ -162,19 +159,6 @@ void Disperse::updateSpread() {
 void Disperse::updateMod() {
     this->_lfo.setRateHz(this->_modRateHz);
     this->_lfo.setDepth(this->_modDepth);
-//    _voice1.mod().setRateHz(this->_modRateHz);
-//    _voice1.mod().setDepth(this->_modDepth * modDepthSamps);
-//    _voice2.mod().setRateHz(this->_modRateHz);
-//    _voice2.mod().setDepth(this->_modDepth * modDepthSamps);
-//    _voice3.mod().setRateHz(this->_modRateHz);
-//    _voice3.mod().setDepth(this->_modDepth * modDepthSamps);
-//    _voice4.mod().setRateHz(this->_modRateHz);
-//    _voice4.mod().setDepth(this->_modDepth * modDepthSamps);
-//    _voice5.mod().setRateHz(this->_modRateHz);
-//    _voice5.mod().setDepth(this->_modDepth * modDepthSamps);
-//    _voice6.mod().setRateHz(this->_modRateHz);
-//    _voice6.mod().setDepth(this->_modDepth * modDepthSamps);
-
 }
 
 void Disperse::updateAllParams() {

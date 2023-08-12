@@ -3,7 +3,7 @@
 #include "../../siderialib.h"
 
 namespace siderialib {
-	enum BiquadType {
+	enum class BiquadType {
 		LPF = 0,
 		HPF =1
 	};
@@ -41,9 +41,9 @@ namespace siderialib {
 		void initialize(sfloat samplingRate, BiquadType type, sfloat cutoffHz, sfloat Q);
 
 		void setCutoff(sfloat cutoffHz);
-		sfloat getCutoff() { return this->_cutoffHz; }
+		inline sfloat getCutoff() const { return this->_cutoffHz; }
 		void setQ(sfloat Q);
-		sfloat getQ() { return this->_Q; }
+		inline sfloat getQ() const { return this->_Q; }
 
         void setParams(sfloat cutoff, sfloat Q, sfloat dB);
 

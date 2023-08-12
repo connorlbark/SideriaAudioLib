@@ -3,7 +3,7 @@
 
 //==============================================================================
 AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor (AudioPluginAudioProcessor& p)
-    : AudioProcessorEditor (&p), processorRef (p), debugUI(p._disperse)
+    : AudioProcessorEditor (&p), processorRef (p), debugUI(p.disperse)
 {
     juce::ignoreUnused (processorRef);
     // Make sure that before the constructor has finished, you've set the

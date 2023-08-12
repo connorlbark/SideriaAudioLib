@@ -7,7 +7,7 @@
 class AudioPluginAudioProcessor  : public juce::AudioProcessor
 {
 public:
-    siderialib::Disperse _disperse;
+    siderialib::Disperse disperse;
 
     //==============================================================================
     AudioPluginAudioProcessor();
