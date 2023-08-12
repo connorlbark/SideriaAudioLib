@@ -49,12 +49,15 @@ namespace siderialib {
         BiquadFilter _postLpfL;
         BiquadFilter _postLpfR;
 
+        bool _enablePingPong = false;
+
         void updateSpread();
         void updateDispersionAndPosition();
         void updateFeedback();
         void updateTone();
         void updateAllParams();
         void updateMod();
+        void updatePingPong();
 
     public:
         void initialize(sfloat *voice1Buf,
@@ -96,6 +99,7 @@ namespace siderialib {
         inline sfloat getMix() const { return this->_mix; }
         void setDownsampleFactor(int factor);
         inline int getDownsampleFactor() const { return _downsampleFactor; }
+        void enablePingPong(bool enablePingPong) { this->_enablePingPong = enablePingPong; updatePingPong(); }
 
         void setAllParams(sfloat mix,
                           sfloat dispersion,

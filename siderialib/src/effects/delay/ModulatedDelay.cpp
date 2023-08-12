@@ -13,7 +13,11 @@ void ModulatedDelay::tick(sfloat L, sfloat R) {
     sfloat delayedL = this->_buf.linearInterpolation(0, flooredModDelaySamps, t);
     sfloat delayedR = this->_buf.linearInterpolation(1, flooredModDelaySamps, t);
 
-    writeToBuffer(L + delayedL * _feedback, R + delayedR * _feedback);
+    if (_pingPong) {
+        writeToBuffer((L + R) / 2.f + delayedR * _feedback, delayedL * _feedback);
+    } else {
+        writeToBuffer(L + delayedL * _feedback, R + delayedR * _feedback);
+    }
 
 	_lastOutL = L * (_mix - 1.f) + delayedL * _mix;
 	_lastOutR = R * (_mix - 1.f) + delayedR * _mix;

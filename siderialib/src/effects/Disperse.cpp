@@ -39,6 +39,9 @@ void Disperse::tick(siderialib::sfloat L, siderialib::sfloat R) {
 
         _lastOutL += _voice6.lastOutL();
         _lastOutR += _voice6.lastOutR();
+
+        _lastOutL /= 6.f;
+        _lastOutR /= 6.f;
     }
 
     if (_clockTick == 0) {
@@ -146,7 +149,7 @@ void Disperse::updateTone() {
     // from 1000hz to 8000hz;
     sfloat cutoff = 1000.0f + 7000.0f * _tone;
     sfloat Q = 0.7;
-    sfloat gain = -3.0;
+    sfloat gain = 0.0;
 
     _voice1.setLpfParams(cutoff, Q, gain);
     _voice2.setLpfParams(cutoff, Q, gain);
@@ -157,6 +160,17 @@ void Disperse::updateTone() {
     _postLpfL.setParams(cutoff, Q, gain);
     _postLpfR.setParams(cutoff, Q, gain);
 }
+
+void Disperse::updatePingPong() {
+    _voice1.enablePingPong(_enablePingPong);
+    _voice2.enablePingPong(_enablePingPong);
+    _voice3.enablePingPong(_enablePingPong);
+    _voice4.enablePingPong(_enablePingPong);
+    _voice5.enablePingPong(_enablePingPong);
+    _voice6.enablePingPong(_enablePingPong);
+
+}
+
 
 void Disperse::updateSpread() {
     // todo
@@ -249,3 +263,4 @@ void Disperse::setAllParams(sfloat mix, sfloat dispersion, sfloat spread, sfloat
 
     this->updateAllParams();
 }
+

@@ -26,6 +26,8 @@ namespace siderialib
         BiquadFilter _lpf2R;
         bool _enableLpf;
 
+        bool _pingPong;
+
 		sfloat _lastOutL = 0.f;
 		sfloat _lastOutR = 0.f;
 
@@ -53,5 +55,6 @@ namespace siderialib
 
 		void setLpfParams(sfloat cutoff, sfloat Q, sfloat dBGain);
 		void enableLpf(bool enabled) { this->_enableLpf = enabled; }
+        void enablePingPong(bool enabled) { this->_pingPong = enabled; }
 	};
 }
