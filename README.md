@@ -1,5 +1,11 @@
 # Sideria Audio Lib
 
+## What is this?
+
+This is a hand-made audio library which is the basis for all of my plugins and pedals. It is written in pure C-like C++ (no `new`, no `v-tables`, only `c-arrays`, etc.) for maximum portability to both PCs and also Arm/microcontrollers. The `siderialib/` folder contains the backend audio code - e.g., filters, delays, etc.. This code can then be linked to different "frontends" in the `projects/` folder, like a JUCE VST3 plugin or an Arm chip like the Electro-Smith Daisy.
+
+Everything that can easily be made into a CMake project has been made into one. If you build this project at the top level, the library and all of the JUCE plugins will be built. However, any projects which use the Electro-Smith Daisy will need to be compiled separately as they do not support CMake. See the next section for details.
+
 ## Building (native and ARM)
 
 First, compile JUCE.
