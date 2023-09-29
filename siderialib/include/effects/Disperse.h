@@ -55,7 +55,6 @@ namespace siderialib {
         void updateDispersionAndPosition();
         void updateFeedback();
         void updateTone();
-        void updateAllParams();
         void updateMod();
         void updatePingPong();
 
@@ -85,10 +84,6 @@ namespace siderialib {
         inline sfloat getFeedback() const { return _feedback; }
         void setDispersion(sfloat dispersion);
         inline sfloat getDispersion() const { return _dispersion; }
-        void setTone(sfloat tone);
-        inline sfloat getTone() const { return _tone; }
-        void setArrangement(DisperseArrangement arrangement);
-        inline DisperseArrangement getArrangement() const { return _arrangement; }
         void setPosition(sfloat position);
         inline sfloat getPosition() const { return this->_position; }
         void setModRateHz(sfloat modRateHz);
@@ -101,17 +96,6 @@ namespace siderialib {
         inline int getDownsampleFactor() const { return _downsampleFactor; }
         void enablePingPong(bool enablePingPong) { this->_enablePingPong = enablePingPong; updatePingPong(); }
 
-        void setAllParams(sfloat mix,
-                          sfloat dispersion,
-                          sfloat spread,
-                          sfloat time,
-                          sfloat feedback,
-                          sfloat tone,
-                          sfloat modRateHz,
-                          sfloat modDepth,
-                          sfloat position,
-                          int downsampleFactor,
-                          DisperseArrangement arrangement);
 
     };
 }

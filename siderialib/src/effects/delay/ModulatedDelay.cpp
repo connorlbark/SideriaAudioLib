@@ -7,7 +7,7 @@ void ModulatedDelay::tick(sfloat L, sfloat R) {
 
     sfloat modulatedDelaySamps = (sfloat)this->_buf.mapToNonCircularIndex((int)this->_delaySamps.tick()) + mod * 400.0f;
 
-	int flooredModDelaySamps = (int)std::floor(modulatedDelaySamps);
+	int flooredModDelaySamps = (int)(modulatedDelaySamps);
     double t = modulatedDelaySamps - (sfloat)flooredModDelaySamps;
 
     sfloat delayedL = this->_buf.linearInterpolation(0, flooredModDelaySamps, t);

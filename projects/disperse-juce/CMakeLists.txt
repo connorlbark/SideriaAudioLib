@@ -43,7 +43,7 @@ juce_add_plugin(DispersePlugin
     # NEEDS_MIDI_OUTPUT TRUE/FALSE              # Does the plugin need midi output?
     # IS_MIDI_EFFECT TRUE/FALSE                 # Is this plugin a MIDI effect?
     # EDITOR_WANTS_KEYBOARD_FOCUS TRUE/FALSE    # Does the editor need keyboard focus?
-    # COPY_PLUGIN_AFTER_BUILD TRUE/FALSE        # Should the plugin be installed to a default location after building?
+    COPY_PLUGIN_AFTER_BUILD TRUE        # Should the plugin be installed to a default location after building?
     PLUGIN_MANUFACTURER_CODE Sdra               # A four-character manufacturer id with at least one upper-case character
     PLUGIN_CODE Dsps                            # A unique four-character plugin id with exactly one upper-case character
                                                 # GarageBand 10.3 requires the first letter to be upper-case, and the remaining letters to be lower-case
@@ -100,7 +100,7 @@ target_compile_definitions(DispersePlugin
 
 include_directories(../../siderialib/include)
 
-target_link_libraries(DispersePlugin PUBLIC siderialib)
+#target_link_libraries(DispersePlugin PUBLIC siderialib)
 
 target_link_libraries(DispersePlugin
     PRIVATE
@@ -108,6 +108,7 @@ target_link_libraries(DispersePlugin
         # AudioPluginData           # If we'd created a binary data target, we'd link to it here
         juce::juce_audio_utils
     PUBLIC
+        siderialib
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags)

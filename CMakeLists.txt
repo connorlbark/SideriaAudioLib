@@ -13,10 +13,8 @@ option(ARM "ARM" OFF)
 # Include sub-projects.
 add_subdirectory ("siderialib")
 if(${ARM} MATCHES OFF)
-    if(NOT ${CMAKE_BUILD_TYPE} MATCHES Release)
-        # todo: investigate why juce doesn't like compiling release version
-        add_subdirectory ("external/JUCE")
-        add_subdirectory ("projects/disperse-juce")
-    endif()
+    # todo: investigate why juce doesn't like compiling release version
+    add_subdirectory ("external/JUCE")
+    add_subdirectory ("projects/disperse-juce")
     add_subdirectory ("spkr")
 endif()
