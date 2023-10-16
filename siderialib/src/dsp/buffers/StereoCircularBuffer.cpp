@@ -5,7 +5,11 @@
 using namespace siderialib;
 
 int StereoCircularBuffer::flattenIndex(int channel, int sample) const {
-	return _numSamples * channel + sample;
+    while (sample < 0) {
+        sample += _numSamples;
+    }
+
+    return _numSamples * channel + sample;
 }
 
 void StereoCircularBuffer::incrementCircularSampleIdx() {
@@ -49,7 +53,7 @@ void StereoCircularBuffer::write(sfloat val, int channel, int sample) {
 }
 
 sfloat StereoCircularBuffer::readCircular(int channel) const {
-	return _buf[flattenIndex(channel, _circularSampleIdx)];
+	return _buf[flattenIndex(channel, _circularSampleIdx - 1)];
 }
 
 
@@ -74,7 +78,7 @@ int StereoCircularBuffer::numChannels() const {
 }
 
 int StereoCircularBuffer::mapToNonCircularIndex(int numSampsAgo) const {
-	int finalIdx = _circularSampleIdx - numSampsAgo;
+	int finalIdx = _circularSampleIdx - 1 - numSampsAgo;
 
 	return finalIdx;
 }
