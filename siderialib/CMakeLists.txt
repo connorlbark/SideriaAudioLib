@@ -24,7 +24,13 @@ endif()
 
 add_compile_definitions(SLIB_DEBUG=1)
 
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+  enable_testing()
+endif()
+
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET siderialib PROPERTY CXX_STANDARD 14)
 endif()
+
+add_subdirectory(tests)
 

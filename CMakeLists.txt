@@ -2,6 +2,10 @@
 # and include sub-projects here.
 #
 cmake_minimum_required (VERSION 3.8)
+if ( NOT CMAKE_BUILD_TYPE )
+    message( "Build Type not set, defaulting to Debug..." )
+    set( CMAKE_BUILD_TYPE Debug )
+endif()
 
 # Enable Hot Reload for MSVC compilers if supported.
 
@@ -13,7 +17,9 @@ option(ARM "ARM" OFF)
 # Include sub-projects.
 add_subdirectory ("siderialib")
 if(${ARM} MATCHES OFF)
-    # todo: investigate why juce doesn't like compiling release version
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        add_subdirectory("external/googletest")
+    endif()
     add_subdirectory ("external/JUCE")
     add_subdirectory ("projects/disperse-juce")
     add_subdirectory ("spkr")

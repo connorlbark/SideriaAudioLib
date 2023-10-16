@@ -46,7 +46,7 @@ DebugUI::DebugUI(siderialib::Disperse &disperse) : _disperse(disperse) {
     addAndMakeVisible (_mixLabel);
     _mixLabel.setText ("Mix", juce::dontSendNotification);
     _mixLabel.attachToComponent (&_mixSlider, true);
-    
+
     addAndMakeVisible (_toneLabel);
     _toneLabel.setText ("Tone", juce::dontSendNotification);
     _toneLabel.attachToComponent (&_toneSlider, true);
