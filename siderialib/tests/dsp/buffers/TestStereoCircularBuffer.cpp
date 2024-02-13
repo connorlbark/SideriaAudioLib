@@ -1,10 +1,8 @@
-//
-// Created by Connor Barker on 9/29/23.
-//
 #include <gtest/gtest.h>
 #include "../../../include/dsp/buffers/StereoCircularBuffer.h"
 
 TEST(TestStereoCircularBuffer, Initialize) {
+
     siderialib::StereoCircularBuffer buf1{};
 
     buf1.initialize(1000);
@@ -103,5 +101,4 @@ TEST(TestStereoCircularBuffer, WriteAndReadCircular) {
     // loop again...
     ASSERT_EQ(buf.readCircular(0, 10), 6.f);
     ASSERT_EQ(buf.readCircular(1, 10), 0.f);
-
 }
