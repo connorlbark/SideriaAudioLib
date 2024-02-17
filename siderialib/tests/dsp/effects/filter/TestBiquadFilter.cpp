@@ -40,6 +40,8 @@ TEST(TestBiquadFilter, GenerateLPFPlot) {
     }
 
     matplot::plot(x, y);
+    std::filesystem::create_directories("plots");
+    std::filesystem::create_directories("plots/biquad_filter");
     matplot::save("plots/biquad_filter/lpf10000hzQ1.svg");
 }
 
@@ -77,6 +79,8 @@ TEST(TestBiquadFilter, GenerateHPFPlot) {
     }
 
     matplot::plot(x, y);
+    std::filesystem::create_directories("plots");
+    std::filesystem::create_directories("plots/biquad_filter");
     matplot::save("plots/biquad_filter/hpf10000hzQ1.svg");
 }
 

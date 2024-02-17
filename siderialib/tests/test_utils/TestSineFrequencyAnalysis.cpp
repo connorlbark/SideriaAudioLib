@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <matplot/matplot.h>
+#include <filesystem>
 
 #include "SineFrequencyAnalysis.h"
 
@@ -114,6 +115,8 @@ TEST(TestSineFrequencyAnalysis, GenerateSinePlot) {
     analysis.analyze(1.0,0.5, 3000);
 
     matplot::plot(y);
+    std::filesystem::create_directories("plots");
+    std::filesystem::create_directories("plots/sine_freq_analysis");
     matplot::save("plots/sine_freq_analysis/sineInput.svg");
 
 }
