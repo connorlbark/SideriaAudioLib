@@ -36,3 +36,9 @@ jobs:
       working-directory: ${{github.workspace}}/build/siderialib/tests
       run: ./tests
 
+    - name: Upload Plot Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: plots
+        path: |
+          ${{github.workspace}}/build/**/*.svg
