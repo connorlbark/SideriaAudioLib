@@ -1,5 +1,3 @@
-# This starter workflow is for a CMake project running on a single platform. There is a different starter workflow if you need cross-platform coverage.
-# See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-multi-platform.yml
 name: Sideria Audio Lib Tests
 
 on:
@@ -21,7 +19,6 @@ jobs:
         submodules: 'true'
 
     - name: Install gnuplot
-      # Configure CMake in a 'build' subdirectory.
       run: brew install gnuplot
 
     - name: Configure CMake
@@ -40,4 +37,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: plots
-        path: ${{ github.workspace }}/**/*.svg
+        path: ${{ github.workspace }}/build
