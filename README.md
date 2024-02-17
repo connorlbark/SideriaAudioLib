@@ -6,7 +6,20 @@ This is a hand-made audio library which is the basis for all of my plugins and p
 
 Everything that can easily be made into a CMake project has been made into one. If you build this project at the top level, the library and all of the JUCE plugins will be built. However, any projects which use the Electro-Smith Daisy will need to be compiled separately as they do not support CMake. See the next section for details.
 
-## Building (native and ARM)
+## Getting Started
+
+### Pre-requisites
+
+Install `gnuplot` however is appropriate for your machine. `gnuplot` is used in testing to generate
+frequency analysis plots.
+
+```bash
+brew install gnuplot
+```
+
+Install the [Daisy arm toolchain](https://github.com/electro-smith/DaisyWiki/wiki/1.-Setting-Up-Your-Development-Environment#1-Install-the-Toolchain)
+
+### Build
 
 First, compile JUCE.
 ```bash
@@ -15,8 +28,7 @@ cmake . -B cmake-build -DJUCE_BUILD_EXAMPLES=ON -DJUCE_BUILD_EXTRAS=ON
 
 Then, set up build profiles
 - Set Debug profile with default toolchain output to `cmake-build-debug`, with "Build Type" set to "Debug"
-- Download arm toolchain for Daisy
-- Create new CMake profile with the CMake flag `-DCMAKE_TOOLCHAIN_FILE=/Users/connorbarker/code/sideria/SideriaAudioLib/external/libDaisy/cmake/toolchains/stm32h750xx.cmake`. This will make sure CMake knows how to use the arm compiler properly
+- Create new CMake profile with the CMake flag `-DCMAKE_TOOLCHAIN_FILE=<PATH_TO_PROJECT>/external/libDaisy/cmake/toolchains/stm32h750xx.cmake`. This will make sure CMake knows how to use the arm compiler properly
 - Make sure "Build Type" is "Debug" and set CMake profile's output to `cmake-build-daisy-debug`
 - Now, clone these two profiles, and make sure their "Build Type" type is "Release", otherwise the same.
 

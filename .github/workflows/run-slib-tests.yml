@@ -1,0 +1,40 @@
+name: Sideria Audio Lib Tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  BUILD_TYPE: Debug
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: 'true'
+
+    - name: Install gnuplot
+      run: brew install gnuplot
+
+    - name: Configure CMake
+      # Configure CMake in a 'build' subdirectory.
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Debug
+
+    - name: Build
+      # Build your program with the given configuration
+      run: cmake --build build --config Debug --target tests
+
+    - name: Test
+      working-directory: build/siderialib/tests
+      run: ./tests
+
+    - name: Upload Plot Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: plots
+        path: build/siderialib/tests/plots

@@ -13,3 +13,6 @@
 [submodule "external/googletest"]
 	path = external/googletest
 	url = https://github.com/google/googletest
+[submodule "external/matplotplusplus"]
+	path = external/matplotplusplus
+	url = https://github.com/alandefreitas/matplotplusplus
