@@ -40,5 +40,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: plots
-        path: |
-          **/*.svg
+        path: ${{ github.workspace }}/**/*.svg
