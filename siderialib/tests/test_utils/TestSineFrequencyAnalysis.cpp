@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <matplot/matplot.h>
 
 #include "SineFrequencyAnalysis.h"
 
@@ -95,4 +96,24 @@ TEST(TestSineFrequencyAnalysis, RunsManyTimes) {
     for (float result : results) {
         ASSERT_EQ(99, result);
     }
+}
+
+TEST(TestSineFrequencyAnalysis, GenerateSinePlot) {
+    SineFrequencyAnalysis analysis{};
+
+    std::vector<sfloat> y;
+
+    analysis.initialize(
+            [&y](sfloat in) {
+                y.push_back(in);
+                return in;
+            },
+            [&y]() {
+            }, 1000.f);
+
+    analysis.analyze(1.0,0.5, 3000);
+
+    matplot::plot(y);
+    matplot::save("plots/sine_freq_analysis/sineInput.svg");
+
 }

@@ -22,6 +22,12 @@ sfloat SineFrequencyAnalysis::analyze(sfloat freqHz, sfloat amp, int numTicks) {
     double sinePhase = 0.f;
     double phasePerTick =  freqHz / samplingRate;
 
+    // achieve stability
+    for (int i = 0; i < nStabilityTicks; i ++) {
+        this->run((sfloat)sin(sinePhase * 2 * PI) * amp);
+        sinePhase += phasePerTick;
+    }
+
     for (int i = 0; i < numTicks; i++) {
         sfloat out = this->run((sfloat)sin(sinePhase * 2 * PI) * amp);
 
@@ -39,8 +45,7 @@ sfloat SineFrequencyAnalysis::analyze(sfloat freqHz, sfloat amp, int numTicks) {
     return maxOutputAmp;
 }
 
-std::vector<sfloat>
-SineFrequencyAnalysis::analyze(sfloat minFreqHz, sfloat maxFreqHz, int numBins, sfloat amp, int numTicks) {
+std::vector<sfloat> SineFrequencyAnalysis::analyze(sfloat minFreqHz, sfloat maxFreqHz, int numBins, sfloat amp, int numTicks) {
     std::vector<sfloat> vals{};
 
     sfloat freqWidth = (maxFreqHz - minFreqHz) / numBins;
@@ -52,5 +57,9 @@ SineFrequencyAnalysis::analyze(sfloat minFreqHz, sfloat maxFreqHz, int numBins, 
     }
 
     return vals;
+}
+
+void SineFrequencyAnalysis::setStabilityBuffer(int nTicks) {
+    this->nStabilityTicks = nTicks;
 }
 

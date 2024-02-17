@@ -19,6 +19,7 @@ add_subdirectory ("siderialib")
 if(${ARM} MATCHES OFF)
     if (CMAKE_BUILD_TYPE STREQUAL "Debug")
         add_subdirectory("external/googletest")
+        add_subdirectory("external/matplotplusplus") # testing creates graphs for reference
     endif()
     add_subdirectory ("external/JUCE")
     add_subdirectory ("projects/disperse-juce")

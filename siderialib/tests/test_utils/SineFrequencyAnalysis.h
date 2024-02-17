@@ -11,6 +11,8 @@ namespace siderialib {
 
         sfloat samplingRate;
 
+        int nStabilityTicks = 0; // default to zero
+
 
     public:
         void initialize(
@@ -20,13 +22,14 @@ namespace siderialib {
 
         sfloat analyze(sfloat freqHz, sfloat amp, int numTicks);
 
-
         std::vector<sfloat> analyze(
                 sfloat minFreqHz,
                 sfloat maxFreqHz,
                 int numBins,
                 sfloat amp,
                 int numTicks);
+
+        void setStabilityBuffer(int nTicks);
     };
 }
 
