@@ -41,4 +41,4 @@ jobs:
       with:
         name: plots
         path: |
-          ${{github.workspace}}/build/plots
+          ${{github.workspace}}/build/siderialib/tests/plots
