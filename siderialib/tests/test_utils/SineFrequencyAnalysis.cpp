@@ -1,7 +1,7 @@
 #include "SineFrequencyAnalysis.h"
 
 #include <utility>
-#include <iostream>
+#include <vector>
 
 using namespace siderialib;
 
@@ -46,7 +46,7 @@ sfloat SineFrequencyAnalysis::analyze(sfloat freqHz, sfloat amp, int numTicks) {
 }
 
 std::vector<sfloat> SineFrequencyAnalysis::analyze(sfloat minFreqHz, sfloat maxFreqHz, int numBins, sfloat amp, int numTicks) {
-    std::vector<sfloat> vals{};
+    std::vector<sfloat> vals;
 
     sfloat freqWidth = (maxFreqHz - minFreqHz) / numBins;
 
