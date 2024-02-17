@@ -23,18 +23,18 @@ jobs:
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory.
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Debug
 
     - name: Build
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config Debug --target tests
+      run: cmake --build build --config Debug --target tests
 
     - name: Test
-      working-directory: ${{github.workspace}}/build/siderialib/tests
+      working-directory: build/siderialib/tests
       run: ./tests
 
     - name: Upload Plot Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: plots
-        path: ${{ github.workspace }}/build
+        path: build
