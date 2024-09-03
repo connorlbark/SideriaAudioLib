@@ -139,3 +139,7 @@ void applyFilter(std::vector<std::vector<double>> in, std::vector<std::vector<do
 
     }
 }
+
+std::vector<std::vector<double>> whiteNoise() {
+
+}

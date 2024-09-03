@@ -114,6 +114,7 @@ TEST(TestSineFrequencyAnalysis, GenerateSinePlot) {
 
     analysis.analyze(1.0,0.5, 3000);
 
+    matplot::figure(true);
     matplot::plot(y);
     std::filesystem::create_directories("plots");
     std::filesystem::create_directories("plots/sine_freq_analysis");

@@ -12,7 +12,7 @@ endif()
 project ("SideriaAudioLib")
 set (CMAKE_CXX_STANDARD 14)
 
-option(ARM "ARM" OFF)
+option(ARM "ARM")
 
 # Include sub-projects.
 add_subdirectory ("siderialib")

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../include/siderialib.h"
+#include <functional>
 
 
 namespace siderialib {

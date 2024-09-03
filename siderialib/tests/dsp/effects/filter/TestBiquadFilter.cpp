@@ -39,6 +39,7 @@ TEST(TestBiquadFilter, GenerateLPFPlot) {
         x[i] = (((22500.f-10.f)/3000.f) * (sfloat)i + 10.f);
     }
 
+    matplot::figure(true);
     matplot::plot(x, y);
     std::filesystem::create_directories("plots");
     std::filesystem::create_directories("plots/biquad_filter");
@@ -78,6 +79,7 @@ TEST(TestBiquadFilter, GenerateHPFPlot) {
         x[i] = (((22500.f-10.f)/3000.f) * (sfloat)i + 10.f);
     }
 
+    matplot::figure(true);
     matplot::plot(x, y);
     std::filesystem::create_directories("plots");
     std::filesystem::create_directories("plots/biquad_filter");

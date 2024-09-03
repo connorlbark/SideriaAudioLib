@@ -12,7 +12,15 @@ add_library (siderialib STATIC
         include/util/Random.h
         include/util/SmoothedParameter.h
         src/util/SmoothedParameter.cpp
-        src/util/Random.cpp)
+        src/util/Random.cpp
+        src/effects/nonlinear/TapeSaturation.cpp
+        include/effects/nonlinear/TapeSaturation.h
+        src/dsp/Oversample.cpp
+        include/dsp/Oversample.h
+        src/effects/filter/WindowedSincFilter.cpp
+        include/effects/filter/WindowedSincFilter.h
+        src/dsp/buffers/MonoCircularBuffer.cpp
+)
 
 target_include_directories(siderialib PUBLIC include)
 target_compile_features(siderialib PUBLIC cxx_std_14)
@@ -24,15 +32,17 @@ else()
 endif()
 
 
-add_compile_definitions(SLIB_DEBUG=1)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+  add_compile_definitions(SLIB_DEBUG=1)
+
   enable_testing()
+  add_subdirectory(tests)
 endif()
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET siderialib PROPERTY CXX_STANDARD 14)
 endif()
 
-add_subdirectory(tests)
+
 
