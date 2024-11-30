@@ -1,7 +1,7 @@
 ﻿# CMakeList.txt : Top-level CMake project file, do global configuration
 # and include sub-projects here.
 #
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.31)
 if ( NOT CMAKE_BUILD_TYPE )
     message( "Build Type not set, defaulting to Debug..." )
     set( CMAKE_BUILD_TYPE Debug )
