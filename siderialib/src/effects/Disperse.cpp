@@ -73,7 +73,7 @@ void Disperse::setDispersion(sfloat dispersion) {
 }
 
 void Disperse::setPosition(sfloat position) {
-    this->_position = position;
+    this->_dispersionPosition = position;
     updateDispersionAndPosition();
 }
 
@@ -95,6 +95,11 @@ void Disperse::setDownsampleFactor(int ratio) {
     this->_downsampleFactor = ratio;
 }
 
+void Disperse::setPingPongType(siderialib::DispersePingPong pingPong) {
+    this->_pingPong = pingPong;
+    this->updatePingPong();
+}
+
 sfloat Disperse::lastOutR() const {
     return _lastOutR;
 }
@@ -103,21 +108,25 @@ sfloat Disperse::lastOutL() const {
     return _lastOutL;
 }
 
-inline sfloat calcVoicePosition(sfloat harmonic, sfloat position, sfloat depth) {
+inline sfloat calcRandomPosition(sfloat harmonic, sfloat position, sfloat depth) {
     sfloat pos = harmonic * position;
-    return triangleWave(pos - (sfloat)((int)pos)) * depth;
+    sfloat pan = triangleWave(pos - (sfloat)((int)pos)) * depth;
+    return pan;
+}
+
+inline sfloat calcRandomUniformPosition(sfloat harmonic, sfloat position, sfloat depth) {
+    return (calcRandomPosition(harmonic, position, depth) + 1.0f) / 2.0f;
 }
 
 void Disperse::updateDispersionAndPosition() {
-
-    sfloat depth = this->_timeMs * this->_dispersion / 2.f;
+    sfloat depth = (this->_timeMs * maxTimeDisperse) * this->_dispersion;
 
     _voice1.setDelayMs(this->_timeMs);
-    _voice2.setDelayMs(this->_timeMs + calcVoicePosition(2.f, this->_position, depth));
-    _voice3.setDelayMs(this->_timeMs + calcVoicePosition(4.f, this->_position, depth));
-    _voice4.setDelayMs(this->_timeMs + calcVoicePosition(6.f, this->_position, depth));
-    _voice5.setDelayMs(this->_timeMs + calcVoicePosition(8.f, this->_position, depth));
-    _voice6.setDelayMs(this->_timeMs + calcVoicePosition(10.f, this->_position, depth));
+    _voice2.setDelayMs(this->_timeMs + calcRandomPosition(2.f, this->_dispersionPosition, depth));
+    _voice3.setDelayMs(this->_timeMs + calcRandomPosition(4.f, this->_dispersionPosition, depth));
+    _voice4.setDelayMs(this->_timeMs + calcRandomPosition(6.f, this->_dispersionPosition, depth));
+    _voice5.setDelayMs(this->_timeMs + calcRandomPosition(8.f, this->_dispersionPosition, depth));
+    _voice6.setDelayMs(this->_timeMs + calcRandomPosition(10.f, this->_dispersionPosition, depth));
 
 }
 
@@ -130,19 +139,53 @@ void Disperse::updateFeedback() {
     _voice6.setFeedback(_feedback);
 }
 
+PingPongDirection randPingPongDirection(unsigned long *seed) {
+    return siderialib::randBool(seed)
+            ? siderialib::PingPongDirection::LEFT
+            : siderialib::PingPongDirection::RIGHT;
+}
+
 void Disperse::updatePingPong() {
-    _voice1.enablePingPong(_enablePingPong);
-    _voice2.enablePingPong(_enablePingPong);
-    _voice3.enablePingPong(_enablePingPong);
-    _voice4.enablePingPong(_enablePingPong);
-    _voice5.enablePingPong(_enablePingPong);
-    _voice6.enablePingPong(_enablePingPong);
+    bool enable = this->_pingPong != DispersePingPong::OFF;
+
+    _voice1.enablePingPong(enable);
+    _voice2.enablePingPong(enable);
+    _voice3.enablePingPong(enable);
+    _voice4.enablePingPong(enable);
+    _voice5.enablePingPong(enable);
+    _voice6.enablePingPong(enable);
+
+    if (this->_pingPong == DispersePingPong::RANDOM) {
+        // make pseudorandom seed
+        auto seed = (unsigned long)(this->_spreadPosition * this->_timeMs * this->_dispersionPosition * 1234);
+
+        _voice1.setPingPongDirection(randPingPongDirection(&seed));
+        _voice2.setPingPongDirection(randPingPongDirection(&seed));
+        _voice3.setPingPongDirection(randPingPongDirection(&seed));
+        _voice4.setPingPongDirection(randPingPongDirection(&seed));
+        _voice5.setPingPongDirection(randPingPongDirection(&seed));
+        _voice6.setPingPongDirection(randPingPongDirection(&seed));
+    } else {
+        PingPongDirection direction = PingPongDirection::LEFT;
+
+        _voice1.setPingPongDirection(direction);
+        _voice2.setPingPongDirection(direction);
+        _voice3.setPingPongDirection(direction);
+        _voice4.setPingPongDirection(direction);
+        _voice5.setPingPongDirection(direction);
+        _voice6.setPingPongDirection(direction);
+    }
 
 }
 
 
 void Disperse::updateSpread() {
-    // todo
+    _voice1.setPan(calcRandomUniformPosition(1.f, this->_spreadPosition, this->_spread));
+    _voice2.setPan(calcRandomUniformPosition(2.f, this->_spreadPosition, this->_spread));
+    _voice3.setPan(calcRandomUniformPosition(3.f, this->_spreadPosition, this->_spread));
+    _voice4.setPan(calcRandomUniformPosition(4.f, this->_spreadPosition, this->_spread));
+    _voice5.setPan(calcRandomUniformPosition(5.f, this->_spreadPosition, this->_spread));
+    _voice6.setPan(calcRandomUniformPosition(6.f, this->_spreadPosition, this->_spread));
 }
 
 
@@ -178,7 +221,7 @@ void Disperse::initialize(sfloat sampleRate) {
     this->setFeedback(_feedback);
     this->setModRateHz(_modRateHz);
     this->setModDepth(_modDepth);
-    this->setPosition(_position);
+    this->setPosition(_dispersionPosition);
     this->setDownsampleFactor(_downsampleFactor);
 
 }
@@ -216,10 +259,8 @@ void Disperse::initialize(sfloat *voice1Buf,
     this->setFeedback(_feedback);
     this->setModRateHz(_modRateHz);
     this->setModDepth(_modDepth);
-    this->setPosition(_position);
+    this->setPosition(_dispersionPosition);
     this->setDownsampleFactor(_downsampleFactor);
-
+    this->setPingPongType(_pingPong);
+    //TODO: add tone control; above 0.5, HPF sweep, below 0.5 LPF sweep.
 }
-
-
-

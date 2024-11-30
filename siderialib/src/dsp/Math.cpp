@@ -1,5 +1,5 @@
 #include "../../include/dsp/Math.h"
-
+#include <cmath>
 
 using namespace siderialib;
 
@@ -25,4 +25,30 @@ sfloat siderialib::triangleWave(sfloat x) {
     }
 
     return 0;
+}
+
+
+sfloat siderialib::constantPowerPanL(siderialib::sfloat pan, siderialib::sfloat l) {
+    return sqrt(pan) * l;
+}
+
+sfloat siderialib::constantPowerPanR(siderialib::sfloat pan, siderialib::sfloat r) {
+    return sqrt(1-pan) * r;
+}
+
+sfloat siderialib::randUniform(unsigned long *seed) {
+    // Linear congruential generator parameters
+    const unsigned long a = 1664525;  // multiplier
+    const unsigned long c = 1013904223;  // increment
+    const unsigned long m = 4294967296;  // modulus (2^32)
+
+    // Update the seed using LCG
+    *seed = (a * (*seed) + c) % m;
+
+    // Convert to float in range [0, 1)
+    return (sfloat)(*seed) / (sfloat)m;
+}
+
+bool siderialib::randBool(unsigned long *seed) {
+    return siderialib::randUniform(seed) > 0.5;
 }
