@@ -82,9 +82,9 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
 
     float sampleRate = 44100.f;
     float mix = 1.0f;
-    float timeMs = 800.0f;
-    float dispersion = 0.0f;
-    float spread = 0.0f;
+    float timeMs = 300.0f;
+    float dispersion = 0.2f;
+    float spread = 1.0f;
     float feedback = 0.8f;
     float tone = 0.8f;
     float modRateHz = 2.0f;
@@ -95,6 +95,7 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
     siderialib::DisperseArrangement arrangement = siderialib::DisperseArrangement::FULL_PARALLEL;
     disperse.initialize(sampleRate);
 
+    disperse.setDownsampleFactor(downsampleFactor);
     disperse.setMix(mix);
     disperse.setDispersion(dispersion);
     disperse.setSpread(spread);
@@ -105,7 +106,7 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
     disperse.setPosition(position);
     disperse.setDownsampleFactor(downsampleFactor);
 
-    disperse.enablePingPong(true);
+    disperse.setPingPongType(siderialib::DispersePingPong::OFF);
 
     for (int i = 0; i < in.at(0).size(); i++) {
 

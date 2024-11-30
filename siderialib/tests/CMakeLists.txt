@@ -7,6 +7,7 @@ add_executable(tests
         test_utils/TestSineFrequencyAnalysis.cpp
         dsp/effects/filter/TestBiquadFilter.cpp
         dsp/effects/filter/TestWindowedSinc.cpp
+        dsp/TestMath.cpp
 )
 target_link_libraries(tests siderialib)
 target_link_libraries(tests matplot)

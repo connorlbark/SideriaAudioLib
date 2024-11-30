@@ -9,4 +9,10 @@ namespace siderialib {
     double InterpolateHermite4pt3oX(double x0, double x1, double x2, double x3, double t);
 
     sfloat triangleWave(sfloat x);
+
+    sfloat constantPowerPanL(sfloat pan, sfloat l);
+    sfloat constantPowerPanR(sfloat pan, sfloat r);
+
+    sfloat randUniform(unsigned long *seed);
+    bool randBool(unsigned long *seed);
 }
