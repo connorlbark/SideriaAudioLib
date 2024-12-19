@@ -22,6 +22,8 @@ private:
     juce::Label _modRateHzLabel;
     juce::Slider _modDepthSlider;
     juce::Label _modDepthLabel;
+    juce::Slider _downsampleSlider;
+    juce::Label _downsampleLabel;
 
     siderialib::Disperse &_disperse;
 public:

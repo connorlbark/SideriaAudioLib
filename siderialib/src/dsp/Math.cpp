@@ -1,7 +1,6 @@
 #include "../../include/dsp/Math.h"
-#include <cmath>
-
 using namespace siderialib;
+#include <cmath>
 
 double siderialib::InterpolateHermite4pt3oX(double x0, double x1, double x2, double x3, double t) {
     double diff = x1 - x2;
@@ -51,4 +50,29 @@ sfloat siderialib::randUniform(unsigned long *seed) {
 
 bool siderialib::randBool(unsigned long *seed) {
     return siderialib::randUniform(seed) > 0.5;
+}
+
+sfloat siderialib::linearInterpolation(siderialib::sfloat x0, siderialib::sfloat x1, double t) {
+    double out = x0 + (x1 - x0) * t;
+    return (sfloat) out;
+}
+
+Fraction siderialib::floatToFraction(siderialib::sfloat val, int maxDenominator) {
+
+    Fraction closestFrac = {0, 1};
+    sfloat closestDist = 1.0;
+
+    for (int denom = 1; denom <= maxDenominator; denom++) {
+        for (int num = 0; num <= denom; num++) {
+            sfloat frac = (sfloat)num / (sfloat)denom;
+            sfloat dist = abs(frac - val);
+            if (dist < closestDist) {
+                closestFrac.numerator = num;
+                closestFrac.denominator = denom;
+                closestDist = dist;
+            }
+        }
+    }
+
+    return closestFrac;
 }

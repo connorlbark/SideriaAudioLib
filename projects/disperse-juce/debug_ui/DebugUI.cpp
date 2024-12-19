@@ -74,9 +74,19 @@ DebugUI::DebugUI(siderialib::Disperse &disperse) : _disperse(disperse) {
     _modDepthSlider.setTextValueSuffix (" %");
     _modDepthSlider.onValueChange = [this] { _disperse.setModDepth((float)_modDepthSlider.getValue() / 100.f); };
 
-    addAndMakeVisible (_dispersionLabel);
+    addAndMakeVisible (_modDepthLabel);
     _modDepthLabel.setText ("Mod Depth", juce::dontSendNotification);
     _modDepthLabel.attachToComponent (&_modDepthSlider, true);
+
+    addAndMakeVisible (_downsampleSlider);
+    _downsampleSlider.setRange (0.0, 100.0);
+    _downsampleSlider.setTextValueSuffix (" %");
+    _downsampleSlider.onValueChange = [this] { _disperse.setResampleFactor((float)_downsampleSlider.getValue() / 100.f); };
+
+
+    addAndMakeVisible (_downsampleLabel);
+    _downsampleLabel.setText ("Downsample", juce::dontSendNotification);
+    _downsampleLabel.attachToComponent (&_downsampleSlider, true);
 
 
 }
@@ -88,9 +98,12 @@ void DebugUI::resized() {
     _timeMsSlider.setBounds (sliderLeft, 80, getWidth() - sliderLeft - 10, 20);
     _feedbackSlider.setBounds (sliderLeft, 110, getWidth() - sliderLeft - 10, 20);
     _mixSlider.setBounds (sliderLeft, 140, getWidth() - sliderLeft - 10, 20);
-    _toneSlider.setBounds (sliderLeft, 170, getWidth() - sliderLeft - 10, 20);
+    _downsampleSlider.setBounds (sliderLeft, 170, getWidth() - sliderLeft - 10, 20);
     _positionSlider.setBounds (sliderLeft, 200, getWidth() - sliderLeft - 10, 20);
     _modRateHzSlider.setBounds (sliderLeft, 230, getWidth() - sliderLeft - 10, 20);
     _modDepthSlider.setBounds (sliderLeft, 260, getWidth() - sliderLeft - 10, 20);
+
+
+//    _toneSlider.setBounds (sliderLeft, 170, getWidth() - sliderLeft - 10, 20);
 
 }

@@ -7,47 +7,7 @@
 #include "../siderialib/include/siderialib.h"
 #include "../siderialib/include/effects/delay/ModulatedDelay.h"
 #include "../siderialib/include/effects/Disperse.h"
-
-void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out);
-
-int main(int argc, char *argv[]) {
-
-	if (argc != 3) {
-		std::cout << "Use:\n./spkr <input/file> <output/file>" << std::endl;
-		return 0;
-	}
-
-	char const* filename = argv[1];
-	char const* outfile = argv[2];
-
-	AudioFile<double> file;
-	file.load(filename);
-
-	std::vector<std::vector<double>> in = file.samples;
-
-	std::vector<std::vector<double>> out = std::vector < std::vector<double >>(2, std::vector<double > (in.at(0).size()));
-
-
-
-    std::chrono::time_point start = std::chrono::high_resolution_clock::now();
-	try {
-		apply(in, out);
-	}
-	catch (std::exception &e) {
-		printf("Exception: %s\n", e.what());
-	}
-    std::chrono::time_point end = std::chrono::high_resolution_clock::now();
-
-    auto duration = duration_cast<std::chrono::microseconds>(end - start);
-
-    std::cout << "Time to execute: " << duration.count() / 1000000.0L << " seconds." << std::endl;
-    std::cout << "File length: " << file.getLengthInSeconds() << " seconds." << std:: endl;
-
-    file.setAudioBuffer(out);
-	file.save(outfile);
-	return 0;
-}
-
+#include "effects/resample/VariableResample.h"
 
 void applyDelay(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out) {
 	siderialib::ModulatedDelay delay;
@@ -141,6 +101,78 @@ void applyFilter(std::vector<std::vector<double>> in, std::vector<std::vector<do
     }
 }
 
-std::vector<std::vector<double>> whiteNoise() {
+void applyResample(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out) {
+    siderialib::VariableResample resample;
+    resample.initialize();
+    resample.setResampleFactor(0.28);
+
+    for (int i = 0; i < in.at(0).size(); i++) {
+
+        siderialib::sfloat L = (siderialib::sfloat)in.at(0).at(i);
+
+        float val = resample.tick(L);
+
+        out.at(0).at(i) = val;
+        out.at(1).at(i) = val;
+
+    }
+}
+
+std::vector<std::vector<double>> sinWave(int samplingRate, int samples, double frequency) {
+
+    std::vector<std::vector<double>> out = std::vector<std::vector<double>>(2, std::vector<double>(samples));
+    for (int i = 0; i < samples; i++) {
+        out.at(0).at(i) = sin(2.0 * M_PI * frequency * i / samplingRate);
+        out.at(1).at(i) = sin(2.0 * M_PI * frequency * i / samplingRate);
+    }
+    return out;
+
 
 }
+
+
+int main(int argc, char *argv[]) {
+
+    if (argc != 3) {
+        std::cout << "Use:\n./spkr <input/file> <output/file>" << std::endl;
+        return 0;
+    }
+
+    char const* filename = argv[1];
+    char const* outfilename = argv[2];
+
+    int sampleRate = 44100;
+
+    std::vector<std::vector<double>> in;
+
+    if (strcmp(filename, "sin") == 0) {
+        in = sinWave(44100, 44100 * 10, 440.0);
+    } else {
+        AudioFile<double> file;
+        file.load(filename);
+        in = file.samples;
+        sampleRate = file.getSampleRate();
+    }
+
+
+    AudioFile<double> outfile;
+    std::vector<std::vector<double>> out = std::vector < std::vector<double >>(2, std::vector<double > (in.at(0).size()));
+
+    std::chrono::time_point start = std::chrono::high_resolution_clock::now();
+    try {
+        applyResample(in, out);
+    }
+    catch (std::exception &e) {
+        printf("Exception: %s\n", e.what());
+    }
+    std::chrono::time_point end = std::chrono::high_resolution_clock::now();
+
+    auto duration = duration_cast<std::chrono::microseconds>(end - start);
+
+    std::cout << "Time to execute: " << duration.count() / 1000000.0L << " seconds." << std::endl;
+    std::cout << "File length: " << (float)out.at(0).size() / (float)sampleRate  << " seconds." << std:: endl;
+
+    outfile.setAudioBuffer(out);
+    outfile.save(outfilename);
+    return 0;
+};

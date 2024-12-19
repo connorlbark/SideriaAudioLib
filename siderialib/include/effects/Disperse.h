@@ -2,6 +2,7 @@
 
 #include "../siderialib.h"
 #include "delay/ModulatedDelay.h"
+#include "effects/resample/VariableResample.h"
 
 namespace siderialib {
     enum class DisperseArrangement {
@@ -32,6 +33,10 @@ namespace siderialib {
         ModulatedDelay _voice5;
         ModulatedDelay _voice6;
 
+        VariableResample _resampleL;
+        VariableResample _resampleR;
+        sfloat _resampleFactor = 1.0;
+
         sfloat _dispersion = 0.0;
         sfloat _dispersionPosition = 0.4;
         sfloat _spread = 0.0;
@@ -42,8 +47,6 @@ namespace siderialib {
         sfloat _tone = 0.5;
 
         DispersePingPong _pingPong = DispersePingPong::OFF;
-
-        int _downsampleFactor = 0;
         DisperseArrangement _arrangement = DisperseArrangement::FULL_PARALLEL;
 
         sfloat _modRateHz = 1.0;
@@ -65,6 +68,8 @@ namespace siderialib {
         void updateMod();
         void updatePingPong();
 
+        void applyWetFX();
+
     public:
         void initialize(sfloat *voice1Buf,
                         sfloat *voice2Buf,
@@ -73,6 +78,9 @@ namespace siderialib {
                         sfloat *voice5Buf,
                         sfloat *voice6Buf,
                         int bufLength,
+                        sfloat *upsampleBufL,
+                        sfloat *upsampleBufR,
+                        int upsampleBufLen,
                         sfloat sampleRate);
         void initialize(sfloat sampleRate);
 
@@ -99,8 +107,10 @@ namespace siderialib {
         inline sfloat getModDepth() const { return this->_modDepth; }
         void setMix(sfloat mix);
         inline sfloat getMix() const { return this->_mix; }
-        void setDownsampleFactor(int factor);
-        inline int getDownsampleFactor() const { return _downsampleFactor; }
+
         void setPingPongType(DispersePingPong pingPong);
+
+        inline sfloat getResampleFactor() const { return _resampleFactor; }
+        void setResampleFactor(sfloat ratio);
     };
 }
