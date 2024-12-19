@@ -18,3 +18,31 @@ TEST(Math, Pan) {
     EXPECT_FLOAT_EQ(siderialib::constantPowerPanL(pan, 1.0f), 0.5);
     EXPECT_FLOAT_EQ(siderialib::constantPowerPanR(pan, 1.0f), 0.8660254);
 }
+
+TEST(Math, FractionFromFloat) {
+
+    float val = 0.5f;
+    siderialib::Fraction frac = siderialib::floatToFraction(val);
+    EXPECT_EQ(frac.numerator, 1);
+    EXPECT_EQ(frac.denominator, 2);
+
+    val = 0.25f;
+    frac = siderialib::floatToFraction(val);
+    EXPECT_EQ(frac.numerator, 1);
+    EXPECT_EQ(frac.denominator, 4);
+
+    val = 0.62;
+    frac = siderialib::floatToFraction(val, 8);
+    EXPECT_EQ(frac.numerator, 5);
+    EXPECT_EQ(frac.denominator, 8);
+
+    frac = siderialib::floatToFraction(val, 7);
+    EXPECT_EQ(frac.numerator, 3);
+    EXPECT_EQ(frac.denominator, 5);
+
+    val = 0.6;
+    frac = siderialib::floatToFraction(val, 10);
+    EXPECT_EQ(frac.numerator, 3);
+    EXPECT_EQ(frac.denominator, 5);
+
+}

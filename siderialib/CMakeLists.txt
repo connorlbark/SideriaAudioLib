@@ -20,6 +20,9 @@ add_library (siderialib STATIC
         src/effects/filter/WindowedSincFilter.cpp
         include/effects/filter/WindowedSincFilter.h
         src/dsp/buffers/MonoCircularBuffer.cpp
+        include/effects/resample/Decimate.h
+        include/effects/resample/Upsample.h
+        include/effects/resample/VariableResample.h
 )
 
 target_include_directories(siderialib PUBLIC include)

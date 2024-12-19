@@ -11,5 +11,10 @@ namespace siderialib {
     const double PI = 3.1415926535897932384626f;
     const double TWOPI = 2.*PI;
 
+
+    struct Fraction {
+        int numerator;
+        int denominator;
+    };
 }
 
