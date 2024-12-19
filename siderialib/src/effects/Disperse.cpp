@@ -197,9 +197,6 @@ void Disperse::setResampleFactor(siderialib::sfloat ratio) {
     // don't need to recompute the up/downsample factors for the right channel, just use same as L
     this->_resampleR.setResampleFactor(_resampleL.getUpsampleFactor(),
                                        _resampleL.getDecimateFactor());
-
-    printf("Resample factor: %f\n", ratio);
-    printf("up: %d, down: %d\n", _resampleL.getUpsampleFactor(), _resampleL.getDecimateFactor());
 }
 
 void Disperse::initialize(sfloat sampleRate) {
