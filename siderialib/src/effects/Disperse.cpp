@@ -6,7 +6,7 @@ using namespace siderialib;
 void Disperse::tick(siderialib::sfloat L, siderialib::sfloat R) {
     _lfo.tick();
 
-    if (_arrangement == DisperseArrangement::FULL_PARALLEL && _clockTick == 0) {
+    if (_arrangement == DisperseArrangement::FULL_PARALLEL) {
         _lastOutL = 0.f;
         _lastOutR = 0.f;
 
@@ -41,15 +41,16 @@ void Disperse::tick(siderialib::sfloat L, siderialib::sfloat R) {
         _lastOutR += _voice6.lastOutR();
     }
 
-    if (_clockTick == 0) {
-        _clockTick = _downsampleFactor;
-    } else {
-        _clockTick--;
-    }
+    applyWetFX();
 
     // at this point, _lastOutL/R are purely wet, so we need to mix in the dry
     _lastOutL = L * (1.f - _mix) + _lastOutL * _mix;
     _lastOutR = R * (1.f - _mix) + _lastOutR * _mix;
+}
+
+void Disperse::applyWetFX() {
+    _lastOutL = _resampleL.tick(_lastOutL);
+    _lastOutR = _resampleR.tick(_lastOutR);
 }
 
 void Disperse::setTimeMs(sfloat timeMs) {
@@ -89,10 +90,6 @@ void Disperse::setModDepth(sfloat depth) {
 void Disperse::setModRateHz(sfloat modRateHz) {
     this->_modRateHz = modRateHz;
     this->updateMod();
-}
-
-void Disperse::setDownsampleFactor(int ratio) {
-    this->_downsampleFactor = ratio;
 }
 
 void Disperse::setPingPongType(siderialib::DispersePingPong pingPong) {
@@ -194,6 +191,17 @@ void Disperse::updateMod() {
     this->_lfo.setDepth(this->_modDepth);
 }
 
+void Disperse::setResampleFactor(siderialib::sfloat ratio) {
+    this->_resampleFactor = ratio;
+    this->_resampleL.setResampleFactor(ratio);
+    // don't need to recompute the up/downsample factors for the right channel, just use same as L
+    this->_resampleR.setResampleFactor(_resampleL.getUpsampleFactor(),
+                                       _resampleL.getDecimateFactor());
+
+    printf("Resample factor: %f\n", ratio);
+    printf("up: %d, down: %d\n", _resampleL.getUpsampleFactor(), _resampleL.getDecimateFactor());
+}
+
 void Disperse::initialize(sfloat sampleRate) {
     this->_sampleRate = sampleRate;
     _lfo.initialize(sampleRate);
@@ -214,6 +222,9 @@ void Disperse::initialize(sfloat sampleRate) {
     this->_voice6.initialize(&_lfo, _sampleRate, maxDelaySamps);
     this->_voice6.enableLpf(false);
 
+    this->_resampleL.initialize();
+    this->_resampleR.initialize();
+
     this->setMix(_mix);
     this->setDispersion(_dispersion);
     this->setSpread(_spread);
@@ -222,8 +233,7 @@ void Disperse::initialize(sfloat sampleRate) {
     this->setModRateHz(_modRateHz);
     this->setModDepth(_modDepth);
     this->setPosition(_dispersionPosition);
-    this->setDownsampleFactor(_downsampleFactor);
-
+    this->setResampleFactor(_resampleFactor);
 }
 
 void Disperse::initialize(sfloat *voice1Buf,
@@ -233,6 +243,9 @@ void Disperse::initialize(sfloat *voice1Buf,
                           sfloat *voice5Buf,
                           sfloat *voice6Buf,
                           int bufLength,
+                          sfloat *upsampleBufL,
+                          sfloat *upsampleBufR,
+                          int upsampleBufLen,
                           sfloat sampleRate) {
     this->_sampleRate = sampleRate;
     _lfo.initialize(sampleRate);
@@ -252,6 +265,9 @@ void Disperse::initialize(sfloat *voice1Buf,
     this->_voice6.initialize(&_lfo, _sampleRate, voice6Buf, bufLength);
     this->_voice6.enableLpf(false);
 
+    this->_resampleL.initialize(upsampleBufL, upsampleBufLen);
+    this->_resampleR.initialize(upsampleBufR, upsampleBufLen);
+
     this->setMix(_mix);
     this->setDispersion(_dispersion);
     this->setSpread(_spread);
@@ -260,7 +276,7 @@ void Disperse::initialize(sfloat *voice1Buf,
     this->setModRateHz(_modRateHz);
     this->setModDepth(_modDepth);
     this->setPosition(_dispersionPosition);
-    this->setDownsampleFactor(_downsampleFactor);
+    this->setResampleFactor(_resampleFactor);
     this->setPingPongType(_pingPong);
     //TODO: add tone control; above 0.5, HPF sweep, below 0.5 LPF sweep.
 }

@@ -23,6 +23,11 @@ namespace siderialib {
             this->_outputBuffer.initialize(maxUpSampleFactor);
         }
 
+        void initialize(sfloat *upsampleBuf, int upsampleBufLen) {
+            this->_upsampleFactor = 1;
+            this->_outputBuffer.initialize(upsampleBuf, upsampleBufLen);
+        }
+
         void setUpsampleFactor(int ratio) {
             this->_upsampleFactor = ratio;
         }
@@ -47,12 +52,12 @@ namespace siderialib {
             return _outputBuffer.readCircular( index);
         }
 
-        [[nodiscard]] int getOutBufferSize() const {
+        int getOutBufferSize() const {
             return _upsampleFactor;
         }
 
 
-        [[nodiscard]] int getUpsampleFactor() const {
+        int getUpsampleFactor() const {
             return _upsampleFactor;
         }
     };

@@ -34,7 +34,7 @@ namespace siderialib {
         }
 
 
-        [[nodiscard]] int getDownsampleFactor() const {
+        int getDownsampleFactor() const {
             return _downsampleFactor;
         }
     };

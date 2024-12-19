@@ -7,7 +7,7 @@
 
 namespace siderialib {
 
-    const int MAX_RESAMPLE_DENOM = 7;
+    const int MAX_RESAMPLE_DENOM = 10;
     class VariableResample {
     private:
         Decimate _decimate;
@@ -18,6 +18,11 @@ namespace siderialib {
 
         void initialize() {
             _upsample.initialize(MAX_RESAMPLE_DENOM-1);
+            _decimate.initialize();
+        }
+
+        void initialize(sfloat *upsampleBuf, int upsampleBufLen) {
+            _upsample.initialize(upsampleBuf, upsampleBufLen);
             _decimate.initialize();
         }
 
