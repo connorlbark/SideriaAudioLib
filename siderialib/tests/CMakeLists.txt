@@ -8,6 +8,9 @@ add_executable(tests
         dsp/effects/filter/TestBiquadFilter.cpp
         dsp/effects/filter/TestWindowedSinc.cpp
         dsp/TestMath.cpp
+        dsp/effects/resample/TestDecimate.cpp
+        dsp/effects/resample/TestUpsample.cpp
+        dsp/effects/resample/TestVariableResample.cpp
 )
 target_link_libraries(tests siderialib)
 target_link_libraries(tests matplot)

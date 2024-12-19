@@ -97,6 +97,6 @@ sfloat StereoCircularBuffer::linearInterpolation(int channel, int index, double 
     sfloat x1 = read(channel, index);
     sfloat x2 = read(channel, index + 1);
 
-    double out = x1 + (x2 - x1) * t;
-    return (sfloat) out;
+
+    return siderialib::linearInterpolation(x1, x2, t);
 }
