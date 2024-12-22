@@ -2,10 +2,17 @@
 
 #include "../siderialib.h"
 #include "delay/ModulatedDelay.h"
+#include "effects/resample/VariableResample.h"
 
 namespace siderialib {
     enum class DisperseArrangement {
         FULL_PARALLEL = 0,
+    };
+
+    enum class DispersePingPong {
+        OFF = 0,
+        ON = 1,
+        RANDOM = 2
     };
 
     // maximum dispersion, as a function of the time param
@@ -26,15 +33,20 @@ namespace siderialib {
         ModulatedDelay _voice5;
         ModulatedDelay _voice6;
 
+        VariableResample _resampleL;
+        VariableResample _resampleR;
+        sfloat _resampleFactor = 1.0;
 
         sfloat _dispersion = 0.0;
+        sfloat _dispersionPosition = 0.4;
         sfloat _spread = 0.0;
+        sfloat _spreadPosition = 0.6;
         sfloat _feedback = 0.5;
         sfloat _timeMs = 100.0;
         sfloat _mix = 1.0;
         sfloat _tone = 0.5;
-        sfloat _position = 0.0;
-        int _downsampleFactor = 0;
+
+        DispersePingPong _pingPong = DispersePingPong::OFF;
         DisperseArrangement _arrangement = DisperseArrangement::FULL_PARALLEL;
 
         sfloat _modRateHz = 1.0;
@@ -49,14 +61,14 @@ namespace siderialib {
         BiquadFilter _postLpfL;
         BiquadFilter _postLpfR;
 
-        bool _enablePingPong = false;
-
         void updateSpread();
         void updateDispersionAndPosition();
         void updateFeedback();
         void updateTone();
         void updateMod();
         void updatePingPong();
+
+        void applyWetFX();
 
     public:
         void initialize(sfloat *voice1Buf,
@@ -66,6 +78,9 @@ namespace siderialib {
                         sfloat *voice5Buf,
                         sfloat *voice6Buf,
                         int bufLength,
+                        sfloat *upsampleBufL,
+                        sfloat *upsampleBufR,
+                        int upsampleBufLen,
                         sfloat sampleRate);
         void initialize(sfloat sampleRate);
 
@@ -85,17 +100,17 @@ namespace siderialib {
         void setDispersion(sfloat dispersion);
         inline sfloat getDispersion() const { return _dispersion; }
         void setPosition(sfloat position);
-        inline sfloat getPosition() const { return this->_position; }
+        inline sfloat getPosition() const { return this->_dispersionPosition; }
         void setModRateHz(sfloat modRateHz);
         inline sfloat getModRateHz() const { return this->_modRateHz; }
         void setModDepth(sfloat depth);
         inline sfloat getModDepth() const { return this->_modDepth; }
         void setMix(sfloat mix);
         inline sfloat getMix() const { return this->_mix; }
-        void setDownsampleFactor(int factor);
-        inline int getDownsampleFactor() const { return _downsampleFactor; }
-        void enablePingPong(bool enablePingPong) { this->_enablePingPong = enablePingPong; updatePingPong(); }
 
+        void setPingPongType(DispersePingPong pingPong);
 
+        inline sfloat getResampleFactor() const { return _resampleFactor; }
+        void setResampleFactor(sfloat ratio);
     };
 }
