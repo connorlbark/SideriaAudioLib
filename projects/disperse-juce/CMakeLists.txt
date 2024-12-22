@@ -69,7 +69,9 @@ target_sources(DispersePlugin
         PluginProcessor.cpp
         debug_ui/DebugUI.cpp
         ui/DisperseUI.cpp
-        ui/lookAndFeel/DisperseLookAndFeel.cpp)
+        ui/lookAndFeel/DisperseLookAndFeel.cpp
+        ui/components/DisperseLeftPanel.cpp
+)
 
 # `target_compile_definitions` adds some preprocessor definitions to our target. In a Projucer
 # project, these might be passed in the 'Preprocessor Definitions' field. JUCE modules also make use
