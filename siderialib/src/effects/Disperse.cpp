@@ -6,46 +6,23 @@ using namespace siderialib;
 void Disperse::tick(siderialib::sfloat L, siderialib::sfloat R) {
     _lfo.tick();
 
-    if (_arrangement == DisperseArrangement::FULL_PARALLEL) {
-        _lastOutL = 0.f;
-        _lastOutR = 0.f;
+    _lastOutL = 0.f;
+    _lastOutR = 0.f;
 
-        _voice1.tick(L, R);
-
-        _lastOutL += _voice1.lastOutL();
-        _lastOutR += _voice1.lastOutR();
-
-        _voice2.tick(L, R);
-
-        _lastOutL += _voice2.lastOutL();
-        _lastOutR += _voice2.lastOutR();
-
-        _voice3.tick(L, R);
-
-        _lastOutL += _voice3.lastOutL();
-        _lastOutR += _voice3.lastOutR();
-
-        _voice4.tick(L, R);
-
-        _lastOutL += _voice4.lastOutL();
-        _lastOutR += _voice4.lastOutR();
-
-        _voice5.tick(L, R);
-
-        _lastOutL += _voice5.lastOutL();
-        _lastOutR += _voice5.lastOutR();
-
-        _voice6.tick(L, R);
-
-        _lastOutL += _voice6.lastOutL();
-        _lastOutR += _voice6.lastOutR();
-    }
-
+    applyVoices(L, R);
     applyWetFX();
 
     // at this point, _lastOutL/R are purely wet, so we need to mix in the dry
     _lastOutL = L * (1.f - _mix) + _lastOutL * _mix;
     _lastOutR = R * (1.f - _mix) + _lastOutR * _mix;
+}
+
+void Disperse::applyVoices(sfloat L, sfloat R) {
+    for (int i = 0; i < DISPERSE_NUM_VOICES; i++) {
+        _voices[i].tick(L, R);
+        _lastOutL += _voices[i].lastOutL();
+        _lastOutR += _voices[i].lastOutR();
+    }
 }
 
 void Disperse::applyWetFX() {
@@ -116,24 +93,17 @@ inline sfloat calcRandomUniformPosition(sfloat harmonic, sfloat position, sfloat
 }
 
 void Disperse::updateDispersionAndPosition() {
-    sfloat depth = (this->_timeMs * maxTimeDisperse) * this->_dispersion;
+    sfloat depth = (this->_timeMs * DISPERSE_MAX_TIME) * this->_dispersion;
 
-    _voice1.setDelayMs(this->_timeMs);
-    _voice2.setDelayMs(this->_timeMs + calcRandomPosition(2.f, this->_dispersionPosition, depth));
-    _voice3.setDelayMs(this->_timeMs + calcRandomPosition(4.f, this->_dispersionPosition, depth));
-    _voice4.setDelayMs(this->_timeMs + calcRandomPosition(6.f, this->_dispersionPosition, depth));
-    _voice5.setDelayMs(this->_timeMs + calcRandomPosition(8.f, this->_dispersionPosition, depth));
-    _voice6.setDelayMs(this->_timeMs + calcRandomPosition(10.f, this->_dispersionPosition, depth));
-
+    for (int i = 0; i < DISPERSE_NUM_VOICES; i++) {
+        _delays[i].setDelayMs(this->_timeMs + calcRandomPosition((sfloat)i * 2.f, this->_dispersionPosition, depth));
+    }
 }
 
 void Disperse::updateFeedback() {
-    _voice1.setFeedback(_feedback);
-    _voice2.setFeedback(_feedback);
-    _voice3.setFeedback(_feedback);
-    _voice4.setFeedback(_feedback);
-    _voice5.setFeedback(_feedback);
-    _voice6.setFeedback(_feedback);
+    for (int i = 0; i < DISPERSE_NUM_VOICES; i++) {
+        _delays[i].setFeedback(_feedback);
+    }
 }
 
 PingPongDirection randPingPongDirection(unsigned long *seed) {
@@ -145,44 +115,32 @@ PingPongDirection randPingPongDirection(unsigned long *seed) {
 void Disperse::updatePingPong() {
     bool enable = this->_pingPong != DispersePingPong::OFF;
 
-    _voice1.enablePingPong(enable);
-    _voice2.enablePingPong(enable);
-    _voice3.enablePingPong(enable);
-    _voice4.enablePingPong(enable);
-    _voice5.enablePingPong(enable);
-    _voice6.enablePingPong(enable);
+    for (int i = 0; i < DISPERSE_NUM_VOICES; i++) {
+        _delays[i].enablePingPong(enable);
+    }
 
     if (this->_pingPong == DispersePingPong::RANDOM) {
         // make pseudorandom seed
         auto seed = (unsigned long)(this->_spreadPosition * this->_timeMs * this->_dispersionPosition * 1234);
 
-        _voice1.setPingPongDirection(randPingPongDirection(&seed));
-        _voice2.setPingPongDirection(randPingPongDirection(&seed));
-        _voice3.setPingPongDirection(randPingPongDirection(&seed));
-        _voice4.setPingPongDirection(randPingPongDirection(&seed));
-        _voice5.setPingPongDirection(randPingPongDirection(&seed));
-        _voice6.setPingPongDirection(randPingPongDirection(&seed));
+        for (int i = 0; i < DISPERSE_NUM_VOICES; i++) {
+            _delays[i].setPingPongDirection(randPingPongDirection(&seed));
+        }
     } else {
         PingPongDirection direction = PingPongDirection::LEFT;
 
-        _voice1.setPingPongDirection(direction);
-        _voice2.setPingPongDirection(direction);
-        _voice3.setPingPongDirection(direction);
-        _voice4.setPingPongDirection(direction);
-        _voice5.setPingPongDirection(direction);
-        _voice6.setPingPongDirection(direction);
+        for (int i = 0; i < DISPERSE_NUM_VOICES; i++) {
+            _delays[i].setPingPongDirection(direction);
+        }
     }
 
 }
 
 
 void Disperse::updateSpread() {
-    _voice1.setPan(calcRandomUniformPosition(1.f, this->_spreadPosition, this->_spread));
-    _voice2.setPan(calcRandomUniformPosition(2.f, this->_spreadPosition, this->_spread));
-    _voice3.setPan(calcRandomUniformPosition(3.f, this->_spreadPosition, this->_spread));
-    _voice4.setPan(calcRandomUniformPosition(4.f, this->_spreadPosition, this->_spread));
-    _voice5.setPan(calcRandomUniformPosition(5.f, this->_spreadPosition, this->_spread));
-    _voice6.setPan(calcRandomUniformPosition(6.f, this->_spreadPosition, this->_spread));
+    for (int i = 0; i < DISPERSE_NUM_VOICES; i++) {
+        _delays[i].setPan(calcRandomUniformPosition((sfloat)i, this->_spreadPosition, this->_spread));
+    }
 }
 
 
@@ -205,19 +163,13 @@ void Disperse::initialize(sfloat sampleRate) {
     _postLpfL.initialize(_sampleRate, BiquadType::LPF, 8000.0, 0.7);
     _postLpfR.initialize(_sampleRate, BiquadType::LPF, 8000.0, 0.7);
 
-    int maxDelaySamps = std::ceil((maxDelayMs/1000.0) * _sampleRate);
-    this->_voice1.initialize(&_lfo, _sampleRate, maxDelaySamps);
-    this->_voice1.enableLpf(false);
-    this->_voice2.initialize(&_lfo, _sampleRate, maxDelaySamps);
-    this->_voice2.enableLpf(false);
-    this->_voice3.initialize(&_lfo, _sampleRate, maxDelaySamps);
-    this->_voice3.enableLpf(false);
-    this->_voice4.initialize(&_lfo, _sampleRate, maxDelaySamps);
-    this->_voice4.enableLpf(false);
-    this->_voice5.initialize(&_lfo, _sampleRate, maxDelaySamps);
-    this->_voice5.enableLpf(false);
-    this->_voice6.initialize(&_lfo, _sampleRate, maxDelaySamps);
-    this->_voice6.enableLpf(false);
+    int maxDelaySamps = std::ceil((DISPERSE_MAX_DELAY_MS/1000.0) * _sampleRate);
+    for (int i = 0; i < DISPERSE_NUM_VOICES; i++) {
+        _delays[i].initialize(&_lfo, _sampleRate, maxDelaySamps);
+        _delays[i].enableLpf(false);
+    }
+
+    setArrangement(DisperseArrangement::FULL_PARALLEL);
 
     this->_resampleL.initialize();
     this->_resampleR.initialize();
@@ -233,12 +185,7 @@ void Disperse::initialize(sfloat sampleRate) {
     this->setResampleFactor(_resampleFactor);
 }
 
-void Disperse::initialize(sfloat *voice1Buf,
-                          sfloat *voice2Buf,
-                          sfloat *voice3Buf,
-                          sfloat *voice4Buf,
-                          sfloat *voice5Buf,
-                          sfloat *voice6Buf,
+void Disperse::initialize(sfloat *voiceBufs[DISPERSE_NUM_VOICES],
                           int bufLength,
                           sfloat *upsampleBufL,
                           sfloat *upsampleBufR,
@@ -249,18 +196,12 @@ void Disperse::initialize(sfloat *voice1Buf,
     _postLpfL.initialize(_sampleRate, BiquadType::LPF, 8000.0f, 0.7f);
     _postLpfR.initialize(_sampleRate, BiquadType::LPF, 8000.0f, 0.7f);
 
-    this->_voice1.initialize(&_lfo, _sampleRate, voice1Buf, bufLength);
-    this->_voice1.enableLpf(false);
-    this->_voice2.initialize(&_lfo, _sampleRate, voice2Buf, bufLength);
-    this->_voice2.enableLpf(false);
-    this->_voice3.initialize(&_lfo, _sampleRate, voice3Buf, bufLength);
-    this->_voice3.enableLpf(false);
-    this->_voice4.initialize(&_lfo, _sampleRate, voice4Buf, bufLength);
-    this->_voice4.enableLpf(false);
-    this->_voice5.initialize(&_lfo, _sampleRate, voice5Buf, bufLength);
-    this->_voice5.enableLpf(false);
-    this->_voice6.initialize(&_lfo, _sampleRate, voice6Buf, bufLength);
-    this->_voice6.enableLpf(false);
+    for (int i = 0; i < DISPERSE_NUM_VOICES; i++) {
+        _delays[i].initialize(&_lfo, _sampleRate, voiceBufs[i], bufLength);
+        _delays[i].enableLpf(false);
+    }
+
+    setArrangement(DisperseArrangement::FULL_PARALLEL);
 
     this->_resampleL.initialize(upsampleBufL, upsampleBufLen);
     this->_resampleR.initialize(upsampleBufR, upsampleBufLen);
@@ -276,4 +217,30 @@ void Disperse::initialize(sfloat *voice1Buf,
     this->setResampleFactor(_resampleFactor);
     this->setPingPongType(_pingPong);
     //TODO: add tone control; above 0.5, HPF sweep, below 0.5 LPF sweep.
+}
+
+void Disperse::setArrangement(DisperseArrangement arrangement) {
+    // removes delays from all voices
+    clearVoices();
+
+    switch (arrangement) {
+        case DisperseArrangement::FULL_PARALLEL:
+            for (int i = 0; i < DISPERSE_NUM_VOICES; i++) {
+                _voices[i].addVoice(&_delays[i]);
+            }
+            break;
+
+        case DisperseArrangement::FULL_SERIAL:
+            for (int i = 0; i < DISPERSE_NUM_VOICES; i++) {
+                _voices[0].addVoice(&_delays[i]);
+            }
+            break;
+    }
+
+}
+
+void Disperse::clearVoices() {
+    for (int i = 0; i < DISPERSE_NUM_VOICES; i++) {
+        _voices[i].clearVoices();
+    }
 }

@@ -3,10 +3,13 @@
 #include "../siderialib.h"
 #include "delay/ModulatedDelay.h"
 #include "effects/resample/VariableResample.h"
+#include "effects/disperse/DisperseConstants.h"
+#include "effects/disperse/DisperseParallelVoice.h"
 
 namespace siderialib {
     enum class DisperseArrangement {
         FULL_PARALLEL = 0,
+        FULL_SERIAL = 1,
     };
 
     enum class DispersePingPong {
@@ -15,23 +18,14 @@ namespace siderialib {
         RANDOM = 2
     };
 
-    // maximum dispersion, as a function of the time param
-    constexpr sfloat maxTimeDisperse = 0.5f;
-    constexpr sfloat maxModRateDisperse = 0.2f;
-    constexpr sfloat maxDelayMs = 5000.0f;
-    constexpr sfloat minDelayMs = 100.0f;
-
     class Disperse {
     private:
         sfloat _sampleRate;
 
-        // voice1: special, always-centered voice
-        ModulatedDelay _voice1;
-        ModulatedDelay _voice2;
-        ModulatedDelay _voice3;
-        ModulatedDelay _voice4;
-        ModulatedDelay _voice5;
-        ModulatedDelay _voice6;
+        // delay lines
+        ModulatedDelay _delays[DISPERSE_NUM_VOICES];
+        // arrangement of delay lines
+        DisperseParallelVoice _voices[DISPERSE_NUM_VOICES];
 
         VariableResample _resampleL;
         VariableResample _resampleR;
@@ -47,12 +41,9 @@ namespace siderialib {
         sfloat _tone = 0.5;
 
         DispersePingPong _pingPong = DispersePingPong::OFF;
-        DisperseArrangement _arrangement = DisperseArrangement::FULL_PARALLEL;
 
         sfloat _modRateHz = 1.0;
         sfloat _modDepth = 0.0;
-
-        int _clockTick = 0;
 
         sfloat _lastOutL = 0.f;
         sfloat _lastOutR = 0.f;
@@ -68,15 +59,12 @@ namespace siderialib {
         void updateMod();
         void updatePingPong();
 
+        void applyVoices(sfloat L, sfloat R);
         void applyWetFX();
 
+        void clearVoices();
     public:
-        void initialize(sfloat *voice1Buf,
-                        sfloat *voice2Buf,
-                        sfloat *voice3Buf,
-                        sfloat *voice4Buf,
-                        sfloat *voice5Buf,
-                        sfloat *voice6Buf,
+        void initialize(sfloat *voiceBufs[DISPERSE_NUM_VOICES],
                         int bufLength,
                         sfloat *upsampleBufL,
                         sfloat *upsampleBufR,
@@ -112,5 +100,7 @@ namespace siderialib {
 
         inline sfloat getResampleFactor() const { return _resampleFactor; }
         void setResampleFactor(sfloat ratio);
+
+        void setArrangement(DisperseArrangement arrangement);
     };
 }
