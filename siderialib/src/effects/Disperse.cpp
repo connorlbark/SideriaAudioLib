@@ -95,9 +95,7 @@ inline sfloat calcRandomUniformPosition(sfloat harmonic, sfloat position, sfloat
 void Disperse::updateDispersionAndPosition() {
     sfloat depth = (this->_timeMs * DISPERSE_MAX_TIME) * this->_dispersion;
 
-    _delays[0].setDelayMs(this->_timeMs);
-
-    for (int i = 1; i < DISPERSE_NUM_VOICES; i++) {
+    for (int i = 0; i < DISPERSE_NUM_VOICES; i++) {
         _delays[i].setDelayMs(this->_timeMs + calcRandomPosition((sfloat)i * 2.f, this->_dispersionPosition, depth));
     }
 }
@@ -140,8 +138,7 @@ void Disperse::updatePingPong() {
 
 
 void Disperse::updateSpread() {
-    _delays[0].setPan(0.5f);
-    for (int i = 1; i < DISPERSE_NUM_VOICES; i++) {
+    for (int i = 0; i < DISPERSE_NUM_VOICES; i++) {
         _delays[i].setPan(calcRandomUniformPosition((sfloat)i, this->_spreadPosition, this->_spread));
     }
 }
