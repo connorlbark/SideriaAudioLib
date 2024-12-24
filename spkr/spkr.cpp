@@ -2,12 +2,10 @@
 
 #include "AudioFile.h"
 #include <vector>
-#include <chrono>
 
 #include "../siderialib/include/siderialib.h"
 #include "../siderialib/include/effects/delay/ModulatedDelay.h"
 #include "../siderialib/include/effects/Disperse.h"
-#include "effects/resample/VariableResample.h"
 
 void applyDelay(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out) {
 	siderialib::ModulatedDelay delay;
@@ -42,7 +40,7 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
 
     float sampleRate = 44100.f;
     float mix = 1.0f;
-    float timeMs = 300.0f;
+    float timeMs = 100.0f;
     float dispersion = 0.2f;
     float spread = 1.0f;
     float feedback = 0.8f;
@@ -50,12 +48,11 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
     float modRateHz = 2.0f;
     float modDepth = 0.3f;
     float position = .323f;
-    int downsampleFactor = 0;
+    float resampleFactor = 1.0;
 
     siderialib::DisperseArrangement arrangement = siderialib::DisperseArrangement::FULL_PARALLEL;
     disperse.initialize(sampleRate);
 
-    disperse.setDownsampleFactor(downsampleFactor);
     disperse.setMix(mix);
     disperse.setDispersion(dispersion);
     disperse.setSpread(spread);
@@ -64,9 +61,14 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
     disperse.setModRateHz(modRateHz);
     disperse.setModDepth(modDepth);
     disperse.setPosition(position);
-    disperse.setDownsampleFactor(downsampleFactor);
+    disperse.setResampleFactor(resampleFactor);
 
     disperse.setPingPongType(siderialib::DispersePingPong::OFF);
+
+    // otherwise there will be a weird sound at the start
+    for (int i = 0; i < sampleRate; i++) {
+        disperse.tick(0.0f, 0.0f);
+    }
 
     for (int i = 0; i < in.at(0).size(); i++) {
 
@@ -160,7 +162,7 @@ int main(int argc, char *argv[]) {
 
     std::chrono::time_point start = std::chrono::high_resolution_clock::now();
     try {
-        applyResample(in, out);
+        apply(in, out);
     }
     catch (std::exception &e) {
         printf("Exception: %s\n", e.what());

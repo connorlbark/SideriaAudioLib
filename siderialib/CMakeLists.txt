@@ -23,6 +23,9 @@ add_library (siderialib STATIC
         include/effects/resample/Decimate.h
         include/effects/resample/Upsample.h
         include/effects/resample/VariableResample.h
+        src/effects/disperse/DisperseParallelVoice.cpp
+        include/effects/disperse/DisperseParallelVoice.h
+        include/effects/disperse/DisperseConstants.h
 )
 
 target_include_directories(siderialib PUBLIC include)
