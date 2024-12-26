@@ -1,7 +1,5 @@
 #pragma once
 
-
-#include <cstdarg>
 #include "effects/delay/ModulatedDelay.h"
 #include "DisperseConstants.h"
 
@@ -15,48 +13,48 @@ namespace siderialib {
 
         sfloat _lastOutL = 0.0;
         sfloat _lastOutR = 0.0;
+
+
+        bool _enableTone = false;
+        // 2-stage lpf placed before writing to circular buffer, so in essence, filters delayed sounds many times
+        bool useLpf = false;
+        BiquadFilter _lpf1L;
+        BiquadFilter _lpf1R;
+        BiquadFilter _lpf2L;
+        BiquadFilter _lpf2R;
+
+        sfloat sampleRate = 0.0;
+
+        bool useHpf = false;
+        // 2-stage hpf
+        BiquadFilter _hpf1L;
+        BiquadFilter _hpf1R;
+        BiquadFilter _hpf2L;
+        BiquadFilter _hpf2R;
+
+        void applyFilters();
     public:
         DisperseParallelVoice() = default;
 
-        void addVoice(ModulatedDelay* delay) {
-            if (_numActiveVoices >= DISPERSE_NUM_VOICES) {
-                return;
-            }
+        void addVoice(ModulatedDelay* delay);
 
-            _delays[_numActiveVoices] = delay;
-            _numActiveVoices++;
+        void clearVoices();
+
+        void initialize(sfloat samplingRate);
+
+        void tick(sfloat L, sfloat R);
+
+        void setTone(sfloat tone);
+
+        void enableTone(bool enable) {
+            _enableTone = enable;
         }
 
-        void clearVoices() {
-            for (int i = 0; i < _numActiveVoices; i++) {
-                _delays[i] = nullptr;
-            }
-
-            _numActiveVoices = 0;
-        }
-
-        void initialize() {
-        }
-
-        void tick(sfloat L, sfloat R) {
-            sfloat parallelL = L;
-            sfloat parallelR = R;
-
-            for (int i = 0; i < _numActiveVoices; i++) {
-                _delays[i]->tick(L, R);
-                parallelL = _delays[i]->lastOutL();
-                parallelR = _delays[i]->lastOutR();
-            }
-
-            _lastOutL = parallelL;
-            _lastOutR = parallelR;
-        }
-
-        sfloat lastOutL() const {
+        inline sfloat lastOutL() const {
             return _lastOutL;
         }
 
-        sfloat lastOutR() const {
+        inline sfloat lastOutR() const {
             return _lastOutR;
         }
     };

@@ -74,6 +74,17 @@ void Disperse::setPingPongType(siderialib::DispersePingPong pingPong) {
     this->updatePingPong();
 }
 
+void Disperse::updateTone() {
+    for (int i = 0; i < DISPERSE_NUM_VOICES; i++) {
+        _voices[i].setTone(_tone);
+    }
+}
+
+void Disperse::setTone(sfloat tone) {
+    this->_tone = tone;
+    updateTone();
+}
+
 sfloat Disperse::lastOutR() const {
     return _lastOutR;
 }
@@ -160,13 +171,12 @@ void Disperse::setResampleFactor(siderialib::sfloat ratio) {
 void Disperse::initialize(sfloat sampleRate) {
     this->_sampleRate = sampleRate;
     _lfo.initialize(sampleRate);
-    _postLpfL.initialize(_sampleRate, BiquadType::LPF, 8000.0, 0.7);
-    _postLpfR.initialize(_sampleRate, BiquadType::LPF, 8000.0, 0.7);
 
     int maxDelaySamps = std::ceil((DISPERSE_MAX_DELAY_MS/1000.0) * _sampleRate);
     for (int i = 0; i < DISPERSE_NUM_VOICES; i++) {
         _delays[i].initialize(&_lfo, _sampleRate, maxDelaySamps);
-        _delays[i].enableLpf(false);
+        _voices[i].initialize(_sampleRate);
+        _voices[i].enableTone(false);
     }
 
     setArrangement(DisperseArrangement::FULL_PARALLEL);
@@ -193,12 +203,11 @@ void Disperse::initialize(sfloat *voiceBufs[DISPERSE_NUM_VOICES],
                           sfloat sampleRate) {
     this->_sampleRate = sampleRate;
     _lfo.initialize(sampleRate);
-    _postLpfL.initialize(_sampleRate, BiquadType::LPF, 8000.0f, 0.7f);
-    _postLpfR.initialize(_sampleRate, BiquadType::LPF, 8000.0f, 0.7f);
 
     for (int i = 0; i < DISPERSE_NUM_VOICES; i++) {
         _delays[i].initialize(&_lfo, _sampleRate, voiceBufs[i], bufLength);
-        _delays[i].enableLpf(false);
+        _voices[i].initialize(_sampleRate);
+        _voices[i].enableTone(false);
     }
 
     setArrangement(DisperseArrangement::FULL_PARALLEL);
