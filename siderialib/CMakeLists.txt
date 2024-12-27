@@ -26,6 +26,8 @@ add_library (siderialib STATIC
         lib/effects/disperse/DisperseConstants.h
         lib/util/StaticMemoryBlock.cpp
         lib/util/StaticMemoryAllocation.h
+        lib/effects/resample/Upsample.cpp
+        lib/effects/resample/Decimate.cpp
 )
 
 target_include_directories(siderialib PUBLIC lib)
