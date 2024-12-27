@@ -13,8 +13,6 @@ add_library (siderialib STATIC
         lib/util/SmoothedParameter.h
         lib/util/SmoothedParameter.cpp
         lib/util/Random.cpp
-        lib/effects/nonlinear/TapeSaturation.cpp
-        lib/effects/nonlinear/TapeSaturation.h
         lib/effects/filter/WindowedSincFilter.cpp
         lib/effects/filter/WindowedSincFilter.h
         lib/dsp/buffers/MonoCircularBuffer.cpp
@@ -24,7 +22,7 @@ add_library (siderialib STATIC
         lib/effects/disperse/DisperseParallelVoice.cpp
         lib/effects/disperse/DisperseParallelVoice.h
         lib/effects/disperse/DisperseConstants.h
-        lib/util/StaticMemoryBlock.cpp
+        lib/util/StaticMemoryAllocation.cpp
         lib/util/StaticMemoryAllocation.h
         lib/effects/resample/Upsample.cpp
         lib/effects/resample/Decimate.cpp

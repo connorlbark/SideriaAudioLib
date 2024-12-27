@@ -11,6 +11,7 @@ add_executable(tests
         dsp/effects/resample/TestDecimate.cpp
         dsp/effects/resample/TestUpsample.cpp
         dsp/effects/resample/TestVariableResample.cpp
+        util/TestStaticMemoryAllocation.cpp
 )
 target_link_libraries(tests siderialib)
 target_link_libraries(tests matplot)
