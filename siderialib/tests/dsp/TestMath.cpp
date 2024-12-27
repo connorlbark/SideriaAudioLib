@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../../include/dsp/Math.h"
+#include "../../lib/dsp/Math.h"
 
 TEST(Math, Pan) {
     float pan = 1.0f;

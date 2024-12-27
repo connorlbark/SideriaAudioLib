@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../../include/util/SmoothedParameter.h"
+#include "../../lib/util/SmoothedParameter.h"
 
 using namespace siderialib;
 

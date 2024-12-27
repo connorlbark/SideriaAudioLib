@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../../../../include/effects/resample/Upsample.h"
+#include "../../../../lib/effects/resample/Upsample.h"
 
 
 TEST(Upsample, Upsample) {

@@ -2,7 +2,7 @@
 #include <matplot/matplot.h>
 
 #include "../../../test_utils/SineFrequencyAnalysis.h"
-#include "../../../../include/effects/filter/BiquadFilter.h"
+#include "../../../../lib/effects/filter/BiquadFilter.h"
 
 using namespace siderialib;
 

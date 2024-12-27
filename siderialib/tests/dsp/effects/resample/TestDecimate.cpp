@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../../../../include/effects/resample/Decimate.h"
+#include "../../../../lib/effects/resample/Decimate.h"
 
 
 TEST(Decimate, Decimate) {
