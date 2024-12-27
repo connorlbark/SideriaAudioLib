@@ -1,5 +1,5 @@
 ﻿# CMakeList.txt : Top-level CMake project file, do global configuration
-# and lib sub-projects here.
+# and include sub-projects here.
 #
 cmake_minimum_required (VERSION 3.31)
 if ( NOT CMAKE_BUILD_TYPE )

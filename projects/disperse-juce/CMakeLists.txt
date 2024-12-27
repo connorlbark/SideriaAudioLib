@@ -19,7 +19,7 @@ project(AUDIO_PLUGIN_EXAMPLE VERSION 0.0.1)
 # If you've installed JUCE somehow (via a package manager, or directly using the CMake install
 # target), you'll need to tell this project that it depends on the installed copy of JUCE. If you've
 # included JUCE directly in your source tree (perhaps as a submodule), you'll need to tell CMake to
-# lib that subdirectory as part of the build.
+# include that subdirectory as part of the build.
 
 # If you are building a VST2 or AAX plugin, CMake needs to be told where to find these SDKs on your
 # system. This setup should be done before calling `juce_add_plugin`.
@@ -51,9 +51,9 @@ juce_add_plugin(DispersePlugin
     PRODUCT_NAME "Disperse")        # The name of the final executable, which can differ from the target name
 
 # `juce_generate_juce_header` will create a JuceHeader.h for a given target, which will be generated
-# into your build tree. This should be included with `#lib <JuceHeader.h>`. The lib path for
+# into your build tree. This should be included with `#include <JuceHeader.h>`. The include path for
 # this header will be automatically added to the target. The main function of the JuceHeader is to
-# lib all your JUCE module headers; if you're happy to lib module headers directly, you
+# include all your JUCE module headers; if you're happy to include module headers directly, you
 # probably don't need to call this.
 
 # juce_generate_juce_header(AudioPluginExample)
@@ -84,7 +84,7 @@ target_compile_definitions(DispersePlugin
         JUCE_VST3_CAN_REPLACE_VST2=0)
 
 # If your target needs extra binary assets, you can add them here. The first argument is the name of
-# a new static library target that will lib all the binary resources. There is an optional
+# a new static library target that will include all the binary resources. There is an optional
 # `NAMESPACE` argument that can specify the namespace of the generated binary data class. Finally,
 # the SOURCES argument should be followed by a list of source files that should be built into the
 # static library. These source files can be of any kind (wav data, images, fonts, icons etc.).
