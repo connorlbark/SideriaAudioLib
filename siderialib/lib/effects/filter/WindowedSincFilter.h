@@ -16,8 +16,7 @@ namespace siderialib {
     public:
         ~WindowedSincFilter();
 
-        void initialize(int firLength, sfloat cutoff, sfloat sampleRate);
-        void initialize(double *fir, int firLength);
+        void initialize(StaticMemoryAllocation &sma, int firLength, sfloat cutoff, sfloat sampleRate);
 
         double *getFir();
         int getFirLength() const;

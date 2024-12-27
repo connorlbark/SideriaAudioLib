@@ -18,14 +18,9 @@ namespace siderialib {
     public:
         Upsample() : _outputBuffer() {}
 
-        void initialize(int maxUpSampleFactor) {
+        void initialize(StaticMemoryAllocation &sma, int maxUpSampleFactor) {
             this->_upsampleFactor = 1;
-            this->_outputBuffer.initialize(maxUpSampleFactor);
-        }
-
-        void initialize(sfloat *upsampleBuf, int upsampleBufLen) {
-            this->_upsampleFactor = 1;
-            this->_outputBuffer.initialize(upsampleBuf, upsampleBufLen);
+            this->_outputBuffer.initialize(sma, maxUpSampleFactor);
         }
 
         void setUpsampleFactor(int ratio) {

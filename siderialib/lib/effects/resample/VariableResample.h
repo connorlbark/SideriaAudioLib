@@ -16,15 +16,11 @@ namespace siderialib {
     public:
         VariableResample() = default;
 
-        void initialize() {
-            _upsample.initialize(MAX_RESAMPLE_DENOM-1);
+        void initialize(StaticMemoryAllocation &sma) {
+            _upsample.initialize(sma, MAX_RESAMPLE_DENOM-1);
             _decimate.initialize();
         }
 
-        void initialize(sfloat *upsampleBuf, int upsampleBufLen) {
-            _upsample.initialize(upsampleBuf, upsampleBufLen);
-            _decimate.initialize();
-        }
 
         void setResampleFactor(sfloat factor) {
             Fraction frac = floatToFraction(factor, MAX_RESAMPLE_DENOM);

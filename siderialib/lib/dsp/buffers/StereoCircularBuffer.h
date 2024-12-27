@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../siderialib.h"
+#include "util/StaticMemoryAllocation.h"
 
 namespace siderialib {
 	// circular buffer with two channels for simplified
@@ -19,18 +20,10 @@ namespace siderialib {
 	public:
         StereoCircularBuffer() = default;
 
-        ~StereoCircularBuffer() {
-            delete _buf;
-            _numSamples = 0;
-            _circularSampleIdx = 0;
-        }
-
 		int mapToNonCircularIndex(int sample) const;
 
 		// initializes the buffer with two channels and the specified number of samples
-        void initialize(int numSamples);
-        // takes in and takes ownership of *buf; when the destructor of this class is called, it will free this buffer.
-        void initialize(sfloat *buf, int len);
+        void initialize(StaticMemoryAllocation &sma, int numSamples);
 
 		sfloat read(int channel, int sample) const;
 

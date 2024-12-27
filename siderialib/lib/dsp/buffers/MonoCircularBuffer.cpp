@@ -19,21 +19,10 @@ void MonoCircularBuffer::incrementCircularSampleIdx() {
 	}
 }
 
-void MonoCircularBuffer::initialize(int numSamples) {
-    _buf = (sfloat*)malloc(sizeof(sfloat) * numSamples);
-	this->initialize(_buf, numSamples);
-}
-
-void MonoCircularBuffer::initialize(sfloat *buf, int length) {
-    this->_buf = buf;
+void MonoCircularBuffer::initialize(StaticMemoryAllocation &sma, int numSamples) {
+    this->_buf = sma.allocate(numSamples);
     _circularSampleIdx = 0;
-    this->_numSamples = length / 2;
-
-    if (buf) {
-        for (int i = 0; i < _numSamples * 2; i++) {
-            buf[i] = 0.f;
-        }
-    }
+    this->_numSamples = numSamples;
 }
 
 sfloat MonoCircularBuffer::read(int sample) const {
