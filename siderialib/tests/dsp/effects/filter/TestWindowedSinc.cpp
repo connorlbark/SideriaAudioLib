@@ -2,7 +2,7 @@
 #include <matplot/matplot.h>
 
 #include "../../../test_utils/SineFrequencyAnalysis.h"
-#include "../../../../include/effects/filter/WindowedSincFilter.h"
+#include "../../../../lib/effects/filter/WindowedSincFilter.h"
 
 using namespace siderialib;
 

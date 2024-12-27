@@ -6,7 +6,7 @@ TARGET = Disperse
 CPP_SOURCES = Disperse.cpp
 
 C_INCLUDES += -I./util/
-C_INCLUDES += -I../../siderialib/include
+C_INCLUDES += -I../../siderialib/lib
 
 # Library Locations
 LIBDAISY_DIR = ../../external/libDaisy

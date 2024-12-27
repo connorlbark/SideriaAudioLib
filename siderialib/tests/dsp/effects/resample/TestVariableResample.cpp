@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../../../../include/effects/resample/VariableResample.h"
+#include "../../../../lib/effects/resample/VariableResample.h"
 
 
 TEST(VariableResample, VariableResample) {

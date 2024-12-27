@@ -1,6 +1,6 @@
-#include "../../../include/dsp/buffers/StereoCircularBuffer.h"
-#include "../../../include/siderialib.h"
-#include "../../../include/dsp/Math.h"
+#include "StereoCircularBuffer.h"
+#include "siderialib.h"
+#include "dsp/Math.h"
 
 using namespace siderialib;
 

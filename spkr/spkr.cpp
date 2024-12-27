@@ -3,9 +3,11 @@
 #include "AudioFile.h"
 #include <vector>
 
-#include "../siderialib/include/siderialib.h"
-#include "../siderialib/include/effects/delay/ModulatedDelay.h"
-#include "../siderialib/include/effects/Disperse.h"
+#include "../siderialib/lib/siderialib.h"
+#include "../siderialib/lib/effects/delay/ModulatedDelay.h"
+#include "../siderialib/lib/effects/Disperse.h"
+#include "../siderialib/lib/effects/resample/VariableResample.h"
+
 
 void applyDelay(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out) {
 	siderialib::ModulatedDelay delay;

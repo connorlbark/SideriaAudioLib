@@ -1,5 +1,5 @@
-#include "../../../include/effects/filter/BiquadFilter.h"
-#include "../../../include/siderialib.h"
+#include "BiquadFilter.h"
+#include "siderialib.h"
 
 using namespace siderialib;
 

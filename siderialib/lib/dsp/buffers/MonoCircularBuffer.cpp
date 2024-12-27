@@ -1,6 +1,6 @@
-#include "../../../include/dsp/buffers/MonoCircularBuffer.h"
-#include "../../../include/siderialib.h"
-#include "../../../include/dsp/Math.h"
+#include "MonoCircularBuffer.h"
+#include "siderialib.h"
+#include "dsp/Math.h"
 
 using namespace siderialib;
 

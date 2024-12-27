@@ -5,30 +5,30 @@
 
 # Add source to this project's executable.
 add_library (siderialib STATIC
-        "include/siderialib.h"  "include/dsp/Types.h" "include/dsp/buffers/StereoCircularBuffer.h" "src/dsp/buffers/StereoCircularBuffer.cpp" "include/effects/delay/ModulatedDelay.h" "include/dsp/LFO.h" "src/dsp/LFO.cpp" "src/effects/delay/ModulatedDelay.cpp" "include/dsp/Math.h" "src/dsp/Math.cpp" "include/effects/filter/BiquadFilter.h"
-        "src/effects/filter/BiquadFilter.cpp"
-        include/effects/Disperse.h
-        src/effects/Disperse.cpp
-        include/util/Random.h
-        include/util/SmoothedParameter.h
-        src/util/SmoothedParameter.cpp
-        src/util/Random.cpp
-        src/effects/nonlinear/TapeSaturation.cpp
-        include/effects/nonlinear/TapeSaturation.h
-        src/dsp/Oversample.cpp
-        include/dsp/Oversample.h
-        src/effects/filter/WindowedSincFilter.cpp
-        include/effects/filter/WindowedSincFilter.h
-        src/dsp/buffers/MonoCircularBuffer.cpp
-        include/effects/resample/Decimate.h
-        include/effects/resample/Upsample.h
-        include/effects/resample/VariableResample.h
-        src/effects/disperse/DisperseParallelVoice.cpp
-        include/effects/disperse/DisperseParallelVoice.h
-        include/effects/disperse/DisperseConstants.h
+        "lib/siderialib.h"  "lib/dsp/Types.h" "lib/dsp/buffers/StereoCircularBuffer.h" "lib/dsp/buffers/StereoCircularBuffer.cpp" "lib/effects/delay/ModulatedDelay.h" "lib/dsp/LFO.h" "lib/dsp/LFO.cpp" "lib/effects/delay/ModulatedDelay.cpp" "lib/dsp/Math.h" "lib/dsp/Math.cpp" "lib/effects/filter/BiquadFilter.h"
+        "lib/effects/filter/BiquadFilter.cpp"
+        lib/effects/Disperse.h
+        lib/effects/Disperse.cpp
+        lib/util/Random.h
+        lib/util/SmoothedParameter.h
+        lib/util/SmoothedParameter.cpp
+        lib/util/Random.cpp
+        lib/effects/nonlinear/TapeSaturation.cpp
+        lib/effects/nonlinear/TapeSaturation.h
+        lib/dsp/Oversample.cpp
+        lib/dsp/Oversample.h
+        lib/effects/filter/WindowedSincFilter.cpp
+        lib/effects/filter/WindowedSincFilter.h
+        lib/dsp/buffers/MonoCircularBuffer.cpp
+        lib/effects/resample/Decimate.h
+        lib/effects/resample/Upsample.h
+        lib/effects/resample/VariableResample.h
+        lib/effects/disperse/DisperseParallelVoice.cpp
+        lib/effects/disperse/DisperseParallelVoice.h
+        lib/effects/disperse/DisperseConstants.h
 )
 
-target_include_directories(siderialib PUBLIC include)
+target_include_directories(siderialib PUBLIC lib)
 target_compile_features(siderialib PUBLIC cxx_std_14)
 
 if(MSVC)

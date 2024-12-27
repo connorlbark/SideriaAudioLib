@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../../../include/dsp/buffers/StereoCircularBuffer.h"
+#include "../../../lib/dsp/buffers/StereoCircularBuffer.h"
 
 TEST(TestStereoCircularBuffer, Initialize) {
 

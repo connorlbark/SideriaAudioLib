@@ -1,4 +1,4 @@
-#include "../../include/util/SmoothedParameter.h"
+#include "SmoothedParameter.h"
 #include <cmath>
 
 using namespace siderialib;

@@ -98,7 +98,7 @@ target_compile_definitions(DispersePlugin
 # linked automatically. If we'd generated a binary data target above, we would need to link to it
 # here too. This is a standard CMake command.
 
-include_directories(../../siderialib/include)
+include_directories(../../siderialib/lib)
 
 #target_link_libraries(DispersePlugin PUBLIC siderialib)
 
