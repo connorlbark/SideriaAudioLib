@@ -14,28 +14,11 @@ namespace siderialib {
     public:
         Decimate() = default;
 
-        void initialize() {
-            this->_downsampleFactor = 1;
-            this->_counter = 0;
-        }
+        void initialize();
 
-        void setDownsampleFactor(int factor) {
-            this->_downsampleFactor = factor;
-            this->_counter = 0;
-        }
+        sfloat tick(sfloat in);
 
-        sfloat tick(sfloat in) {
-            if (_counter == 0) {
-                _value = in;
-            }
-
-            _counter = (_counter + 1) % _downsampleFactor;
-            return _value;
-        }
-
-
-        int getDownsampleFactor() const {
-            return _downsampleFactor;
-        }
+        void setDownsampleFactor(int factor);
+        int getDownsampleFactor() const;
     };
 }

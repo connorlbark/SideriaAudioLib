@@ -62,13 +62,7 @@ namespace siderialib {
 
         void clearVoices();
     public:
-        void initialize(sfloat *voiceBufs[DISPERSE_NUM_VOICES],
-                        int bufLength,
-                        sfloat *upsampleBufL,
-                        sfloat *upsampleBufR,
-                        int upsampleBufLen,
-                        sfloat sampleRate);
-        void initialize(sfloat sampleRate);
+        void initialize(StaticMemoryAllocation &sma, sfloat sampleRate);
 
         virtual ~Disperse() = default;
 

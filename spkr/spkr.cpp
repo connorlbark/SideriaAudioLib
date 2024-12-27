@@ -13,8 +13,11 @@ void applyDelay(std::vector<std::vector<double>> in, std::vector<std::vector<dou
 	siderialib::ModulatedDelay delay;
 
     siderialib::LFO lfo;
+    siderialib::StaticMemoryAllocation sma;
+    sma.initialize(44100 * 10);
+
     lfo.initialize(44100.0f);
-	delay.initialize(&lfo, 44100.f, 44100 * 10);
+	delay.initialize(sma, &lfo, 44100.f, 44100 * 10);
 
     delay.setDelayMs(500.0f);
     delay.setFeedback(0.0f);
@@ -31,6 +34,8 @@ void applyDelay(std::vector<std::vector<double>> in, std::vector<std::vector<dou
 		out.at(1).at(i) = delay.lastOutR();
 
 	}
+
+    sma.freeAllocation();
 }
 
 
@@ -50,7 +55,11 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
     float resampleFactor = .2;
 
     siderialib::DisperseArrangement arrangement = siderialib::DisperseArrangement::FULL_PARALLEL;
-    disperse.initialize(sampleRate);
+
+    siderialib::StaticMemoryAllocation sma;
+    sma.initialize(44100 * 10 * 6 + 500);
+
+    disperse.initialize(sma, sampleRate);
 
     disperse.setMix(mix);
     disperse.setDispersion(dispersion);
@@ -80,6 +89,8 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
         out.at(1).at(i) = disperse.lastOutR();
 
     }
+
+    sma.freeAllocation();
 }
 
 void applyFilter(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out) {
@@ -105,7 +116,10 @@ void applyFilter(std::vector<std::vector<double>> in, std::vector<std::vector<do
 
 void applyResample(std::vector<std::vector<double>> in, std::vector<std::vector<double>>& out) {
     siderialib::VariableResample resample;
-    resample.initialize();
+    siderialib::StaticMemoryAllocation sma;
+    sma.initialize(44100);
+
+    resample.initialize(sma);
     resample.setResampleFactor(0.28);
 
     for (int i = 0; i < in.at(0).size(); i++) {
@@ -116,8 +130,9 @@ void applyResample(std::vector<std::vector<double>> in, std::vector<std::vector<
 
         out.at(0).at(i) = val;
         out.at(1).at(i) = val;
-
     }
+
+    sma.freeAllocation();
 }
 
 std::vector<std::vector<double>> sinWave(int samplingRate, int samples, double frequency) {

@@ -37,8 +37,8 @@ void ModulatedDelay::writeToBuffer(sfloat L, sfloat R) {
     this->_buf.writeCircular(L, R);
 }
 
-void ModulatedDelay::initialize(LFO *lfo, float sampleRate, int maxDelaySamps) {
-	this->_buf.initialize(maxDelaySamps);
+void ModulatedDelay::initialize(StaticMemoryAllocation &sma, LFO *lfo, float sampleRate, int maxDelaySamps) {
+	this->_buf.initialize(sma, maxDelaySamps);
     this->_delaySamps.initialize(1000.0, sampleRate);
 	this->_sampleRate = sampleRate;
 	_lastOutL = 0.f;
@@ -48,16 +48,6 @@ void ModulatedDelay::initialize(LFO *lfo, float sampleRate, int maxDelaySamps) {
     this->_mod = lfo;
 }
 
-void ModulatedDelay::initialize(LFO *lfo, float sampleRate, sfloat *buf, int bufLength) {
-    this->_buf.initialize(buf, bufLength);
-    this->_delaySamps.initialize(1000.0, sampleRate);
-    this->_sampleRate = sampleRate;
-    _lastOutL = 0.f;
-    _lastOutR = 0.f;
-    this->_mix = 1.0f;
-
-    this->_mod = lfo;
-}
 
 sfloat ModulatedDelay::lastOutL() const {
 	return _lastOutL;

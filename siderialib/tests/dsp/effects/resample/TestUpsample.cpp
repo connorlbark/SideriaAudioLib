@@ -3,8 +3,11 @@
 
 
 TEST(Upsample, Upsample) {
+    siderialib::StaticMemoryAllocation sma;
+    sma.initialize(10);
+
     siderialib::Upsample upsample;
-    upsample.initialize(10);
+    upsample.initialize(sma, 10);
 
     upsample.setUpsampleFactor(2);
     ASSERT_FLOAT_EQ(2, upsample.getOutBufferSize());

@@ -53,22 +53,17 @@ void hammingWindow(double *fir, int firLength) {
     }
 }
 
-void siderialib::WindowedSincFilter::initialize(int _firLength, sfloat cutoff, sfloat _sampleRate) {
+void siderialib::WindowedSincFilter::initialize(StaticMemoryAllocation &sma, int _firLength, sfloat cutoff, sfloat _sampleRate) {
 
     this->sampleRate = _sampleRate;
     this->firLength = _firLength;
 
-    this->fir = (double*)malloc(sizeof(double) * firLength);
-    this->hist.initialize(_firLength);
+    this->fir = sma.allocateDouble(firLength);
+    this->hist.initialize(sma, _firLength);
 
     windowedSinc(fir, firLength, cutoff, sampleRate);
     //hammingWindow(fir, firLength);
 
-}
-
-void siderialib::WindowedSincFilter::initialize(double *_fir, int _firLength) {
-    fir = _fir;
-    firLength = _firLength;
 }
 
 double *WindowedSincFilter::getFir() {

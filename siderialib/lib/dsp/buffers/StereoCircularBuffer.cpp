@@ -19,19 +19,14 @@ void StereoCircularBuffer::incrementCircularSampleIdx() {
 	}
 }
 
-void StereoCircularBuffer::initialize(int numSamples) {
-    _buf = (sfloat*)malloc(sizeof(sfloat) * 2 * numSamples);
-	this->initialize(_buf, numSamples * 2);
-}
-
-void StereoCircularBuffer::initialize(sfloat *buf, int length) {
-    this->_buf = buf;
+void StereoCircularBuffer::initialize(StaticMemoryAllocation &sma, int numSamples) {
+    _buf = sma.allocate(numSamples * 2);
     _circularSampleIdx = 0;
-    this->_numSamples = length / 2;
+    this->_numSamples = numSamples;
 
-    if (buf) {
+    if (_buf) {
         for (int i = 0; i < _numSamples * 2; i++) {
-            buf[i] = 0.f;
+            _buf[i] = 0.f;
         }
     }
 }

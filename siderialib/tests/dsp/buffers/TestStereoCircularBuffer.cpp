@@ -5,7 +5,9 @@ TEST(TestStereoCircularBuffer, Initialize) {
 
     siderialib::StereoCircularBuffer buf1{};
 
-    buf1.initialize(1000);
+    siderialib::StaticMemoryAllocation sma;
+    sma.initialize(2500);
+    buf1.initialize(sma, 1000);
 
     ASSERT_EQ(buf1.size(), 1000);
     ASSERT_EQ(buf1.numChannels(), 2);
@@ -17,7 +19,7 @@ TEST(TestStereoCircularBuffer, Initialize) {
 
     siderialib::StereoCircularBuffer buf2{};
 
-    buf2.initialize(200);
+    buf2.initialize(sma, 200);
 
     ASSERT_EQ(buf2.size(), 200);
     ASSERT_EQ(buf2.numChannels(), 2);
@@ -27,12 +29,17 @@ TEST(TestStereoCircularBuffer, Initialize) {
         ASSERT_EQ(buf2.read(1, i), 0.0f);
     }
 
+    sma.freeAllocation();
+
 }
 
 TEST(TestStereoCircularBuffer, WriteAndReadCircular) {
     siderialib::StereoCircularBuffer buf{};
 
-    buf.initialize(5);
+    siderialib::StaticMemoryAllocation sma;
+    sma.initialize(20);
+
+    buf.initialize(sma, 5);
 
     ASSERT_EQ(buf.readCircular(0), 0.f);
     ASSERT_EQ(buf.readCircular(1), 0.f);
@@ -101,4 +108,6 @@ TEST(TestStereoCircularBuffer, WriteAndReadCircular) {
     // loop again...
     ASSERT_EQ(buf.readCircular(0, 10), 6.f);
     ASSERT_EQ(buf.readCircular(1, 10), 0.f);
+
+    sma.freeAllocation();
 }

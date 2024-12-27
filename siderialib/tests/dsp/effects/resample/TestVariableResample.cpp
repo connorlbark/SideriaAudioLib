@@ -3,8 +3,11 @@
 
 
 TEST(VariableResample, VariableResample) {
+    siderialib::StaticMemoryAllocation sma;
+    sma.initialize(20);
+
     siderialib::VariableResample resample;
-    resample.initialize();
+    resample.initialize(sma);
     resample.setResampleFactor(0.5);
 
     ASSERT_EQ(2, resample.getDecimateFactor());
@@ -39,4 +42,5 @@ TEST(VariableResample, VariableResample) {
     ASSERT_FLOAT_EQ(4.0, resample.tick(4.0));
     ASSERT_FLOAT_EQ(4.0, resample.tick(4.0));
 
+    sma.freeAllocation();
 }

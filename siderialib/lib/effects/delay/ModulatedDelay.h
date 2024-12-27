@@ -37,8 +37,7 @@ namespace siderialib
 	public:
         ModulatedDelay() = default;
 
-		void initialize(LFO *lfo, sfloat sampleRate, int maxDelaySamps);
-		void initialize(LFO *lfo, sfloat sampleRate, sfloat *buf, int maxDelaySamps);
+		void initialize(StaticMemoryAllocation &sma, LFO *lfo, sfloat sampleRate, int maxDelaySamps);
 
 		void tick(sfloat L, sfloat R);
 

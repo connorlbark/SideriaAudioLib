@@ -168,21 +168,21 @@ void Disperse::setResampleFactor(siderialib::sfloat ratio) {
                                        _resampleL.getDecimateFactor());
 }
 
-void Disperse::initialize(sfloat sampleRate) {
+void Disperse::initialize(StaticMemoryAllocation &sma, sfloat sampleRate) {
     this->_sampleRate = sampleRate;
     _lfo.initialize(sampleRate);
 
     int maxDelaySamps = std::ceil((DISPERSE_MAX_DELAY_MS/1000.0) * _sampleRate);
     for (int i = 0; i < DISPERSE_NUM_VOICES; i++) {
-        _delays[i].initialize(&_lfo, _sampleRate, maxDelaySamps);
+        _delays[i].initialize(sma, &_lfo, _sampleRate, maxDelaySamps);
         _voices[i].initialize(_sampleRate);
         _voices[i].enableTone(false);
     }
 
     setArrangement(DisperseArrangement::FULL_PARALLEL);
 
-    this->_resampleL.initialize();
-    this->_resampleR.initialize();
+    this->_resampleL.initialize(sma);
+    this->_resampleR.initialize(sma);
 
     this->setMix(_mix);
     this->setDispersion(_dispersion);
@@ -195,38 +195,6 @@ void Disperse::initialize(sfloat sampleRate) {
     this->setResampleFactor(_resampleFactor);
 }
 
-void Disperse::initialize(sfloat *voiceBufs[DISPERSE_NUM_VOICES],
-                          int bufLength,
-                          sfloat *upsampleBufL,
-                          sfloat *upsampleBufR,
-                          int upsampleBufLen,
-                          sfloat sampleRate) {
-    this->_sampleRate = sampleRate;
-    _lfo.initialize(sampleRate);
-
-    for (int i = 0; i < DISPERSE_NUM_VOICES; i++) {
-        _delays[i].initialize(&_lfo, _sampleRate, voiceBufs[i], bufLength);
-        _voices[i].initialize(_sampleRate);
-        _voices[i].enableTone(false);
-    }
-
-    setArrangement(DisperseArrangement::FULL_PARALLEL);
-
-    this->_resampleL.initialize(upsampleBufL, upsampleBufLen);
-    this->_resampleR.initialize(upsampleBufR, upsampleBufLen);
-
-    this->setMix(_mix);
-    this->setDispersion(_dispersion);
-    this->setSpread(_spread);
-    this->setTimeMs(_timeMs);
-    this->setFeedback(_feedback);
-    this->setModRateHz(_modRateHz);
-    this->setModDepth(_modDepth);
-    this->setPosition(_dispersionPosition);
-    this->setResampleFactor(_resampleFactor);
-    this->setPingPongType(_pingPong);
-    //TODO: add tone control; above 0.5, HPF sweep, below 0.5 LPF sweep.
-}
 
 void Disperse::setArrangement(DisperseArrangement arrangement) {
     // removes delays from all voices

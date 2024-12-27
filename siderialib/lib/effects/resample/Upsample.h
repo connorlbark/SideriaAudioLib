@@ -18,47 +18,17 @@ namespace siderialib {
     public:
         Upsample() : _outputBuffer() {}
 
-        void initialize(int maxUpSampleFactor) {
-            this->_upsampleFactor = 1;
-            this->_outputBuffer.initialize(maxUpSampleFactor);
-        }
+        void initialize(StaticMemoryAllocation &sma, int maxUpSampleFactor);
 
-        void initialize(sfloat *upsampleBuf, int upsampleBufLen) {
-            this->_upsampleFactor = 1;
-            this->_outputBuffer.initialize(upsampleBuf, upsampleBufLen);
-        }
+        void setUpsampleFactor(int ratio);
 
-        void setUpsampleFactor(int ratio) {
-            this->_upsampleFactor = ratio;
-        }
+        void tick(sfloat in);
 
-        void tick(sfloat in) {
-            double delta = 1.0 / (double )_upsampleFactor;
+        sfloat readOutputBuffer(int index);
 
-            for (int i = _upsampleFactor - 1; i >= 1; i--) {
-                _outputBuffer.writeCircular(linearInterpolation(
-                        _lastSample,
-                        in,
-                        delta * (double)i));
-            }
-
-            _outputBuffer.writeCircular(_lastSample);
+        int getOutBufferSize() const;
 
 
-            _lastSample = in;
-        }
-
-        sfloat readOutputBuffer(int index) {
-            return _outputBuffer.readCircular( index);
-        }
-
-        int getOutBufferSize() const {
-            return _upsampleFactor;
-        }
-
-
-        int getUpsampleFactor() const {
-            return _upsampleFactor;
-        }
+        int getUpsampleFactor() const;
     };
 }
