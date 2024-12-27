@@ -24,20 +24,6 @@ namespace siderialib
 
 		LFO *_mod;
 
-		// 2-stage lpf placed before writing to circular buffer, so in essence, filters delayed sounds many times
-		BiquadFilter _lpf1L;
-		BiquadFilter _lpf1R;
-        BiquadFilter _lpf2L;
-        BiquadFilter _lpf2R;
-        // 2-stage hpf
-        BiquadFilter _hpf1L;
-        BiquadFilter _hpf1R;
-        BiquadFilter _hpf2L;
-        BiquadFilter _hpf2R;
-
-        bool _enableLpf;
-        bool _enableHpf;
-
         bool _pingPong;
         PingPongDirection _pingPongDirection = PingPongDirection::LEFT;
 
@@ -74,10 +60,6 @@ namespace siderialib
         void setPan(sfloat pan) { this->_pan = pan; }
         sfloat getPan() const { return this->_pan; }
 
-		void setLpfParams(sfloat cutoff, sfloat Q, sfloat dBGain);
-        void setHpfParams(sfloat cuoff, sfloat Q, sfloat dBGain);
-		void enableLpf(bool enabled) { this->_enableLpf = enabled; }
-        void enableHpf(bool enabled) { this->_enableHpf = enabled; }
         void enablePingPong(bool enabled) { this->_pingPong = enabled; }
 	};
 }

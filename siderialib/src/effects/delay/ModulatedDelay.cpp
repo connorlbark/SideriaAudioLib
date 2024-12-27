@@ -34,18 +34,6 @@ void ModulatedDelay::tick(sfloat L, sfloat R) {
 }
 
 void ModulatedDelay::writeToBuffer(sfloat L, sfloat R) {
-
-    if (_enableLpf) {
-        L = this->_lpf1L.tick(this->_lpf2L.tick(L));
-        R = this->_lpf1R.tick(this->_lpf2R.tick(R));
-    }
-
-    if (_enableHpf) {
-        L = this->_hpf1L.tick(this->_hpf2L.tick(L));
-        R = this->_hpf1R.tick(this->_hpf2R.tick(R));
-
-    }
-
     this->_buf.writeCircular(L, R);
 }
 
@@ -58,19 +46,6 @@ void ModulatedDelay::initialize(LFO *lfo, float sampleRate, int maxDelaySamps) {
     this->_mix = 1.0f;
 
     this->_mod = lfo;
-
-    this->_enableLpf = false;
-    this->_enableHpf = false;
-    this->_lpf1L.initialize(_sampleRate, BiquadType::LPF, _sampleRate/2.f, 1.0);
-    this->_lpf1R.initialize(_sampleRate, BiquadType::LPF, _sampleRate/2.f, 1.0);
-    this->_lpf2L.initialize(_sampleRate, BiquadType::LPF, _sampleRate/2.f, 1.0);
-    this->_lpf2R.initialize(_sampleRate, BiquadType::LPF, _sampleRate/2.f, 1.0);
-
-    this->_hpf1L.initialize(_sampleRate, BiquadType::HPF, _sampleRate/2.f, 1.0);
-    this->_hpf1R.initialize(_sampleRate, BiquadType::HPF, _sampleRate/2.f, 1.0);
-    this->_hpf2L.initialize(_sampleRate, BiquadType::HPF, _sampleRate/2.f, 1.0);
-    this->_hpf2R.initialize(_sampleRate, BiquadType::HPF, _sampleRate/2.f, 1.0);
-
 }
 
 void ModulatedDelay::initialize(LFO *lfo, float sampleRate, sfloat *buf, int bufLength) {
@@ -82,13 +57,6 @@ void ModulatedDelay::initialize(LFO *lfo, float sampleRate, sfloat *buf, int buf
     this->_mix = 1.0f;
 
     this->_mod = lfo;
-
-    this->_enableLpf = false;
-    this->_lpf1L.initialize(sampleRate, BiquadType::LPF, sampleRate/2.f, 1.0);
-    this->_lpf1R.initialize(sampleRate, BiquadType::LPF, sampleRate/2.f, 1.0);
-    this->_lpf2L.initialize(sampleRate, BiquadType::LPF, sampleRate/2.f, 1.0);
-    this->_lpf2R.initialize(sampleRate, BiquadType::LPF, sampleRate/2.f, 1.0);
-
 }
 
 sfloat ModulatedDelay::lastOutL() const {
@@ -99,16 +67,3 @@ sfloat ModulatedDelay::lastOutR() const {
 	return _lastOutR;
 }
 
-void ModulatedDelay::setLpfParams(sfloat cutoff, sfloat Q, sfloat dBGain) {
-    this->_lpf1L.setParams(cutoff, Q, dBGain);
-    this->_lpf1R.setParams(cutoff, Q, dBGain);
-    this->_lpf2L.setParams(cutoff, Q, dBGain);
-    this->_lpf2R.setParams(cutoff, Q, dBGain);
-}
-
-void ModulatedDelay::setHpfParams(sfloat cutoff, sfloat Q, sfloat dBGain) {
-    this->_hpf1L.setParams(cutoff, Q, dBGain);
-    this->_hpf1R.setParams(cutoff, Q, dBGain);
-    this->_hpf2L.setParams(cutoff, Q, dBGain);
-    this->_hpf2R.setParams(cutoff, Q, dBGain);
-}

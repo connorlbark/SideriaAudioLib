@@ -17,9 +17,6 @@ void applyDelay(std::vector<std::vector<double>> in, std::vector<std::vector<dou
     delay.setDelayMs(500.0f);
     delay.setFeedback(0.0f);
 
-    delay.enableLpf(true);
-    delay.setLpfParams(4000.0f, 0.7f, 12.0f);
-
     delay.setMix(1.0f);
 
 	for (int i = 0; i < in.at(0).size(); i++) {
@@ -39,16 +36,16 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
     siderialib::Disperse disperse;
 
     float sampleRate = 44100.f;
-    float mix = 1.0f;
-    float timeMs = 100.0f;
-    float dispersion = 0.2f;
+    float mix = .2f;
+    float timeMs = 300.0f;
+    float dispersion = 0.5f;
     float spread = 1.0f;
     float feedback = 0.8f;
-    float tone = 0.8f;
+    float tone = 0.1f;
     float modRateHz = 2.0f;
     float modDepth = 0.3f;
     float position = .323f;
-    float resampleFactor = 1.0;
+    float resampleFactor = .2;
 
     siderialib::DisperseArrangement arrangement = siderialib::DisperseArrangement::FULL_PARALLEL;
     disperse.initialize(sampleRate);
@@ -62,6 +59,7 @@ void apply(std::vector<std::vector<double>> in, std::vector<std::vector<double>>
     disperse.setModDepth(modDepth);
     disperse.setPosition(position);
     disperse.setResampleFactor(resampleFactor);
+    disperse.setTone(tone);
 
     disperse.setPingPongType(siderialib::DispersePingPong::OFF);
 

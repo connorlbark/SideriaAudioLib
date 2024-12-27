@@ -5,6 +5,10 @@ using namespace siderialib;
 
 
 void BiquadFilter::recalcParams() {
+
+    // todo: find some way to cache these values
+    //       since we usually set the same cutoff and Q
+    //       to multiple filters at once
 	double thetac = TWOPI * _cutoffHz / (double)this->_samplingRate;
 	double K = tan(thetac / 2.0);
 	double W = K * K;

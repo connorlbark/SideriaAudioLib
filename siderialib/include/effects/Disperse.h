@@ -49,8 +49,6 @@ namespace siderialib {
         sfloat _lastOutR = 0.f;
 
         LFO _lfo;
-        BiquadFilter _postLpfL;
-        BiquadFilter _postLpfR;
 
         void updateSpread();
         void updateDispersionAndPosition();
@@ -95,6 +93,8 @@ namespace siderialib {
         inline sfloat getModDepth() const { return this->_modDepth; }
         void setMix(sfloat mix);
         inline sfloat getMix() const { return this->_mix; }
+        void setTone(sfloat tone);
+        inline sfloat getTone() const { return _tone; }
 
         void setPingPongType(DispersePingPong pingPong);
 
