@@ -1,4 +1,4 @@
-﻿# CMakeList.txt : CMake project for SideriaAudioLib, include source and define
+﻿# CMakeList.txt : CMake project for SideriaAudioLib, lib source and define
 # project specific logic here.
 #
 

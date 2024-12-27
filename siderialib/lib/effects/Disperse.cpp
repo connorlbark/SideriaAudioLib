@@ -1,5 +1,5 @@
-#include "../../include/effects/Disperse.h"
-#include "../../include/dsp/Math.h"
+#include "Disperse.h"
+#include "dsp/Math.h"
 
 using namespace siderialib;
 

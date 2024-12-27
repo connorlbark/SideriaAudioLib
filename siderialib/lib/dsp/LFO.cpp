@@ -1,4 +1,4 @@
-#include "../../include/dsp/LFO.h"
+#include "LFO.h"
 
 using namespace siderialib;
 

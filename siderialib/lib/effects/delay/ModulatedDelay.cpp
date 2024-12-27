@@ -1,4 +1,4 @@
-#include "../../../include/effects/delay/ModulatedDelay.h"
+#include "ModulatedDelay.h"
 #include "dsp/Math.h"
 
 using namespace siderialib;
