@@ -13,6 +13,7 @@ project ("SideriaAudioLib")
 set (CMAKE_CXX_STANDARD 14)
 
 option(ARM "ARM")
+option(DEBUG_UI "DEBUG_UI")
 
 # Include sub-projects.
 add_subdirectory ("siderialib")
