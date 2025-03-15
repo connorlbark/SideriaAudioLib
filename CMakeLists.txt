@@ -1,27 +1,33 @@
 ﻿# CMakeList.txt : Top-level CMake project file, do global configuration
 # and include sub-projects here.
 #
-cmake_minimum_required (VERSION 3.31)
+cmake_minimum_required (VERSION 3.29.6)
 if ( NOT CMAKE_BUILD_TYPE )
     message( "Build Type not set, defaulting to Debug..." )
     set( CMAKE_BUILD_TYPE Debug )
 endif()
 
-# Enable Hot Reload for MSVC compilers if supported.
+set (CMAKE_CXX_STANDARD 17)
 
-project ("SideriaAudioLib")
-set (CMAKE_CXX_STANDARD 14)
 
 option(ARM "ARM")
+option(BUILD_EMSCRIPTEN "BUILD_EMSCRIPTEN")
+
+project ("SideriaAudioLib")
 
 # Include sub-projects.
 add_subdirectory ("siderialib")
-if(${ARM} MATCHES OFF)
+if(${ARM} MATCHES OFF AND ${BUILD_EMSCRIPTEN} MATCHES OFF)
     if (CMAKE_BUILD_TYPE STREQUAL "Debug")
         add_subdirectory("external/googletest")
         add_subdirectory("external/matplotplusplus") # testing creates graphs for reference
     endif()
+
     add_subdirectory ("external/JUCE")
     add_subdirectory ("projects/disperse-juce")
     add_subdirectory ("spkr")
+endif()
+
+if(${BUILD_EMSCRIPTEN} MATCHES ON)
+    add_subdirectory ("projects/disperse-wasm")
 endif()
