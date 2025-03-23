@@ -39,7 +39,7 @@ sfloat siderialib::randUniform(unsigned long *seed) {
     // Linear congruential generator parameters
     const unsigned long a = 1664525;  // multiplier
     const unsigned long c = 1013904223;  // increment
-    const unsigned long m = 4294967296;  // modulus (2^32)
+    const long long m = 4294967296;  // modulus (2^32)
 
     // Update the seed using LCG
     *seed = (a * (*seed) + c) % m;

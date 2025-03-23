@@ -8,13 +8,12 @@
 
 #include "effects/Disperse.h"
 
-extern "C"
-{
-    siderialib::Disperse disperse;
-    siderialib::StaticMemoryAllocation staticMemoryAllocation;
+siderialib::Disperse disperse;
+siderialib::StaticMemoryAllocation staticMemoryAllocation;
+extern "C" {
     EMSCRIPTEN_KEEPALIVE void Disperse_initialize(float sampleRate)
     {
-        staticMemoryAllocation.initialize((int)sampleRate * 5);
+        staticMemoryAllocation.initialize((int)sampleRate * 10 * 6 + 500);
         disperse.initialize(staticMemoryAllocation, sampleRate);
     }
     EMSCRIPTEN_KEEPALIVE void Disperse_tick(float L, float R)
