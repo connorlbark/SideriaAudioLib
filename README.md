@@ -19,6 +19,20 @@ brew install gnuplot
 
 Install the [Daisy arm toolchain](https://github.com/electro-smith/DaisyWiki/wiki/1.-Setting-Up-Your-Development-Environment#1-Install-the-Toolchain)
 
+Install [emscripten](https://emscripten.org/docs/getting_started/downloads.html) by installing emsdk.
+
+Install binaryen
+
+```bash
+brew install binaryen
+```
+
+Boostrap emscripten
+
+```bash
+cd $PATH_TO_EMSDK/upstream/emscripten
+./bootstrap
+```
 ### Build
 
 First, compile JUCE.
@@ -26,11 +40,16 @@ First, compile JUCE.
 cmake . -B cmake-build -DJUCE_BUILD_EXAMPLES=ON -DJUCE_BUILD_EXTRAS=ON
 ```
 
+
 Then, set up build profiles
 - Set Debug profile with default toolchain output to `cmake-build-debug`, with "Build Type" set to "Debug"
-- Create new CMake profile with the CMake flag `-DCMAKE_TOOLCHAIN_FILE=<PATH_TO_PROJECT>/external/libDaisy/cmake/toolchains/stm32h750xx.cmake`. This will make sure CMake knows how to use the arm compiler properly
+- Create new CMake profile with the CMake flags `-DCMAKE_TOOLCHAIN_FILE=<PATH_TO_LIB>/external/libDaisy/cmake/toolchains/autodetect.cmake -DARM:BOOL=ON -DAPPLE:BOOL=false -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_SYSTEM_PROCESSOR=Arm`. This will make sure CMake knows how to use the arm compiler properly
 - Make sure "Build Type" is "Debug" and set CMake profile's output to `cmake-build-daisy-debug`
-- Now, clone these two profiles, and make sure their "Build Type" type is "Release", otherwise the same.
+- Create new CMake profile with the CMake flags `-DCMAKE_TOOLCHAIN_FILE=<PATH_TO_EMSDK>/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake -DBUILD_EMSCRIPTEN:BOOL=ON`
+- Make sure "Build Type" is "Debug" and set CMake profile's output to `cmake-build-emscripten-debug`
+- Set the environment variable EMSCRIPTEN to the path to the emscripten installation (`<PATH_TO_EMSDK>/upstream/emscripten`)
+- Now, clone all the above profiles, and make sure their "Build Type" type is "Release", otherwise the same.
+
 
 Now, running the cmake build profiles should work fine, and you should get
 four build folders: `cmake-build-daisy-debug`, `cmake-build-debug`, `cmake-build-daisy-release`, `cmake-build-release`
@@ -44,4 +63,3 @@ based on the daisy.
 
 By default, this will compile a release version. If you want to make a debug
 version, instead of `make all`, do `DEBUG=1 make all`.
-
