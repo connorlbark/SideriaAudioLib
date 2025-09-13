@@ -1,5 +1,9 @@
 # Sideria Audio Lib
 
+**As of 09/13/2025, this library is going to be archived!**
+
+**I did not (and still don't really) know what I was doing when I made this library. Currently in the process of remaking it from scratch to be signficantly nicer to use.**
+
 ## What is this?
 
 This is a hand-made audio library which is the basis for all of my plugins and pedals. It is written in pure C-like C++ (no `new`, no `v-tables`, only `c-arrays`, etc.) for maximum portability to both PCs and also Arm/microcontrollers. The `siderialib/` folder contains the backend audio code - e.g., filters, delays, etc.. This code can then be linked to different "frontends" in the `projects/` folder, like a JUCE VST3 plugin or an Arm chip like the Electro-Smith Daisy.
